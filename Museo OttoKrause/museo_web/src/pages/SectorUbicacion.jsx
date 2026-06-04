@@ -1,6 +1,4 @@
-﻿import React from 'react';
-
-const SectorUbicacion = () => {
+﻿const SectorUbicacion = () => {
     return (
         <div>
             SectorUbicacion Component

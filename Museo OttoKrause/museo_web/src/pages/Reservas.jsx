@@ -1,6 +1,4 @@
-﻿import React from 'react';
-
-const Reservas = () => {
+﻿const Reservas = () => {
     return (
         <div>
             Reservas Component
