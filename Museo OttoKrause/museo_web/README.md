@@ -1,111 +1,391 @@
-# React + Vite
+﻿# MuseOK 🏛️💻
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**MuseOK** es el sistema digital de gestión del Museo Tecnológico Eduardo Latzina de la Escuela Técnica N°1 Otto Krause. Su objetivo es modernizar la administración del patrimonio, digitalizar el inventario histórico y gestionar reservas públicas e institucionales con un diseño ligero y fiable para equipos escolares con hardware limitado.
 
 ---
 
-## Login implementation (UI + backend validation)
+## 🔧 Arquitectura y Stack Tecnológico
 
-This project includes a complete login flow (frontend + backend) implemented for development/testing. Below are the files involved, how they work and how to rebuild or test the login from scratch.
+MuseOK está construido con una separación clara entre backend y frontend:
 
-- Files changed/added:
-	- `src/components/common/FormularioLogin.jsx` — React component that renders the login UI and calls the API.
-	- `src/components/common/FormularioLogin.css` — Styles for the login page (white background, logo top-left, large rounded inputs and red button).
-	- `src/pages/Login.jsx` — Page wrapper that simply renders `FormularioLogin`.
-	- `src/services/auth.service.js` — Client-side service used to POST credentials to the backend API.
-	- `museo_api/auth/login.php` — Backend endpoint that validates credentials against the DB and a set of example accounts for testing.
+- **Backend**: PHP Vanilla con arquitectura MVC pura.
+- **Frontend**: HTML, CSS y JavaScript nativos.
+- **Persistencia**: MySQL mediante PDO.
 
-### How the frontend works
+### Backend MVC en PHP
 
-- The UI is in `FormularioLogin.jsx`. It validates presence of both fields, then calls `AuthService.login(username, password)`.
-- On successful login the example implementation stores `token` and `user` in `localStorage` and redirects to `/`.
-- The logo displayed on the top-left is expected to be in the project's public root at `public/orig-marca-otto-krause.png`. Place the image file at that path.
+La estructura del backend sigue el patrón MVC clásico para mantener responsabilidades separadas:
 
-### How the backend validates credentials
+- **Modelos**: encapsulan la lógica de datos y la interacción con la base de datos usando PDO seguro.
+- **Controladores**: reciben las peticiones, validan datos, aplican reglas de negocio y devuelven respuestas JSON.
+- **Vistas / API**: no hay plantillas complejas; el backend expone recursos JSON para el frontend, y las vistas se resuelven desde la capa de frontend.
 
-- `museo_api/auth/login.php` performs these checks:
-	1. Confirm request method is POST and JSON body is valid.
-	2. Confirm `username` and `password` are present.
-	3. Check that `username` is a valid email (returns 422 if not).
-	4. Attempt to find the user in the `users` table in the database (if configured).
-	5. If user not found in DB, fall back to a developer-friendly `example_accounts` list (useful for local testing).
+### Principios de diseño
 
-Example test accounts (preconfigured in the backend for testing):
+- Uso de **PDO** en todas las consultas para evitar inyección SQL.
+- Validación de entrada en el backend y control de CORS cuando sea necesario.
+- Almacenamiento de contraseñas con `password_hash()` en PHP.
+- Rutas relativas para archivos multimedia y fotografías de objetos, evitando blobs en la base de datos.
+- Repositorio liviano, compatible con entornos XAMPP/Laragon en PCs antiguas.
 
-- Admin: `admin@otto.test` / `AdminPass123` (role `admin`)
-- User: `user@example.com` / `UserPass123` (role `user`)
+### Frontend escalable
 
-> Security note: These example accounts exist only for development convenience. For production you must remove these fallbacks and create accounts in your database with properly hashed passwords.
+El frontend está organizado para ser fácil de mantener y ejecutar:
 
-### How to provision admin accounts (recommended approach)
+- `js/controllers/`: controladores de UI y lógica de página.
+- `js/services/`: servicios de comunicación y helpers externos.
+- `css/`: estilos globales y de componentes.
+- `public/`: activos estáticos y multimedia.
 
-1. Create a `users` table in the database (MySQL / MariaDB) with at least columns: `id`, `username` (email), `password_hash`, `role`.
-2. Use PHP's `password_hash` to generate a salted hash for new passwords and store that in `password_hash`.
-3. Give admin users the `role = 'admin'` value.
-4. Avoid shipping admin plaintext passwords in code. Provide a secure onboarding flow for administrators (invite + password reset via email).
+El diseño busca ser rápido en navegadores básicos y minimizar dependencias.
 
-Example SQL to insert an admin (run in a safe environment):
+---
 
-```sql
-INSERT INTO users (username, password_hash, role) VALUES (
-	'realadmin@yourdomain.com',
-	'REPLACE_WITH_HASH_FROM_PHP_password_hash',
-	'admin'
-);
+## 📁 Estructura de Carpetas del Proyecto
+
+```bash
+Museo OttoKrause/
+├── museo_api/
+│   ├── auth/
+│   │   └── login.php
+│   ├── config/
+│   │   ├── database.php
+│   │   └── config.php        # Excluido de Git, contiene credenciales locales
+│   ├── controllers/
+│   │   ├── ObjetosController.php
+│   │   ├── UsuariosController.php
+│   │   ├── VisitasController.php
+│   │   └── VitrinasController.php
+│   ├── models/
+│   │   ├── Objeto.php
+│   │   ├── Usuario.php
+│   │   ├── Visita.php
+│   │   └── Vitrina.php
+│   └── routes/
+│       └── api.php
+├── museo_web/
+│   ├── css/
+│   │   └── styles.css
+│   ├── js/
+│   │   ├── controllers/
+│   │   │   └── login.js
+│   │   └── services/
+│   │       └── api.js
+│   ├── public/
+│   │   └── unnamed.png
+│   ├── index.html
+│   └── README.md
+└── README.md
 ```
 
-To produce the hash locally you can run a simple PHP snippet:
+> Nota: el frontend y el backend están físicamente separados para permitir despliegues claros en servidores escolares. El backend sirve API JSON y el frontend consume esas respuestas.
+
+---
+
+## 🛠️ Guía de Instalación y Configuración Local
+
+### 1. Clonar el repositorio
+
+```bash
+cd C:\xampp\htdocs\
+git clone https://github.com/tu-organizacion/tu-repo.git "Museo OttoKrause"
+```
+
+O en Laragon:
+
+```bash
+cd C:\laragon\www\
+git clone https://github.com/tu-organizacion/tu-repo.git "Museo OttoKrause"
+```
+
+### 2. Colocar el proyecto en el directorio raíz del servidor local
+
+- XAMPP: `C:\xampp\htdocs\Museo OttoKrause`
+- Laragon: `C:\laragon\www\Museo OttoKrause`
+
+### 3. Configurar el archivo de credenciales (no versionado)
+
+El backend debe usar un archivo `museo_api/config/config.php` que no se suba a Git. En el repositorio debe existir un `.gitignore` que excluya este archivo.
+
+Ejemplo de `museo_api/config/config.php`:
 
 ```php
 <?php
-echo password_hash('YourSecurePassword123', PASSWORD_DEFAULT) . PHP_EOL;
+return [
+    'host' => 'localhost',
+    'dbname' => 'museok',
+    'user' => 'root',
+    'password' => '',
+    'charset' => 'utf8mb4',
+];
 ```
 
-### How to run and test the login locally
+### 4. Inicializar la base de datos MySQL
 
-1. Backend (XAMPP / Apache + PHP):
+Crear la base de datos y las tablas principales. Este proyecto usa una estructura normalizada que respeta la separación física de ubicaciones y reservas.
 
-	 - Place the `museo_api` folder inside your web server document root (already in this repo).
-	 - Ensure PHP is enabled and `museo_api/auth/login.php` is reachable via URL. The default dev endpoint used in the frontend is:
+Ejemplo de script SQL de inicialización:
 
-		 `http://localhost/Museo/Museo-Otto-Krause/Museo%20OttoKrause/museo_api/auth/login.php`
+```sql
+CREATE DATABASE IF NOT EXISTS museok CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE museok;
 
-2. Frontend (Vite):
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  rol ENUM('admin', 'operador', 'invitado') NOT NULL DEFAULT 'operador',
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-	 - From `museo_web` run:
+CREATE TABLE pisos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT,
+  orden INT NOT NULL DEFAULT 0
+);
 
-	 ```bash
-	 npm install
-	 npm run dev
-	 ```
+CREATE TABLE salas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  piso_id INT NOT NULL,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT,
+  orden INT NOT NULL DEFAULT 0,
+  FOREIGN KEY (piso_id) REFERENCES pisos(id) ON DELETE CASCADE
+);
 
-	 - Open the dev URL shown by Vite and visit the Login page.
+CREATE TABLE vitrinas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sala_id INT NOT NULL,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT,
+  orden INT NOT NULL DEFAULT 0,
+  FOREIGN KEY (sala_id) REFERENCES salas(id) ON DELETE CASCADE
+);
 
-3. Test with example accounts described above, or create a DB user as described in the provisioning section.
+CREATE TABLE cajones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  vitrina_id INT NOT NULL,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT,
+  orden INT NOT NULL DEFAULT 0,
+  FOREIGN KEY (vitrina_id) REFERENCES vitrinas(id) ON DELETE CASCADE
+);
 
-### Files to review for more details
+CREATE TABLE objetos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cajon_id INT NOT NULL,
+  nombre VARCHAR(150) NOT NULL,
+  codigo_inventario VARCHAR(100) NOT NULL UNIQUE,
+  descripcion TEXT,
+  imagen_path VARCHAR(255),
+  fecha_ingreso DATE,
+  estado ENUM('activo', 'prestado', 'resguardado') NOT NULL DEFAULT 'activo',
+  FOREIGN KEY (cajon_id) REFERENCES cajones(id) ON DELETE SET NULL
+);
 
-- `src/services/auth.service.js` — config for `API_BASE_URL` and the `LOGIN_ENDPOINT` constant (change `VITE_API_BASE_URL` in your env to point to your API server if needed).
-- `museo_api/config/database.php` — DB connection helper used by the backend.
+CREATE TABLE reservas_publicas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(80) NOT NULL,
+  apellido VARCHAR(80) NOT NULL,
+  email VARCHAR(150) NOT NULL,
+  telefono VARCHAR(50),
+  fecha_visita DATE NOT NULL,
+  hora_inicio TIME NOT NULL,
+  hora_fin TIME NOT NULL,
+  cantidad_personas INT NOT NULL,
+  estado ENUM('pendiente', 'confirmada', 'cancelada') NOT NULL DEFAULT 'pendiente',
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-### Notes and best practices
+CREATE TABLE reservas_institucionales (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  institucion_nombre VARCHAR(150) NOT NULL,
+  contacto_nombre VARCHAR(80) NOT NULL,
+  contacto_apellido VARCHAR(80) NOT NULL,
+  email VARCHAR(150) NOT NULL,
+  telefono VARCHAR(50),
+  fecha_visita DATE NOT NULL,
+  hora_inicio TIME NOT NULL,
+  hora_fin TIME NOT NULL,
+  cantidad_alumnos INT NOT NULL,
+  nivel_educativo VARCHAR(100),
+  estado ENUM('pendiente', 'confirmada', 'cancelada') NOT NULL DEFAULT 'pendiente',
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-- Remove example accounts before production.
-- Use HTTPS in production and set secure cookies or use short-lived JWTs.
-- Implement rate-limiting and account lockouts to avoid brute-force attacks.
-- Use environment variables for API endpoints and DB credentials (dotenv or server config), not hardcoded values.
+> Importante: las tablas de reservas están separadas para evitar campos nulos innecesarios y mantener una primera forma normal clara en nombres y apellidos.
 
-If you want, puedo crear un script SQL para crear la tabla `users` y un pequeño script PHP para crear hashes listos para insertar. También puedo quitar las cuentas de ejemplo y sustituir por un comando de creación de usuarios seguro.
+### 5. Verificar la conexión PHP - MySQL
+
+El archivo `museo_api/config/database.php` debe cargar `config.php` y crear la conexión PDO.
+
+Ejemplo de uso seguro:
+
+```php
+<?php
+$config = require __DIR__ . '/config.php';
+try {
+    $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
+    $pdo = new PDO($dsn, $config['user'], $config['password'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
+} catch (PDOException $e) {
+    exit('Error de conexión: ' . $e->getMessage());
+}
+```
+
+### 6. Ejecutar el frontend
+
+El frontend no depende de Node ni Vite en producción. Basta abrir `museo_web/index.html` desde el servidor local.
+
+Sin embargo, para desarrollo ligero se puede usar cualquier servidor estático local que sirva la carpeta `museo_web`.
+
+---
+
+## 🧭 Flujo de Trabajo y Control de Versiones (Git Workflow)
+
+El proyecto debe desarrollarse con ramas atómicas y revisiones estructuradas.
+
+### Reglas obligatorias
+
+- Usar una rama por tarea o corrección.
+- No trabajar directamente en `main`.
+- Abrir un Pull Request en GitHub para cualquier cambio significativo.
+
+### Nombres de ramas sugeridos
+
+- `feature/<descripcion-corta>`
+- `bugfix/<descripcion-corta>`
+- `hotfix/<descripcion-corta>`
+
+### Ciclo de preparación básico
+
+```bash
+git status
+git add .
+git commit -m "feat: agregar login nativo con validacion backend"
+```
+
+### Subir rama y solicitar revisión
+
+```bash
+git push origin nombre-de-tu-rama
+```
+
+Luego abrir un **Pull Request** en GitHub para revisión por el líder técnico.
+
+### Actualizar la rama principal
+
+```bash
+git checkout main
+git pull origin main
+```
+
+> Nota: antes de fusionar, siempre verificar que la rama principal esté actualizada y que el PR tenga revisión de al menos un revisor.
+
+---
+
+## 📡 Contrato de la API (Endpoints & JSON Specs)
+
+### Autenticación
+
+#### Endpoint
+
+`POST /museo_api/auth/login.php`
+
+#### Request
+
+- `Content-Type: application/json`
+- Payload JSON:
+
+```json
+{
+  "email": "usuario@colegio.edu.ar",
+  "password": "contraseñaSegura"
+}
+```
+
+> El frontend envía credenciales limpias en texto plano. En producción esta comunicación debe protegerse con HTTPS.
+
+#### Response exitosa
+
+```json
+{
+  "success": true,
+  "message": "Autenticación correcta.",
+  "id_usuario": 1,
+  "nombre": "Juan Pérez",
+  "email": "usuario@colegio.edu.ar",
+  "rol": "admin"
+}
+```
+
+#### Response de error
+
+```json
+{
+  "success": false,
+  "message": "Credenciales incorrectas.",
+  "id_usuario": null,
+  "nombre": null,
+  "email": null,
+  "rol": null
+}
+```
+
+### Reglas del contrato JSON
+
+- La respuesta siempre debe contener las claves:
+  - `success` (bool)
+  - `message` (string)
+  - `id_usuario`
+  - `nombre`
+  - `email`
+  - `rol`
+- El backend debe devolver siempre `Content-Type: application/json`.
+- Los mensajes deben ser claros y útiles para el frontend.
+
+### Pautas generales para otros endpoints
+
+- Los controladores deben devolver objetos JSON uniformes.
+- Evitar respuestas mixtas HTML/JSON.
+- Validar todos los datos recibidos en el backend.
+- Registrar errores críticos en servidor, pero no exponer detalles internos al frontend.
+
+---
+
+## 🔐 Seguridad y Buenas Prácticas
+
+- Usar `password_hash()` para guardar contraseñas y `password_verify()` para compararlas.
+- No almacenar contraseñas en texto plano.
+- No guardar archivos binarios en MySQL; usar rutas relativas a la carpeta `public/`.
+- Mantener el repositorio ligero y evitar incluir archivos multimedia pesados en Git.
+- En producción, desplegar detrás de HTTPS.
+- Validar permisos de usuario en cada controlador.
+
+---
+
+## ✅ Buenas prácticas del proyecto
+
+- Priorizar consultas PDO parametrizadas.
+- Mantener la regla de una responsabilidad por clase/archivo.
+- Documentar cualquier cambio en la API en este README.
+- Evitar dependencias innecesarias en el frontend.
+- Confirmar que la interfaz funcione en navegadores del entorno escolar.
+
+---
+
+## 📌 Referencias rápidas
+
+- Backend principal: `museo_api/`
+- Frontend principal: `museo_web/`
+- Configuración sensible: `museo_api/config/config.php`
+- Login frontend: `museo_web/js/controllers/login.js`
+- Servicio API frontend: `museo_web/js/services/api.js`
+- Conexión PDO: `museo_api/config/database.php`
+
+Con esta documentación, cualquier miembro del equipo puede integrarse rápidamente y seguir una metodología consistente para el desarrollo y despliegue del sistema MuseOK.
