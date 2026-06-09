@@ -1,56 +1,631 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reservas - Sistema MuseOK</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservas · Museo Otto Krause</title>
   <style>
+    :root {
+      color-scheme: dark;
+      --bg-page: #e9ecef;
+      --bg-panel: #2b2b2f;
+      --bg-panel-soft: #37373d;
+      --bg-panel-strong: #18181b;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #9ca3af;
+      --border: rgba(255,255,255,0.08);
+      --red: #dc1224;
+      --red-dark: #a71318;
+      --green: #22c55e;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+      --radius: 28px;
+      --radius-sm: 16px;
+      --font-body: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-heading: 'Barlow', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
     body {
       margin: 0;
-      padding: 0;
-      background-color: #000;
-      color: #fff;
-      font-family: 'Inter', Arial, sans-serif;
+      min-height: 100%;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 28%),
+        linear-gradient(180deg, #0f172a 0%, #111827 38%, #161b26 100%);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page-shell {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-primary);
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      display: grid;
+      place-items: center;
+    }
+
+    .brand-logo img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: grid;
+      gap: 2px;
+      line-height: 1.1;
+    }
+
+    .brand-text .title {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-text .subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .page-nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      padding: 10px 14px;
+      border-radius: 999px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255,255,255,0.08);
+      color: var(--text-primary);
+    }
+
+    .nav-action {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      text-align: center;
-    }
-    h1 {
-      font-size: 2.5rem;
+      padding: 10px 22px;
+      background: var(--red);
       color: #fff;
-      margin-bottom: 20px;
-      border-bottom: 3px solid #d90010;
-      padding-bottom: 10px;
-      max-width: 80%;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
     }
-    p {
-      color: #9f9f9f;
-      font-size: 1.2rem;
-      margin-bottom: 30px;
+
+    .nav-action:hover {
+      background: var(--red-dark);
+      transform: translateY(-1px);
     }
-    .btn-back {
-      display: inline-block;
-      padding: 12px 24px;
+
+    .hero-area {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: 48px 16px 64px;
+    }
+
+    .hero-card {
+      width: min(100%, 980px);
+      padding: 32px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(15,23,42,0.96), rgba(20, 23, 33, 0.96));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .hero-title {
+      display: grid;
+      gap: 6px;
+    }
+
+    .hero-title span {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .hero-title h1 {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 2.4vw, 2.8rem);
+      letter-spacing: 0.02em;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .tab-button {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-primary);
+      padding: 14px 18px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .tab-button.active {
+      background: var(--red);
       color: #fff;
-      background-color: #2d0008;
-      border: 1px solid #d90010;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: all 0.2s ease;
+      border-color: transparent;
     }
-    .btn-back:hover {
-      background-color: #d90010;
-      box-shadow: 0 0 15px rgba(217,0,16,0.4);
+
+    .tab-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .info-callout {
+      margin-top: 18px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 10px;
+    }
+
+    .info-callout p {
+      margin: 0;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .form-grid {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .field-input,
+    .field-textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .field-input:focus,
+    .field-textarea:focus {
+      border-color: rgba(220,18,36,0.9);
+      box-shadow: 0 0 0 4px rgba(220,18,36,0.12);
+    }
+
+    .field-textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .field-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .submit-row {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .submit-button {
+      border: none;
+      background: var(--red);
+      color: #fff;
+      padding: 16px 30px;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .submit-button:hover {
+      background: var(--red-dark);
+      transform: translateY(-1px);
+    }
+
+    .notice-box {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      color: #d7f4df;
+      display: none;
+    }
+
+    .notice-box.visible {
+      display: block;
+    }
+
+    @media (max-width: 860px) {
+      .hero-card {
+        padding: 26px;
+      }
+
+      .hero-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .tabs {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .submit-row {
+        justify-content: stretch;
+      }
+
+      .submit-button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Estás en la página correcta de Reservas</h1>
-  <p>Módulo de formulario bajo especificación técnica del Sprint 2.</p>
-  <a href="index.html" class="btn-back">Volver al Inicio</a>
+  <div class="page-shell">
+    <header class="page-header">
+      <div class="header-inner">
+        <a href="index.html" class="brand">
+          <span class="brand-logo"><img src="public/unnamed.png" alt="Logo Otto Krause"></span>
+          <span class="brand-text">
+            <span class="title">Otto Krause</span>
+            <span class="subtitle">Escuela Técnica</span>
+          </span>
+        </a>
+        <nav class="page-nav" aria-label="Navegación principal">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="reservas.html" class="nav-link active">Reservas</a>
+        </nav>
+        <a href="index.html" class="nav-action">Volver</a>
+      </div>
+    </header>
+
+    <main class="hero-area" aria-labelledby="reservation-title">
+      <article class="hero-card">
+        <div class="hero-top">
+          <div class="hero-title">
+            <span>Tipo de Visita</span>
+            <h1 id="reservation-title">Reservas de visitas</h1>
+          </div>
+          <div class="tabs" role="tablist" aria-label="Tipos de reserva">
+            <button type="button" class="tab-button active" data-type="publica" role="tab" aria-selected="true">Pública</button>
+            <button type="button" class="tab-button" data-type="escolar" role="tab" aria-selected="false">Escolar</button>
+            <button type="button" class="tab-button" data-type="institucional" role="tab" aria-selected="false">Institucional</button>
+          </div>
+        </div>
+
+        <section class="info-callout" id="info-callout" aria-live="polite">
+          <p id="info-text">Abierto al público general. Se aprueba automáticamente si el grupo no supera las 30 personas.</p>
+        </section>
+
+        <form id="reservation-form" class="reservation-form" novalidate>
+          <div class="form-grid">
+            <div class="field-group">
+              <label for="nombre" class="field-label">Nombre</label>
+              <input id="nombre" name="nombre" type="text" class="field-input" placeholder="Ej: María" required />
+            </div>
+            <div class="field-group">
+              <label for="apellido" class="field-label">Apellido</label>
+              <input id="apellido" name="apellido" type="text" class="field-input" placeholder="Ej: González" required />
+            </div>
+            <div class="field-group">
+              <label for="dni" class="field-label">DNI</label>
+              <input id="dni" name="dni" type="text" class="field-input" placeholder="Ej: 38500123" required />
+            </div>
+            <div class="field-group">
+              <label for="telefono" class="field-label">Teléfono</label>
+              <input id="telefono" name="telefono" type="tel" class="field-input" placeholder="Ej: 11-4523-6789" required />
+            </div>
+            <div class="field-group">
+              <label for="email" class="field-label">Email</label>
+              <input id="email" name="email" type="email" class="field-input" placeholder="correo@ejemplo.com" required />
+            </div>
+            <div class="field-group">
+              <label for="fecha" class="field-label">Fecha de visita</label>
+              <input id="fecha" name="fecha" type="date" class="field-input" required />
+            </div>
+
+            <div class="field-group full-width" id="escolar-row-1">
+              <label for="nombre-docente" class="field-label">Nombre del docente</label>
+              <input id="nombre-docente" name="nombre-docente" type="text" class="field-input" placeholder="Ej: Carlos" />
+            </div>
+            <div class="field-group full-width" id="escolar-row-2">
+              <label for="apellido-docente" class="field-label">Apellido del docente</label>
+              <input id="apellido-docente" name="apellido-docente" type="text" class="field-input" placeholder="Ej: Rodríguez" />
+            </div>
+            <div class="field-group full-width" id="escolar-row-3">
+              <label for="dni-docente" class="field-label">DNI del docente</label>
+              <input id="dni-docente" name="dni-docente" type="text" class="field-input" placeholder="Ej: 28501234" />
+            </div>
+            <div class="field-group full-width" id="escolar-row-4">
+              <label for="email-escolar" class="field-label">Email escolar</label>
+              <input id="email-escolar" name="email-escolar" type="email" class="field-input" placeholder="docente@escuela.edu.ar" />
+            </div>
+            <div class="field-group full-width" id="escolar-row-5">
+              <label for="telefono-escuela" class="field-label">Teléfono de la escuela</label>
+              <input id="telefono-escuela" name="telefono-escuela" type="tel" class="field-input" placeholder="Ej: 11-3344-5566" />
+            </div>
+            <div class="field-group full-width" id="escolar-row-6">
+              <label for="nombre-escuela" class="field-label">Nombre de la escuela</label>
+              <input id="nombre-escuela" name="nombre-escuela" type="text" class="field-input" placeholder="Ej: Escuela N°14 Rivadavia" />
+            </div>
+            <div class="field-group full-width" id="escolar-row-7">
+              <label for="cue" class="field-label">CUE (9 dígitos)</label>
+              <input id="cue" name="cue" type="text" class="field-input" placeholder="Ej: 020103800" maxlength="9" />
+            </div>
+            <div class="field-group full-width" id="escolar-row-8">
+              <label for="cantidad-alumnos" class="field-label">Cantidad de alumnos</label>
+              <input id="cantidad-alumnos" name="cantidad-alumnos" type="number" min="1" class="field-input" placeholder="Ej: 28" />
+              <span class="field-hint">Hasta 32: aprobación automática. Más de 32 queda pendiente de revisión.</span>
+            </div>
+
+            <div class="field-group full-width" id="institucional-row-1">
+              <label for="nombre-responsable" class="field-label">Nombre del responsable</label>
+              <input id="nombre-responsable" name="nombre-responsable" type="text" class="field-input" placeholder="Ej: Laura" />
+            </div>
+            <div class="field-group full-width" id="institucional-row-2">
+              <label for="apellido-responsable" class="field-label">Apellido del responsable</label>
+              <input id="apellido-responsable" name="apellido-responsable" type="text" class="field-input" placeholder="Ej: Méndez" />
+            </div>
+            <div class="field-group full-width" id="institucional-row-3">
+              <label for="cargo" class="field-label">Cargo / Rol</label>
+              <input id="cargo" name="cargo" type="text" class="field-input" placeholder="Ej: Directora de Cultura" />
+            </div>
+            <div class="field-group full-width" id="institucional-row-4">
+              <label for="organismo" class="field-label">Organismo / Institución</label>
+              <input id="organismo" name="organismo" type="text" class="field-input" placeholder="Ej: Ministerio de Educación CABA" />
+            </div>
+            <div class="field-group full-width" id="institucional-row-5">
+              <label for="email-institucional" class="field-label">Email institucional</label>
+              <input id="email-institucional" name="email-institucional" type="email" class="field-input" placeholder="responsable@organismo.gob.ar" />
+            </div>
+            <div class="field-group full-width" id="institucional-row-6">
+              <label for="telefono-institucional" class="field-label">Teléfono institucional</label>
+              <input id="telefono-institucional" name="telefono-institucional" type="tel" class="field-input" placeholder="Ej: 11-2233-4455" />
+            </div>
+            <div class="field-group full-width" id="institucional-row-7">
+              <label for="cantidad-participantes" class="field-label">Cantidad de participantes</label>
+              <input id="cantidad-participantes" name="cantidad-participantes" type="number" min="1" class="field-input" placeholder="Ej: 20" />
+              <span class="field-hint">Hasta 30: aprobación automática. Más de 30 queda pendiente de revisión.</span>
+            </div>
+            <div class="field-group full-width" id="institucional-row-8">
+              <label for="motivo" class="field-label">Motivo / objetivo de la visita</label>
+              <textarea id="motivo" name="motivo" class="field-textarea" placeholder="Ej: Jornada educativa anual sobre historia de la tecnología"></textarea>
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="submit-button">Confirmar reserva</button>
+          </div>
+
+          <div class="notice-box" id="confirmation-message" role="status"></div>
+        </form>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const infoText = document.getElementById('info-text');
+    const form = document.getElementById('reservation-form');
+    const confirmation = document.getElementById('confirmation-message');
+
+    const sections = {
+      publica: [],
+      escolar: [
+        'escolar-row-1',
+        'escolar-row-2',
+        'escolar-row-3',
+        'escolar-row-4',
+        'escolar-row-5',
+        'escolar-row-6',
+        'escolar-row-7',
+        'escolar-row-8'
+      ],
+      institucional: [
+        'institucional-row-1',
+        'institucional-row-2',
+        'institucional-row-3',
+        'institucional-row-4',
+        'institucional-row-5',
+        'institucional-row-6',
+        'institucional-row-7',
+        'institucional-row-8'
+      ]
+    };
+
+    const infoMessages = {
+      publica: 'Abierto al público general. Se aprueba automáticamente si el grupo no supera las 30 personas.',
+      escolar: 'Para escuelas. Se aprueba automáticamente para grupos de hasta 32 alumnos. Grupos mayores quedan pendientes de revisión.',
+      institucional: 'Para organismos públicos o privados. Se aprueba automáticamente hasta 30 participantes. Grupos mayores quedan en revisión.'
+    };
+
+    function setActiveType(type) {
+      tabButtons.forEach(button => {
+        const isActive = button.dataset.type === type;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      infoText.textContent = infoMessages[type];
+      Object.keys(sections).forEach(key => {
+        sections[key].forEach(id => {
+          const element = document.getElementById(id);
+          if (!element) return;
+          element.style.display = key === type ? 'flex' : 'none';
+        });
+      });
+
+      if (type === 'publica') {
+        document.getElementById('nombre').dataset.required = 'true';
+        document.getElementById('apellido').dataset.required = 'true';
+      }
+    }
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        setActiveType(button.dataset.type);
+        confirmation.classList.remove('visible');
+      });
+    });
+
+    function getActiveType() {
+      return Array.from(tabButtons).find(btn => btn.classList.contains('active')).dataset.type;
+    }
+
+    function clearOptionalFields() {
+      sections.escolar.concat(sections.institucional).forEach(id => {
+        const field = document.getElementById(id)?.querySelector('input, textarea');
+        if (field) field.value = '';
+      });
+    }
+
+    function validateForm() {
+      const type = getActiveType();
+      let valid = true;
+      const fields = Array.from(form.querySelectorAll('input, textarea')).filter(el => {
+        if (el.closest('.field-group')?.style.display === 'none') return false;
+        return true;
+      });
+
+      fields.forEach(field => {
+        field.classList.remove('invalid');
+        if (field.hasAttribute('required') && !field.value.trim()) {
+          valid = false;
+          field.classList.add('invalid');
+        }
+      });
+
+      return valid;
+    }
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!validateForm()) {
+        confirmation.textContent = 'Por favor completa todos los campos obligatorios correctamente.';
+        confirmation.style.background = 'rgba(220, 18, 36, 0.12)';
+        confirmation.style.borderColor = 'rgba(220, 18, 36, 0.28)';
+        confirmation.classList.add('visible');
+        return;
+      }
+
+      const type = getActiveType();
+      confirmation.textContent = `Reserva de tipo ${type === 'publica' ? 'Pública' : type === 'escolar' ? 'Escolar' : 'Institucional'} enviada con éxito. Pronto te contactaremos para confirmar la fecha.`;
+      confirmation.style.background = 'rgba(34, 197, 94, 0.12)';
+      confirmation.style.borderColor = 'rgba(34, 197, 94, 0.22)';
+      confirmation.classList.add('visible');
+      form.reset();
+      setActiveType(type);
+    });
+
+    setActiveType('publica');
+  </script>
 </body>
 </html>
