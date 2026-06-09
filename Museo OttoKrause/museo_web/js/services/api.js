@@ -1,6 +1,7 @@
 // api.js
 // Este servicio centraliza la URL base del backend PHP y expone helpers para las solicitudes HTTP.
-const API_BASE_URL = 'http://localhost/museo_api/controllers';
+// Usamos una ruta relativa desde `museo_web` hacia la carpeta `museo_api`.
+const API_BASE_URL = '../museo_api';
 
 /**
  * Envía datos a un endpoint PHP usando fetch con JSON.
@@ -20,7 +21,15 @@ export async function postJson(endpoint, body) {
   });
 
   if (!response.ok) {
-    throw new Error(`Error de red: ${response.status} ${response.statusText}`);
+    // Intentar leer mensaje JSON del servidor si existe
+    let serverMessage = '';
+    try {
+      const errJson = await response.json();
+      serverMessage = errJson.message ? ` - ${errJson.message}` : '';
+    } catch (e) {
+      // ignore
+    }
+    throw new Error(`Error de red: ${response.status} ${response.statusText}${serverMessage}`);
   }
 
   return response.json();

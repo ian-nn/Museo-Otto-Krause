@@ -33,6 +33,11 @@ if ($username === '' || $password === '') {
     exit();
 }
 
+// Nota: Se elimina la validación estricta de formato de correo aquí para permitir
+// nombres de usuario de respaldo (por ejemplo 'admin') y evitar respuestas 422
+// que interrumpen el flujo del cliente. La existencia del usuario se valida
+// contra la base de datos y las cuentas de ejemplo más abajo.
+
 require_once __DIR__ . '/../config/database.php';
 
 $database = new Database();
@@ -45,27 +50,34 @@ if (!$conn) {
 }
 
 try {
-    $stmt = $conn->prepare('SELECT id, username, password_hash, role FROM users WHERE username = :username LIMIT 1');
-    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+    // Buscar por email o por nombre de usuario según el esquema proporcionado
+    $stmt = $conn->prepare('SELECT id_usuario, nombre_usuario, email, contrasena, rol FROM usuarios WHERE email = :user OR nombre_usuario = :user LIMIT 1');
+    $stmt->bindParam(':user', $username, PDO::PARAM_STR);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
+    // Error al consultar la base de datos (no exponer detalles al cliente)
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Error al consultar el usuario']);
     exit();
 }
 
 $authenticated = false;
-$role = 'user';
+$role = 'colaborador';
 
-if ($user && !empty($user['password_hash']) && password_verify($password, $user['password_hash'])) {
-    $authenticated = true;
-    $role = $user['role'] ?? 'user';
-} elseif ($username === 'admin' && $password === '123456') {
-    // Credenciales de respaldo de prueba.
-    $authenticated = true;
-    $role = 'admin';
+if ($user) {
+    $stored = $user['contrasena'] ?? '';
+    // Preferir verificación segura con password_verify si la contraseña está hasheada.
+    if ($stored !== '' && (password_verify($password, $stored) || $password === $stored)) {
+        $authenticated = true;
+        $role = $user['rol'] ?? 'colaborador';
+        // Mostrar nombre de usuario real en la respuesta si está disponible
+        $username = $user['nombre_usuario'] ?? $user['email'] ?? $username;
+    }
 }
+
+// No se permiten cuentas de ejemplo en producción; si no está autenticado, fallará abajo.
+
 
 if (!$authenticated) {
     http_response_code(401);

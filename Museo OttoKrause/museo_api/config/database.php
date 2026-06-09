@@ -9,11 +9,16 @@ class Database {
     public function getConnection() {
         $this->conn = null;
         try {
-            $this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->db_name, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo 'Database connection established successfully.';
+            $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->db_name . ';charset=utf8mb4';
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_PERSISTENT => false,
+            ];
+            $this->conn = new PDO($dsn, $this->username, $this->password, $options);
         } catch(PDOException $e) {
-            echo 'Connection Error: ' . $e->getMessage();
+            // No imprimir mensajes directos: devolver null y registrar si fuera necesario
+            error_log('DB Connection Error: ' . $e->getMessage());
         }
         return $this->conn;
     }

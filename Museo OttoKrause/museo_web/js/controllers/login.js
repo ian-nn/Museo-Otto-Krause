@@ -24,27 +24,40 @@ form.addEventListener('submit', async (event) => {
 
   try {
     const payload = {
-      email_usuario: email,
+      username: email,
       password: password,
     };
 
-    const data = await postJson('auth.php', payload);
+    const data = await postJson('auth/login.php', payload);
 
-    if (data.success === true) {
-      localStorage.setItem('id_usuario', String(data.id_usuario || ''));
-      localStorage.setItem('nombre', data.nombre || '');
-      localStorage.setItem('rol', data.rol || '');
+    if (data && data.success === true) {
+      // Almacenar token y datos de usuario que devuelve el backend
+      if (data.token) localStorage.setItem('token', data.token);
+      if (data.user && data.user.username) localStorage.setItem('username', data.user.username);
+      if (data.user && data.user.role) localStorage.setItem('rol', data.user.role);
+
       successElement.textContent = 'Inicio de sesión correcto. Redirigiendo...';
       successElement.classList.add('visible');
-      window.location.href = 'panel.html';
+      // Pequeña espera para que el usuario vea el mensaje
+      setTimeout(() => window.location.href = 'panel.html', 700);
       return;
     }
 
-    errorElement.textContent = data.message || 'Credenciales incorrectas.';
+    errorElement.textContent = (data && data.message) ? data.message : 'Credenciales incorrectas.';
     errorElement.classList.add('visible');
   } catch (error) {
-    errorElement.textContent = 'No se pudo conectar con el servidor. Intente de nuevo.';
+    // Mostrar mensaje del servidor si está presente (postJson incluye el mensaje después de ' - ')
+    let displayMessage = 'No se pudo conectar con el servidor. Intente de nuevo.';
+    if (error && error.message) {
+      const m = error.message.match(/-\s*(.+)$/);
+      if (m && m[1]) {
+        displayMessage = m[1];
+      } else if (error.message.length < 200) {
+        displayMessage = error.message;
+      }
+    }
+
+    errorElement.textContent = displayMessage;
     errorElement.classList.add('visible');
-    console.error('Login error:', error);
   }
 });
