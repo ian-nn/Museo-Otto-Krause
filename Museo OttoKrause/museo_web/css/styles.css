@@ -695,6 +695,13 @@ html {
 /* a. SECCIÓN INFORMACIÓN GENERAL */
 .info-section {
   background: var(--surface-primary);
+  min-height: 100vh;          /* 🚀 Forzar a que mida el 100% de la altura de la pantalla */
+    width: 100%;                /* Ocupar todo el ancho disponible */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;    /* Centrar verticalmente el contenido interno */
+    padding: 60px var(--layout-gutter-desktop, 24px); /* Espaciado interno cómodo */
+    box-sizing: border-box;     /* Asegurar que los paddings no rompan el tamaño */
 }
 
 .text-content-wrapper {
@@ -935,4 +942,99 @@ html {
     flex-direction: column;
     gap: 32px;
   }
+}
+/* ==========================================================================\
+   DISEÑO EN PARALELO (SPLIT LAYOUT) PARA LA SECCIÓN INFO
+   ========================================================================== */
+
+/* Contenedor principal que divide la sección en dos (Izquierda y Derecha) */
+.info-split-layout {
+  display: flex;
+  flex-direction: row; /* Posiciona el texto a la izquierda y stats a la derecha */
+  align-items: center; /* Centra verticalmente ambos contenidos si difieren en altura */
+  gap: 48px;           /* Separación intermedia entre texto y estadísticas */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+/* Columna de Texto - Ocupa la mitad de la sección */
+.info-text-col {
+  flex: 1;
+}
+
+/* Columna de Estadísticas - Ocupa la otra mitad de la sección */
+.info-stats-col {
+  flex: 1;
+  width: 100%;
+}
+
+/* --- CONTENEDOR DE TARJETAS (MANTIENE LA ORIENTACIÓN INTERNA VERTICAL) --- */
+.stats-vertical-container {
+  display: flex;
+  flex-direction: column; 
+  gap: 24px;
+  width: 100%;
+  max-width: 480px; /* Evita que las tarjetas se estiren demasiado hacia los lados */
+  margin: 0 auto;
+}
+
+.stat-card {
+  background-color: rgba(26, 26, 26, 0.9); /* Gris superficial que resalta sobre el fondo */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(217, 0, 16, 0.15);
+}
+
+.stat-number-wrapper, .stat-counter-single {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--color-brand-accent); /* Mantiene los números en rojo institucional */
+}
+
+.stat-label {
+  color: #ffffff; /* Letras de descripción estrictamente en blanco */
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.stat-label.red-accent {
+  color: var(--color-brand-accent); /* Último texto en rojo solicitado */
+}
+
+/* ==========================================================================\
+   RESPONSIVE DESIGN / ADAPTACIÓN MÓVIL
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .info-split-layout {
+    flex-direction: column; /* En tablets y celulares vuelve a apilarse de arriba a abajo */
+    gap: 40px;
+  }
+  
+  .stat-number-wrapper, .stat-counter-single {
+    font-size: 2.8rem;
+  }
+  
+  .stat-label {
+    font-size: 0.95rem;
+  }
+}
+
+.info-text-col p {
+    color: var(--color-text-high, #ffffff); /* Color principal blanco */
+    font-size: 1.05rem;
+    line-height: 1.7; /* Le da una separación cómoda a los renglones para el texto largo */
+    margin-bottom: 20px; /* Espaciado entre párrafos */
 }
