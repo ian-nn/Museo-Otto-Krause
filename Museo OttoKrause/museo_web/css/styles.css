@@ -782,9 +782,11 @@ html {
   text-align: justify;
 }
 
-/* c. SECCIÓN INFORMATIVA DE RESERVAS (GRID SISTEMA) */
+/* c. SECCIÓN INFORMATIVA DE RESERVAS */
 .reservas-section {
-  background: var(--surface-secondary);
+  background:
+    linear-gradient(145deg, rgba(13, 13, 13, 0.98), rgba(0, 0, 0, 0.98)),
+    radial-gradient(circle at top, rgba(217, 0, 16, 0.08), transparent 30%);
   border-top: 1px solid rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   min-height: calc(100vh - var(--navbar-height));
@@ -793,75 +795,149 @@ html {
   box-sizing: border-box;
 }
 
-.grid-container {
+.reservas-card-panel {
   display: flex;
-  flex-wrap: wrap;
-  gap: 48px;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.grid-col-6 {
-  flex: 1 1 calc(50% - 24px);
-  min-width: 300px;
+.reservas-layout {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.info-box-reservas h2 {
-  font-size: var(--typography-sizes-h2);
+.reservas-heading {
+  margin-bottom: 28px;
+}
+
+.reservas-heading h2 {
+  font-size: clamp(1.9rem, 4vw, 2.4rem);
   color: var(--text-high);
-  margin: 0 0 24px 0;
+  margin: 0 0 16px 0;
+  line-height: 1.1;
 }
 
 .highlight-p {
-  font-size: 1.2rem;
+  font-size: 1.08rem;
   color: var(--text-high);
   line-height: 1.5;
-  margin-bottom: 20px;
+  margin: 0;
 }
 
-.info-box-reservas p {
-  color: var(--text-medium);
-  line-height: var(--typography-line-height-body);
+.reservas-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 0;
 }
 
-.card-reserva {
-  background: var(--surface-tertiary);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 32px;
-}
-
-.card-reserva h3 {
-  font-size: var(--typography-sizes-h3);
-  color: var(--text-high);
-  margin: 0 0 24px 0;
-}
-
-.schedule-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 32px 0;
-}
-
-.schedule-list li {
+.visit-info-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
   display: flex;
-  justify-content: space-between;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-direction: column;
+  gap: 10px;
 }
 
-.schedule-list li:last-child {
-  border-bottom: none;
+.public-card {
+  background: linear-gradient(145deg, rgba(217, 0, 16, 0.08), rgba(255, 255, 255, 0.03));
 }
 
-.schedule-day {
+.school-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(217, 0, 16, 0.06));
+}
+
+.institutional-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+}
+
+.visit-hours {
   color: var(--text-medium);
-  font-weight: 500;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
 }
 
-.schedule-time {
+.visit-hours-top {
+  margin-bottom: 12px;
   color: var(--text-high);
-  font-weight: 600;
+  font-size: 0.92rem;
 }
 
+.visit-info-label {
+  display: inline-block;
+  color: var(--brand-accent);
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.visit-info-card h3 {
+  color: var(--text-high);
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.visit-info-card p {
+  color: var(--text-medium);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.visit-details-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.visit-details-list li {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--text-high);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.action-wrapper {
+  margin-top: 8px;
+}
+
+.action-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.action-wrapper .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 340px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  padding: 13px 18px;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 1100px) {
+  .reservas-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
 /* d. FOOTER DE CONTACTO */
 .main-footer {
   background: #050505;
