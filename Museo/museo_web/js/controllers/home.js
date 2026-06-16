@@ -99,3 +99,47 @@ const statsObserver = new IntersectionObserver((entries, observer) => {
 });
 
 counters.forEach(counter => statsObserver.observe(counter));
+
+// --- FALLBACK PARA ANCLAS CON NAVBAR DINÁMICO ---
+(function () {
+  function isSamePageHash(anchor) {
+    return anchor.hash && (anchor.pathname === location.pathname || anchor.pathname === '') && anchor.hash.startsWith('#');
+  }
+
+  document.addEventListener('click', function (e) {
+    const a = e.target.closest('a');
+    if (!a || !isSamePageHash(a)) return;
+
+    const id = a.hash.slice(1);
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    const header = document.querySelector('.main-header');
+    const headerHeight = header ? header.offsetHeight : 0;
+
+    e.preventDefault();
+
+    const targetY = window.scrollY + target.getBoundingClientRect().top - headerHeight;
+
+    window.scrollTo({
+      top: Math.max(0, Math.floor(targetY)),
+      behavior: 'smooth'
+    });
+
+    history.pushState(null, '', '#' + id);
+  });
+
+  // Si la página carga con hash en la URL, ajustar posición inicial
+  window.addEventListener('load', function () {
+    if (location.hash) {
+      const id = location.hash.slice(1);
+      const target = document.getElementById(id);
+      const header = document.querySelector('.main-header');
+      if (target) {
+        const headerHeight = header ? header.offsetHeight : 0;
+        const targetY = window.scrollY + target.getBoundingClientRect().top - headerHeight;
+        window.scrollTo({ top: Math.max(0, Math.floor(targetY)), behavior: 'auto' });
+      }
+    }
+  });
+})();

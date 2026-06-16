@@ -40,8 +40,7 @@ if ($username === '' || $password === '') {
 
 require_once __DIR__ . '/../config/database.php';
 
-$database = new Database();
-$conn = $database->getConnection();
+$conn = Database::getInstance();
 
 if (!$conn) {
     http_response_code(500);
@@ -51,14 +50,13 @@ if (!$conn) {
 
 try {
     // Buscar por email o por nombre de usuario según el esquema proporcionado
-    $stmt = $conn->prepare('SELECT id_usuario, nombre_usuario, email, contrasena, rol FROM usuarios WHERE email = :user OR nombre_usuario = :user LIMIT 1');
-    $stmt->bindParam(':user', $username, PDO::PARAM_STR);
-    $stmt->execute();
+    $stmt = $conn->prepare('SELECT id_usuario, nombre_usuario, email, contrasena, rol FROM usuarios WHERE email = :email OR nombre_usuario = :username LIMIT 1');
+    $stmt->execute([':email' => $username, ':username' => $username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     // Error al consultar la base de datos (no exponer detalles al cliente)
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Error al consultar el usuario']);
+    echo json_encode(['success' => false, 'message' => 'Error al consultar el usuario: ' . $e->getMessage()]);
     exit();
 }
 

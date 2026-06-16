@@ -755,14 +755,19 @@ html {
 .section-header-block h2 {
   font-size: var(--typography-sizes-h2);
   color: var(--text-high);
-  margin: 0 0 40px 0;
+  margin: 0 0 24px 0;
 }
 
 /* a. SECCIÓN INFORMACIÓN GENERAL */
 .info-section {
-  background: var(--surface-primary);
+  background: linear-gradient(160deg, #080606 0%, rgba(17, 0, 0, 0.95) 25%, rgba(45, 0, 8, 0.95) 60%, #120308 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
   min-height: calc(100vh - var(--navbar-height));
-  width: 100%;
+  width: 100vw;
+  max-width: none;
+  margin: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -784,82 +789,171 @@ html {
 
 /* c. SECCIÓN INFORMATIVA DE RESERVAS (GRID SISTEMA) */
 .reservas-section {
-  background: var(--surface-secondary);
+  background: linear-gradient(160deg, #080606 0%, rgba(17, 0, 0, 0.95) 25%, rgba(45, 0, 8, 0.95) 60%, #120308 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
   border-top: 1px solid rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   min-height: calc(100vh - var(--navbar-height));
+  width: 100vw;
+  max-width: none;
+  margin: 0;
   display: flex;
   align-items: center;
   box-sizing: border-box;
 }
 
-.grid-container {
+.reservas-card-panel {
   display: flex;
-  flex-wrap: wrap;
-  gap: 48px;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.grid-col-6 {
-  flex: 1 1 calc(50% - 24px);
-  min-width: 300px;
+/* Offset para anclas: evita que el navbar fijo tape secciones */
+:root {
+  --current-navbar-height: var(--navbar-height);
 }
 
-.info-box-reservas h2 {
-  font-size: var(--typography-sizes-h2);
-  color: var(--text-high);
-  margin: 0 0 24px 0;
+@media (max-width: 600px) {
+  :root {
+    --current-navbar-height: var(--navbar-height-mobile);
+  }
+}
+
+/* Aplica el margen de scroll a secciones principales y a cualquier elemento con id */
+.section-container,
+.hero-carousel,
+.main-footer,
+[id] {
+  scroll-margin-top: var(--current-navbar-height);
+}
+
+.reservas-heading {
+  margin-bottom: 28px;
+}
+
+.reservas-layout {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+.reservas-heading h2 {
+  font-size: clamp(1.9rem, 4vw, 2.4rem);
+   color: var(--text-high);
+  margin: 0 0 16px 0;
+  line-height: 1.1;
 }
 
 .highlight-p {
-  font-size: 1.2rem;
+  font-size: 1.08rem;
   color: var(--text-high);
   line-height: 1.5;
-  margin-bottom: 20px;
+  margin: 0;
 }
 
-.info-box-reservas p {
-  color: var(--text-medium);
-  line-height: var(--typography-line-height-body);
+.reservas-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 0;
 }
 
-.card-reserva {
-  background: var(--surface-tertiary);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 32px;
-}
-
-.card-reserva h3 {
-  font-size: var(--typography-sizes-h3);
-  color: var(--text-high);
-  margin: 0 0 24px 0;
-}
-
-.schedule-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 32px 0;
-}
-
-.schedule-list li {
+.visit-info-card {
+  background-color: rgba(26, 26, 26, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
   display: flex;
-  justify-content: space-between;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-direction: column;
+  gap: 10px;
 }
 
-.schedule-list li:last-child {
-  border-bottom: none;
-}
-
-.schedule-day {
+.visit-hours {
   color: var(--text-medium);
-  font-weight: 500;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
 }
 
-.schedule-time {
+.visit-hours-top {
+  margin-bottom: 12px;
   color: var(--text-high);
+  font-size: 0.92rem;
+}
+
+.visit-info-label {
+  display: inline-block;
+  color: var(--brand-accent);
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.visit-info-card h3 {
+  color: var(--text-high);
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.visit-info-card p {
+  color: var(--text-medium);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.visit-details-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.visit-details-list li {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--text-high);
+  font-size: 0.82rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.action-wrapper {
+  margin-top: 8px;
+}
+
+.action-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.action-wrapper .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 340px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  padding: 13px 18px;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 1100px) {
+  .reservas-cards-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* d. FOOTER DE CONTACTO */
@@ -1061,55 +1155,44 @@ html {
    ========================================================================== */
 
 /* Contenedor principal que divide la sección en dos (Izquierda y Derecha) */
-.info-split-layout {
+.info-stack-layout {
   display: flex;
-  flex-direction: row;
-  /* Posiciona el texto a la izquierda y stats a la derecha */
-  align-items: center;
-  /* Centra verticalmente ambos contenidos si difieren en altura */
-  gap: 48px;
-  /* Separación intermedia entre texto y estadísticas */
-  max-width: 1200px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 20px 0;
 }
 
-/* Columna de Texto - Ocupa la mitad de la sección */
+.section-header-block,
+.info-text-col,
+.info-stats-card {
+  width: 100%;
+}
+
 .info-text-col {
-  flex: 1;
-}
-
-/* Columna de Estadísticas - Ocupa la otra mitad de la sección */
-.info-stats-col {
-  flex: 1;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* --- CONTENEDOR DE TARJETAS (MANTIENE LA ORIENTACIÓN INTERNA VERTICAL) --- */
 .stats-vertical-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: block;
   width: 100%;
-  max-width: 480px;
-  /* Evita que las tarjetas se estiren demasiado hacia los lados */
-  margin: 0 auto;
 }
 
 .stat-card {
   background-color: rgba(26, 26, 26, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 24px 32px;
+  border-radius: 16px;
+  padding: 20px 24px;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
+  gap: 18px;
 }
 
 .stat-card:hover {
@@ -1122,29 +1205,23 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px 0;
+  justify-content: center;
+  padding: 12px 0;
   width: 100%;
+  min-width: 140px;
 }
 
 /* Separador horizontal difuminado entre estadísticas */
 .stat-divider {
-  border: none;
-  width: 80%;
-  height: 3px;
-  background: radial-gradient(ellipse at center,
-    rgba(120, 120, 120, 0.55) 0%,
-    rgba(120, 120, 120, 0.1) 60%,
-    transparent 100%);
-  margin: 0;
-  flex-shrink: 0;
+  display: none;
 }
 
 .stat-number-wrapper,
 .stat-counter-single {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 800;
   line-height: 1;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--color-brand-accent);
   /* Mantiene los números en rojo institucional */
 }
@@ -1152,9 +1229,9 @@ html {
 .stat-label {
   color: #ffffff;
   /* Letras de descripción estrictamente en blanco */
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   margin: 0;
   text-transform: uppercase;
 }
@@ -1168,10 +1245,19 @@ html {
    RESPONSIVE DESIGN / ADAPTACIÓN MÓVIL
    ========================================================================== */
 @media (max-width: 1024px) {
-  .info-split-layout {
+  .info-stack-layout {
+    gap: 30px;
+  }
+
+  .stat-card {
     flex-direction: column;
-    /* En tablets y celulares vuelve a apilarse de arriba a abajo */
-    gap: 40px;
+    text-align: center;
+    gap: 18px;
+  }
+
+  .stat-item {
+    min-width: auto;
+    width: 100%;
   }
 
   .stat-number-wrapper,

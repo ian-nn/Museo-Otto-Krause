@@ -33,7 +33,7 @@ class AuthController {
         if (empty($email) || empty($contrasena)) {
             http_response_code(400);
             echo json_encode([
-                "sucess" => false,
+                "success" => false,
                 "message" => "Error de credenciales: Campos incompletos"
             ]);
             exit;
@@ -51,7 +51,7 @@ class AuthController {
             if (!$usuario || !password_verify($contrasena, $usuario['contrasena'])) {
                 http_response_code(404);
                 echo json_encode([
-                    "sucess" => false,
+                    "success" => false,
                     "message" => "Error de credenciales: Usuario o contraseña incorrectos"
                 ]);
                 exit;
@@ -69,7 +69,7 @@ class AuthController {
             // Respuesta JSON Final
             http_response_code(200);
             echo json_encode([
-                "sucess" => true, // true o false
+                "success" => true, // true o false
                 "message" => "Login exitoso",
                 "token" => $token, // Incluido en formato Bearer listo para el header
                 "id_usuario" => (int)$usuario['id_usuario'],
@@ -81,7 +81,7 @@ class AuthController {
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
-                "sucess" => false,
+                "success" => false,
                 "message" => "Error interno en el servidor: " . $e->getMessage()
             ]);
         }

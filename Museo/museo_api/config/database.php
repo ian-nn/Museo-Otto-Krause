@@ -6,10 +6,10 @@ class Database {
     private function __construct() {
         // Configuración para XAMPP (modificable)
         $host = 'localhost';
-        $db   = 'museo_bd'; //YO LA NOMBRE ASI PORQUE QUISE PERO SE PUEDE CAMBIAR EL NOMBRE
+        $db   = 'museo_db'; //YO LA NOMBRE ASI PORQUE QUISE PERO SE PUEDE CAMBIAR EL NOMBRE
         $user = 'root';      
         $pass = '';          
-        $charset = 'utf8mb4';
+        $charset = 'utf8';
 
         // DSN para MySQL
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -25,7 +25,7 @@ class Database {
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode([
-                "sucess" => false, 
+                "success" => false,
                 "message" => "Error de conexión a la base de datos: " . $e->getMessage()
             ]);
             exit;
