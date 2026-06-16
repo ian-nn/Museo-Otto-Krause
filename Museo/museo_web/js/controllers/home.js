@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnNext = document.querySelector('.button-right');
   const btnPrev = document.querySelector('.button-left');
   let currentSlide = 0;
-  let slideInterval = setInterval(nextSlide, 6000); //ajustar el intervalo a el tiempo de lectura
+  let slideInterval = setInterval(nextSlide, 4000); //ajustar el intervalo a el tiempo de lectura
 
   function goToSlide(n) {
     slides[currentSlide].classList.remove('active');
@@ -56,3 +56,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// --- ANIMACIÓN DE CONTADORES NUMÉRICOS (STATS) ---
+const counters = document.querySelectorAll('.stat-counter');
+const animationDuration = 1000; // Duración total de la animación en milisegundos (2 segundos)
+
+function startCountAnimation(counterElement) {
+  const target = +counterElement.getAttribute('data-target');
+  const startTime = performance.now();
+
+  function updateNumber(currentTime) {
+    const elapsedTime = currentTime - startTime;
+    const progress = Math.min(elapsedTime / animationDuration, 1);
+
+    // Función de aceleración/desaceleración suave (Ease-Out)
+    const easeOutProgress = 1 - Math.pow(1 - progress, 3);
+
+    const currentValue = Math.floor(easeOutProgress * target);
+    counterElement.innerText = currentValue;
+
+    if (progress < 1) {
+      requestAnimationFrame(updateNumber);
+    } else {
+      counterElement.innerText = target; // Asegura que termine exactamente en el valor objetivo
+    }
+  }
+
+  requestAnimationFrame(updateNumber);
+}
+
+// Intersection Observer para disparar la animación solo cuando es visible en pantalla
+const statsObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const counterElement = entry.target;
+      startCountAnimation(counterElement);
+      observer.unobserve(counterElement); // Deja de observar una vez ejecutado
+    }
+  });
+}, {
+  threshold: 0.2 // Se dispara cuando el 20% del elemento entra en la pantalla
+});
+
+counters.forEach(counter => statsObserver.observe(counter));
