@@ -1281,17 +1281,17 @@ html {
 }
 
 :root {
-      --red: #c8001a;
+      --red: #d90010;
       --black: #0d0d0d;
       --white: #ffffff;
-      --gray-100: #f5f5f5;
-      --gray-200: #e5e5e5;
-      --gray-300: #d1d5db;
-      --gray-700: #4b5563;
-      --gray-800: #1f2937;
+      --gray-100: #111111;
+      --gray-200: rgba(255, 255, 255, 0.08);
+      --gray-300: rgba(255, 255, 255, 0.16);
+      --gray-700: #b7b7b7;
+      --gray-800: #f5f5f5;
       --font-display: "Barlow Condensed", sans-serif;
       --font-body: "Barlow", sans-serif;
-      --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      --shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
       --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.14);
       --nav-h: 64px;
     }
@@ -1303,8 +1303,9 @@ html {
     }
 
     body {
-      background: var(--white);
-      color: var(--black);
+      background:
+        linear-gradient(180deg, #080606 0%, #140106 45%, #0a0a0a 100%);
+      color: var(--white);
       font-family: var(--font-body);
       line-height: 1.5;
     }
@@ -1319,12 +1320,13 @@ html {
     .reservas-main {
       padding-top: var(--nav-h);
       min-height: 100vh;
-      background: var(--gray-100);
+      background:
+        linear-gradient(180deg, #080606 0%, #140106 45%, #0a0a0a 100%);
     }
 
     .reservas-page {
       min-height: 100vh;
-      background: var(--gray-100);
+      background: transparent;
       padding: 48px 0;
     }
 
@@ -1339,7 +1341,7 @@ html {
       font-size: 36px;
       font-weight: 900;
       text-transform: uppercase;
-      color: var(--black);
+      color: var(--white);
       margin-bottom: 6px;
       letter-spacing: 0;
     }
@@ -1354,12 +1356,12 @@ html {
     .tab-row {
       display: flex;
       gap: 4px;
-      background: white;
+      background: rgba(255, 255, 255, 0.04);
       border-radius: 10px;
       padding: 4px;
       margin-bottom: 28px;
       width: 100%;
-      box-shadow: var(--shadow);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
       border: none;
       overflow: visible;
     }
@@ -1397,10 +1399,11 @@ html {
     }
 
     .form-card {
-      background: white;
+      background: rgba(17, 17, 17, 0.92);
       border-radius: 16px;
       padding: 32px;
       box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .form-row {
@@ -1441,9 +1444,9 @@ html {
       padding: 11px 14px;
       font-size: 14px;
       font-family: inherit;
-      transition: border-color 0.18s;
+      transition: border-color 0.18s, background 0.18s;
       outline: none;
-      background: white;
+      background: rgba(255, 255, 255, 0.03);
       color: var(--gray-800);
     }
 
@@ -1451,13 +1454,13 @@ html {
     .form-select:focus,
     .form-textarea:focus {
       border-color: var(--red);
-      background: white;
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .form-input.err,
     .form-select.err {
       border-color: var(--red);
-      background: rgba(200, 0, 26, 0.03);
+      background: rgba(217, 0, 16, 0.06);
     }
 
     .err-msg {
@@ -1489,12 +1492,12 @@ html {
       cursor: pointer;
       transition: background 0.18s, box-shadow 0.18s;
       margin-top: 8px;
-      box-shadow: 0 6px 18px rgba(200, 0, 26, 0.18);
+      box-shadow: 0 6px 18px rgba(217, 0, 16, 0.18);
     }
 
     .btn-submit:hover {
-      background: #a80016;
-      box-shadow: 0 8px 22px rgba(200, 0, 26, 0.26);
+      background: #ff1a2b;
+      box-shadow: 0 8px 22px rgba(217, 0, 16, 0.26);
     }
 
     .btn-submit:focus-visible,
@@ -1522,33 +1525,34 @@ html {
     }
 
     .btn-secondary {
-      background: white;
-      color: var(--gray-800);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--white);
       border: 1px solid var(--gray-200);
     }
 
     .btn-secondary:hover {
-      background: var(--gray-100);
+      background: rgba(255, 255, 255, 0.08);
       border-color: var(--gray-300);
     }
 
     .btn-reject {
-      background: white;
+      background: rgba(255, 255, 255, 0.04);
       color: var(--red);
       border: 1px solid var(--red);
     }
 
     .btn-reject:hover {
-      background: rgba(200, 0, 26, 0.06);
+      background: rgba(217, 0, 16, 0.08);
     }
 
     .reserva-success {
-      background: white;
+      background: rgba(17, 17, 17, 0.92);
       border-radius: 16px;
       padding: 48px;
       text-align: center;
       box-shadow: var(--shadow);
       display: none;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .reserva-success.visible {
@@ -1572,7 +1576,7 @@ html {
       font-weight: 900;
       text-transform: uppercase;
       margin-bottom: 10px;
-      color: var(--black);
+      color: var(--white);
     }
 
     .reserva-success p {
