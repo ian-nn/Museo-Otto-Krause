@@ -31,6 +31,12 @@ const availability = {
     const successTitle = document.getElementById('success-title');
     const successText = document.getElementById('success-text');
     const resetBtn = document.getElementById('reset-btn');
+    const addPersonalExtraBtn = document.getElementById('add-personal-extra');
+    const addEscolarExtraBtn = document.getElementById('add-escolar-extra');
+    const addInstitucionalExtraBtn = document.getElementById('add-institucional-extra');
+    const personalExtraList = document.getElementById('personal-extra-list');
+    const escolarExtraList = document.getElementById('escolar-extra-list');
+    const institucionalExtraList = document.getElementById('institucional-extra-list');
 
     let currentTab = 'personal';
 
@@ -48,6 +54,7 @@ const availability = {
       updateDateOptions();
       horarioSelect.innerHTML = '<option value="">— Primero elegí una fecha —</option>';
       form.reset();
+      clearExtraRows();
       clearErrors();
     }
 
@@ -72,6 +79,62 @@ const availability = {
       return input ? input.value.trim() : '';
     }
 
+    function clearExtraRows() {
+      if (personalExtraList) personalExtraList.innerHTML = '';
+      if (escolarExtraList) escolarExtraList.innerHTML = '';
+      if (institucionalExtraList) institucionalExtraList.innerHTML = '';
+    }
+
+    function addExtraRow(tabType) {
+      const listMap = {
+        personal: personalExtraList,
+        escolar: escolarExtraList,
+        institucional: institucionalExtraList
+      };
+      const list = listMap[tabType];
+      if (!list) return;
+
+      const index = list.children.length;
+      const row = document.createElement('div');
+      row.className = 'extra-row';
+      row.style.marginTop = '10px';
+      row.style.padding = '10px';
+      row.style.border = '1px dashed var(--gray-200)';
+      row.style.borderRadius = '8px';
+      row.innerHTML = `
+        <div class="form-row" style="margin-bottom:8px;">
+          <div class="form-field">
+            <label class="form-label">Nombre</label>
+            <input class="form-input" type="text" name="${tabType}_extra_nombre_${index}" placeholder="Ej: Ana">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Apellido</label>
+            <input class="form-input" type="text" name="${tabType}_extra_apellido_${index}" placeholder="Ej: Pérez">
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:0;">
+          <div class="form-field">
+            <label class="form-label">DNI</label>
+            <input class="form-input" type="text" name="${tabType}_extra_dni_${index}" placeholder="Ej: 30111222">
+          </div>
+          <div class="form-field">
+            <button type="button" class="btn-sm btn-reject remove-extra-btn">Eliminar</button>
+          </div>
+        </div>
+      `;
+      list.appendChild(row);
+    }
+
+    function countExtraRows(tabType) {
+      const listMap = {
+        personal: personalExtraList,
+        escolar: escolarExtraList,
+        institucional: institucionalExtraList
+      };
+      const list = listMap[tabType];
+      return list ? list.querySelectorAll('.extra-row').length : 0;
+    }
+
     function setError(field, message) {
       const errorEl = form.querySelector(`[data-error="${field}"]`);
       const inputEl = form.querySelector(`[name="${field}"]`);
@@ -82,10 +145,22 @@ const availability = {
     function validate() {
       clearErrors();
       let valid = true;
+
       const rules = {
         personal: ['nombre', 'apellido', 'dni', 'email', 'tel'],
         escolar: ['docente_nombre', 'docente_apellido', 'institucion', 'cue', 'alumnos', 'docentes', 'email_institucional', 'tel_institucional'],
         institucional: ['referente_nombre', 'referente_apellido', 'organizacion', 'personas', 'email_institucional2', 'tel_institucional2']
+      };
+
+      const emailFields = {
+        personal: ['email'],
+        escolar: ['email_institucional'],
+        institucional: ['email_institucional2']
+      };
+
+      const numberedFields = {
+        escolar: ['alumnos', 'docentes'],
+        institucional: ['personas']
       };
 
       const fields = rules[currentTab];
@@ -97,15 +172,18 @@ const availability = {
         }
       });
 
+      (emailFields[currentTab] || []).forEach(field => {
+        const value = getFieldValue(field);
+        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          setError(field, 'Ingresá un email válido.');
+          valid = false;
+        }
+      });
+
       if (currentTab === 'personal') {
         const dni = getFieldValue('dni');
         if (dni && !/^\d{7,8}$/.test(dni)) {
           setError('dni', 'Ingresá un DNI válido.');
-          valid = false;
-        }
-        const email = getFieldValue('email');
-        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          setError('email', 'Ingresá un email válido.');
           valid = false;
         }
       }
@@ -117,6 +195,14 @@ const availability = {
           valid = false;
         }
       }
+
+      (numberedFields[currentTab] || []).forEach(field => {
+        const value = getFieldValue(field);
+        if (value && !/^\d+$/.test(value)) {
+          setError(field, 'Ingresá un número válido.');
+          valid = false;
+        }
+      });
 
       if (!fechaSelect.value) {
         setError('fecha', 'Seleccioná una fecha.');
@@ -153,10 +239,10 @@ const availability = {
       if (!validate()) return;
 
       const peopleCount = currentTab === 'institucional'
-        ? Number(getFieldValue('personas') || 0)
+        ? Number(getFieldValue('personas') || 0) + countExtraRows('institucional')
         : currentTab === 'escolar'
-          ? Number(getFieldValue('alumnos') || 0) + Number(getFieldValue('docentes') || 0)
-          : 1;
+          ? Number(getFieldValue('alumnos') || 0) + Number(getFieldValue('docentes') || 0) + countExtraRows('escolar')
+          : 1 + countExtraRows('personal');
 
       const pending = currentTab === 'institucional' && peopleCount > 30;
       successPanel.classList.add('visible');
@@ -170,6 +256,16 @@ const availability = {
         ? 'Tu solicitud fue recibida y quedó pendiente de revisión por el administrador.'
         : 'Tu reserva fue aprobada. Recibirás una confirmación por email.';
       form.style.display = 'none';
+    });
+
+    addPersonalExtraBtn?.addEventListener('click', () => addExtraRow('personal'));
+    addEscolarExtraBtn?.addEventListener('click', () => addExtraRow('escolar'));
+    addInstitucionalExtraBtn?.addEventListener('click', () => addExtraRow('institucional'));
+
+    form.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove-extra-btn')) {
+        e.target.closest('.extra-row')?.remove();
+      }
     });
 
     resetBtn.addEventListener('click', () => {
