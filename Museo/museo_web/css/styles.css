@@ -760,8 +760,9 @@ html {
 
 /* a. SECCIÓN INFORMACIÓN GENERAL */
 .info-section {
-  background: linear-gradient(160deg, #080606 0%, rgba(17, 0, 0, 0.95) 25%, rgba(45, 0, 8, 0.95) 60%, #120308 100%);
-  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #080606 0%, rgba(17, 0, 0, 0.96) 18%, rgba(45, 0, 8, 0.95) 58%, #120308 100%);
   background-size: cover;
   background-repeat: no-repeat;
   min-height: calc(100vh - var(--navbar-height));
@@ -789,8 +790,9 @@ html {
 
 /* c. SECCIÓN INFORMATIVA DE RESERVAS (GRID SISTEMA) */
 .reservas-section {
-  background: linear-gradient(160deg, #080606 0%, rgba(17, 0, 0, 0.95) 25%, rgba(45, 0, 8, 0.95) 60%, #120308 100%);
-  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #080606 0%, rgba(17, 0, 0, 0.96) 18%, rgba(45, 0, 8, 0.95) 58%, #120308 100%);
   background-size: cover;
   background-repeat: no-repeat;
   border-top: 1px solid rgba(255, 255, 255, 0.02);
@@ -862,7 +864,7 @@ html {
 }
 
 .visit-info-card {
-  background-color: rgba(26, 26, 26, 0.9);
+  background-color: #232323;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 18px;
@@ -870,6 +872,13 @@ html {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.visit-info-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(217, 0, 16, 0.25);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(217, 0, 16, 0.08);
 }
 
 .visit-hours {
@@ -958,7 +967,8 @@ html {
 
 /* d. FOOTER DE CONTACTO */
 .main-footer {
-  background: #050505;
+  position: relative;
+  background: linear-gradient(180deg, rgba(18, 3, 8, 0.98) 0%, #050505 100%);
   border-top: 1px solid rgba(217, 0, 16, 0.1);
   padding: 64px 24px 24px 24px;
 }
@@ -980,6 +990,14 @@ html {
 .main-footer h4 {
   color: var(--text-high);
   margin: 0 0 16px 0;
+  font-family: var(--font-family-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.main-footer h3 {
+  font-size: 1.9rem;
+  line-height: 1.1;
 }
 
 .main-footer p {
@@ -1181,7 +1199,7 @@ html {
 }
 
 .stat-card {
-  background-color: rgba(26, 26, 26, 0.9);
+  background-color: #232323;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 20px 24px;
@@ -1193,6 +1211,7 @@ html {
   justify-content: space-between;
   width: 100%;
   gap: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
 }
 
 .stat-card:hover {
@@ -1321,7 +1340,7 @@ html {
       padding-top: var(--nav-h);
       min-height: 100vh;
       background:
-        linear-gradient(180deg, #080606 0%, #140106 45%, #0a0a0a 100%);
+        linear-gradient(180deg, #080606 0%, rgba(17, 0, 0, 0.96) 18%, rgba(45, 0, 8, 0.95) 58%, #120308 100%);
     }
 
     .reservas-page {
@@ -1356,7 +1375,7 @@ html {
     .tab-row {
       display: flex;
       gap: 4px;
-      background: rgba(255, 255, 255, 0.04);
+      background: #232323;
       border-radius: 10px;
       padding: 4px;
       margin-bottom: 28px;
@@ -1399,7 +1418,7 @@ html {
     }
 
     .form-card {
-      background: rgba(17, 17, 17, 0.92);
+      background: #232323;
       border-radius: 16px;
       padding: 32px;
       box-shadow: var(--shadow);
@@ -1546,7 +1565,7 @@ html {
     }
 
     .reserva-success {
-      background: rgba(17, 17, 17, 0.92);
+      background: #232323;
       border-radius: 16px;
       padding: 48px;
       text-align: center;
