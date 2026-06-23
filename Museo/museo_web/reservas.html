@@ -44,19 +44,19 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="form-label">Nombre <span>*</span></label>
-                <input class="form-input" name="nombre" data-field="nombre" type="text" placeholder="Ej: Juan">
+                <input class="form-input" name="nombre" data-field="nombre" type="text" data-text-only="true" placeholder="Ej: Juan">
                 <div class="err-msg" data-error="nombre"></div>
               </div>
               <div class="form-field">
                 <label class="form-label">Apellido <span>*</span></label>
-                <input class="form-input" name="apellido" data-field="apellido" type="text" placeholder="Ej: García">
+                <input class="form-input" name="apellido" data-field="apellido" type="text" data-text-only="true" placeholder="Ej: García">
                 <div class="err-msg" data-error="apellido"></div>
               </div>
             </div>
             <div class="form-row">
               <div class="form-field">
                 <label class="form-label">DNI <span>*</span></label>
-                <input class="form-input" name="dni" data-field="dni" type="text" placeholder="Ej: 32456789">
+                <input class="form-input" name="dni" data-field="dni" type="text" data-numeric-only="true" maxlength="8" inputmode="numeric" placeholder="Ej: 32456789">
                 <div class="err-msg" data-error="dni"></div>
               </div>
               <div class="form-field">
@@ -68,10 +68,15 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="form-label">Teléfono <span>*</span></label>
-                <input class="form-input" name="tel" data-field="tel" type="text" placeholder="Ej: +54 11 4567-8901">
+                <input class="form-input" name="tel" data-field="tel" type="text" data-phone-only="true" inputmode="tel" placeholder="Ej: +54 11 4567-8901">
                 <div class="err-msg" data-error="tel"></div>
               </div>
               <div class="form-field"></div>
+            </div>
+            <div class="form-field full" style="margin-top:6px;">
+              <label class="form-label">Acompañantes (opcional)</label>
+              <div id="personal-extra-list"></div>
+              <button type="button" class="btn-sm btn-secondary" id="add-personal-extra" style="margin-top:8px;">+ Agregar acompañante</button>
             </div>
           </div>
 
@@ -79,12 +84,12 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="form-label">Nombre docente <span>*</span></label>
-                <input class="form-input" name="docente_nombre" data-field="docente_nombre" type="text" placeholder="Ej: María">
+                <input class="form-input" name="docente_nombre" data-field="docente_nombre" type="text" data-text-only="true" placeholder="Ej: María">
                 <div class="err-msg" data-error="docente_nombre"></div>
               </div>
               <div class="form-field">
                 <label class="form-label">Apellido docente <span>*</span></label>
-                <input class="form-input" name="docente_apellido" data-field="docente_apellido" type="text" placeholder="Ej: González">
+                <input class="form-input" name="docente_apellido" data-field="docente_apellido" type="text" data-text-only="true" placeholder="Ej: González">
                 <div class="err-msg" data-error="docente_apellido"></div>
               </div>
             </div>
@@ -103,12 +108,12 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="form-label">Cantidad de alumnos <span>*</span></label>
-                <input class="form-input" name="alumnos" data-field="alumnos" type="number" min="1" placeholder="Ej: 28">
+                <input class="form-input" name="alumnos" data-field="alumnos" type="text" data-numeric-only="true" maxlength="3" inputmode="numeric" placeholder="Ej: 28">
                 <div class="err-msg" data-error="alumnos"></div>
               </div>
               <div class="form-field">
                 <label class="form-label">Docentes acompañantes <span>*</span></label>
-                <input class="form-input" name="docentes" data-field="docentes" type="number" min="1" placeholder="Ej: 2">
+                <input class="form-input" name="docentes" data-field="docentes" type="text" data-numeric-only="true" maxlength="3" inputmode="numeric" placeholder="Ej: 2">
                 <div class="err-msg" data-error="docentes"></div>
               </div>
             </div>
@@ -120,9 +125,14 @@
               </div>
               <div class="form-field">
                 <label class="form-label">Teléfono <span>*</span></label>
-                <input class="form-input" name="tel_institucional" data-field="tel_institucional" type="text" placeholder="Ej: +54 11 4567-8901">
+                <input class="form-input" name="tel_institucional" data-field="tel_institucional" type="text" data-phone-only="true" inputmode="tel" placeholder="Ej: +54 11 4567-8901">
                 <div class="err-msg" data-error="tel_institucional"></div>
               </div>
+            </div>
+            <div class="form-field full" style="margin-top:6px;">
+              <label class="form-label">Docentes acompañantes (opcional)</label>
+              <div id="escolar-extra-list"></div>
+              <button type="button" class="btn-sm btn-secondary" id="add-escolar-extra" style="margin-top:8px;">+ Agregar docente</button>
             </div>
           </div>
 
@@ -130,12 +140,12 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="form-label">Nombre referente <span>*</span></label>
-                <input class="form-input" name="referente_nombre" data-field="referente_nombre" type="text" placeholder="Ej: Laura">
+                <input class="form-input" name="referente_nombre" data-field="referente_nombre" type="text" data-text-only="true" placeholder="Ej: Laura">
                 <div class="err-msg" data-error="referente_nombre"></div>
               </div>
               <div class="form-field">
                 <label class="form-label">Apellido <span>*</span></label>
-                <input class="form-input" name="referente_apellido" data-field="referente_apellido" type="text" placeholder="Ej: Pérez">
+                <input class="form-input" name="referente_apellido" data-field="referente_apellido" type="text" data-text-only="true" placeholder="Ej: Pérez">
                 <div class="err-msg" data-error="referente_apellido"></div>
               </div>
             </div>
@@ -147,7 +157,7 @@
               </div>
               <div class="form-field">
                 <label class="form-label">Cantidad de personas <span>*</span></label>
-                <input class="form-input" name="personas" data-field="personas" type="number" min="1" placeholder="Ej: 20">
+                <input class="form-input" name="personas" data-field="personas" type="text" data-numeric-only="true" maxlength="3" inputmode="numeric" placeholder="Ej: 20">
                 <div class="err-msg" data-error="personas"></div>
               </div>
             </div>
@@ -159,9 +169,14 @@
               </div>
               <div class="form-field">
                 <label class="form-label">Teléfono <span>*</span></label>
-                <input class="form-input" name="tel_institucional2" data-field="tel_institucional2" type="text" placeholder="Ej: +54 11 4567-8901">
+                <input class="form-input" name="tel_institucional2" data-field="tel_institucional2" type="text" data-phone-only="true" inputmode="tel" placeholder="Ej: +54 11 4567-8901">
                 <div class="err-msg" data-error="tel_institucional2"></div>
               </div>
+            </div>
+            <div class="form-field full" style="margin-top:6px;">
+              <label class="form-label">Personas que asisten (opcional)</label>
+              <div id="institucional-extra-list"></div>
+              <button type="button" class="btn-sm btn-secondary" id="add-institucional-extra" style="margin-top:8px;">+ Agregar persona</button>
             </div>
           </div>
 

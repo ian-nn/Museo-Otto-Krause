@@ -31,8 +31,20 @@ const availability = {
     const successTitle = document.getElementById('success-title');
     const successText = document.getElementById('success-text');
     const resetBtn = document.getElementById('reset-btn');
+    const addPersonalExtraBtn = document.getElementById('add-personal-extra');
+    const addEscolarExtraBtn = document.getElementById('add-escolar-extra');
+    const addInstitucionalExtraBtn = document.getElementById('add-institucional-extra');
+    const personalExtraList = document.getElementById('personal-extra-list');
+    const escolarExtraList = document.getElementById('escolar-extra-list');
+    const institucionalExtraList = document.getElementById('institucional-extra-list');
 
     let currentTab = 'personal';
+
+    const namePattern = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'\-\s]+$/;
+    const phonePattern = /^[0-9+()\-\s]{7,20}$/;
+    const dniPattern = /^\d{8}$/;
+    const cuePattern = /^\d{9}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     function formatDate(dateStr) {
       const [y, m, d] = dateStr.split('-');
@@ -48,6 +60,7 @@ const availability = {
       updateDateOptions();
       horarioSelect.innerHTML = '<option value="">— Primero elegí una fecha —</option>';
       form.reset();
+      clearExtraRows();
       clearErrors();
     }
 
@@ -72,6 +85,63 @@ const availability = {
       return input ? input.value.trim() : '';
     }
 
+    function clearExtraRows() {
+      if (personalExtraList) personalExtraList.innerHTML = '';
+      if (escolarExtraList) escolarExtraList.innerHTML = '';
+      if (institucionalExtraList) institucionalExtraList.innerHTML = '';
+    }
+
+    function addExtraRow(tabType) {
+      const listMap = {
+        personal: personalExtraList,
+        escolar: escolarExtraList,
+        institucional: institucionalExtraList
+      };
+      const list = listMap[tabType];
+      if (!list) return;
+
+      const index = list.children.length;
+      const row = document.createElement('div');
+      row.className = 'extra-row';
+      row.style.marginTop = '10px';
+      row.style.padding = '10px';
+      row.style.border = '1px dashed var(--gray-200)';
+      row.style.borderRadius = '8px';
+      row.innerHTML = `
+        <div class="form-row" style="margin-bottom:8px;">
+          <div class="form-field">
+            <label class="form-label">Nombre</label>
+            <input class="form-input" type="text" name="${tabType}_extra_nombre_${index}" data-text-only="true" placeholder="Ej: Ana">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Apellido</label>
+            <input class="form-input" type="text" name="${tabType}_extra_apellido_${index}" data-text-only="true" placeholder="Ej: Pérez">
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:0;">
+          <div class="form-field">
+            <label class="form-label">DNI</label>
+            <input class="form-input" type="text" name="${tabType}_extra_dni_${index}" data-numeric-only="true" data-maxlength="8" inputmode="numeric" placeholder="Ej: 30111222">
+          </div>
+          <div class="form-field">
+            <button type="button" class="btn-sm btn-reject remove-extra-btn">Eliminar</button>
+          </div>
+        </div>
+      `;
+      list.appendChild(row);
+      row.querySelectorAll('input').forEach(applyInputRestrictions);
+    }
+
+    function countExtraRows(tabType) {
+      const listMap = {
+        personal: personalExtraList,
+        escolar: escolarExtraList,
+        institucional: institucionalExtraList
+      };
+      const list = listMap[tabType];
+      return list ? list.querySelectorAll('.extra-row').length : 0;
+    }
+
     function setError(field, message) {
       const errorEl = form.querySelector(`[data-error="${field}"]`);
       const inputEl = form.querySelector(`[name="${field}"]`);
@@ -79,43 +149,157 @@ const availability = {
       if (inputEl) inputEl.classList.add('err');
     }
 
+    function validateTextField(field, message, pattern) {
+      const value = getFieldValue(field);
+      if (!value) {
+        setError(field, 'Este campo es obligatorio.');
+        return false;
+      }
+      if (pattern && !pattern.test(value)) {
+        setError(field, message);
+        return false;
+      }
+      return true;
+    }
+
+    function validateNumberField(field, message, pattern = /^\d+$/) {
+      const value = getFieldValue(field);
+      if (!value) {
+        setError(field, 'Este campo es obligatorio.');
+        return false;
+      }
+      if (!pattern.test(value)) {
+        setError(field, message);
+        return false;
+      }
+      return true;
+    }
+
+    function validateEmailField(field) {
+      const value = getFieldValue(field);
+      if (!value) {
+        setError(field, 'Este campo es obligatorio.');
+        return false;
+      }
+      if (!emailPattern.test(value)) {
+        setError(field, 'Ingresá un email válido.');
+        return false;
+      }
+      return true;
+    }
+
+    function cleanPhoneInput(input) {
+      if (!input) return;
+      input.value = input.value.replace(/[^0-9+()\-\s]/g, '');
+      input.value = input.value.slice(0, 20);
+    }
+
+    function cleanNumericInput(input) {
+      if (!input) return;
+      input.value = input.value.replace(/\D/g, '');
+      const maxLength = Number(input.dataset.maxlength || input.maxLength || 0);
+      if (maxLength > 0) input.value = input.value.slice(0, maxLength);
+    }
+
+    function cleanTextInput(input) {
+      if (!input) return;
+      input.value = input.value.replace(/\d/g, '');
+    }
+
+    function applyInputRestrictions(input) {
+      if (!input) return;
+      if (input.dataset.textOnly === 'true') {
+        input.addEventListener('input', () => cleanTextInput(input));
+      }
+      if (input.dataset.numericOnly === 'true') {
+        input.addEventListener('input', () => cleanNumericInput(input));
+      }
+      if (input.dataset.phoneOnly === 'true') {
+        input.addEventListener('input', () => cleanPhoneInput(input));
+      }
+      if (input.dataset.maxlength) {
+        input.addEventListener('input', () => {
+          input.value = input.value.slice(0, Number(input.dataset.maxlength));
+        });
+      }
+    }
+
+    function validatePhoneField(field) {
+      const value = getFieldValue(field);
+      if (!value) {
+        setError(field, 'Este campo es obligatorio.');
+        return false;
+      }
+      if (!phonePattern.test(value)) {
+        setError(field, 'Ingresá un teléfono válido.');
+        return false;
+      }
+      return true;
+    }
+
+    function validateExtraRows() {
+      let valid = true;
+      const extraGroups = [
+        { tab: 'personal', list: personalExtraList },
+        { tab: 'escolar', list: escolarExtraList },
+        { tab: 'institucional', list: institucionalExtraList }
+      ];
+
+      extraGroups.forEach(({ list }) => {
+        if (!list) return;
+        list.querySelectorAll('.extra-row').forEach((row, index) => {
+          const inputs = row.querySelectorAll('input');
+          const nombre = inputs[0]?.value.trim();
+          const apellido = inputs[1]?.value.trim();
+          const dni = inputs[2]?.value.trim();
+
+          if (nombre && !namePattern.test(nombre)) {
+            inputs[0].classList.add('err');
+            valid = false;
+          }
+          if (apellido && !namePattern.test(apellido)) {
+            inputs[1].classList.add('err');
+            valid = false;
+          }
+          if (dni && !dniPattern.test(dni)) {
+            inputs[2].classList.add('err');
+            valid = false;
+          }
+        });
+      });
+      return valid;
+    }
+
     function validate() {
       clearErrors();
       let valid = true;
-      const rules = {
-        personal: ['nombre', 'apellido', 'dni', 'email', 'tel'],
-        escolar: ['docente_nombre', 'docente_apellido', 'institucion', 'cue', 'alumnos', 'docentes', 'email_institucional', 'tel_institucional'],
-        institucional: ['referente_nombre', 'referente_apellido', 'organizacion', 'personas', 'email_institucional2', 'tel_institucional2']
-      };
-
-      const fields = rules[currentTab];
-      fields.forEach(field => {
-        const value = getFieldValue(field);
-        if (!value) {
-          setError(field, 'Este campo es obligatorio.');
-          valid = false;
-        }
-      });
 
       if (currentTab === 'personal') {
-        const dni = getFieldValue('dni');
-        if (dni && !/^\d{7,8}$/.test(dni)) {
-          setError('dni', 'Ingresá un DNI válido.');
-          valid = false;
-        }
-        const email = getFieldValue('email');
-        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          setError('email', 'Ingresá un email válido.');
-          valid = false;
-        }
+        valid = validateTextField('nombre', 'Solo se permiten letras y espacios.', namePattern) && valid;
+        valid = validateTextField('apellido', 'Solo se permiten letras y espacios.', namePattern) && valid;
+        valid = validateNumberField('dni', 'Ingresá un DNI válido (8 dígitos).', dniPattern) && valid;
+        valid = validateEmailField('email') && valid;
+        valid = validatePhoneField('tel') && valid;
       }
 
       if (currentTab === 'escolar') {
-        const cue = getFieldValue('cue');
-        if (cue && !/^\d{9}$/.test(cue)) {
-          setError('cue', 'El CUE debe tener 9 dígitos.');
-          valid = false;
-        }
+        valid = validateTextField('docente_nombre', 'Solo se permiten letras y espacios.', namePattern) && valid;
+        valid = validateTextField('docente_apellido', 'Solo se permiten letras y espacios.', namePattern) && valid;
+        valid = validateTextField('institucion', 'Ingresá una institución válida.', /^.+$/) && valid;
+        valid = validateNumberField('cue', 'El CUE debe tener 9 dígitos.', cuePattern) && valid;
+        valid = validateNumberField('alumnos', 'Ingresá una cantidad válida.', /^\d+$/) && valid;
+        valid = validateNumberField('docentes', 'Ingresá una cantidad válida.', /^\d+$/) && valid;
+        valid = validateEmailField('email_institucional') && valid;
+        valid = validatePhoneField('tel_institucional') && valid;
+      }
+
+      if (currentTab === 'institucional') {
+        valid = validateTextField('referente_nombre', 'Solo se permiten letras y espacios.', namePattern) && valid;
+        valid = validateTextField('referente_apellido', 'Solo se permiten letras y espacios.', namePattern) && valid;
+        valid = validateTextField('organizacion', 'Ingresá una organización válida.', /^.+$/) && valid;
+        valid = validateNumberField('personas', 'Ingresá una cantidad válida.', /^\d+$/) && valid;
+        valid = validateEmailField('email_institucional2') && valid;
+        valid = validatePhoneField('tel_institucional2') && valid;
       }
 
       if (!fechaSelect.value) {
@@ -127,8 +311,11 @@ const availability = {
         valid = false;
       }
 
+      valid = validateExtraRows() && valid;
       return valid;
     }
+
+    document.querySelectorAll('input[data-text-only="true"], input[data-numeric-only="true"], input[data-phone-only="true"], input[data-maxlength]').forEach(applyInputRestrictions);
 
     fechaSelect.addEventListener('change', () => {
       const selected = availability[currentTab].find(item => item.date === fechaSelect.value);
@@ -153,10 +340,10 @@ const availability = {
       if (!validate()) return;
 
       const peopleCount = currentTab === 'institucional'
-        ? Number(getFieldValue('personas') || 0)
+        ? Number(getFieldValue('personas') || 0) + countExtraRows('institucional')
         : currentTab === 'escolar'
-          ? Number(getFieldValue('alumnos') || 0) + Number(getFieldValue('docentes') || 0)
-          : 1;
+          ? Number(getFieldValue('alumnos') || 0) + Number(getFieldValue('docentes') || 0) + countExtraRows('escolar')
+          : 1 + countExtraRows('personal');
 
       const pending = currentTab === 'institucional' && peopleCount > 30;
       successPanel.classList.add('visible');
@@ -170,11 +357,29 @@ const availability = {
         ? 'Tu solicitud fue recibida y quedó pendiente de revisión por el administrador.'
         : 'Tu reserva fue aprobada. Recibirás una confirmación por email.';
       form.style.display = 'none';
+      const tabRow = document.querySelector('.tab-row');
+      if (tabRow) tabRow.style.display = 'none';
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      tabButtons.forEach(btn => btn.style.display = 'none');
+    });
+
+    addPersonalExtraBtn?.addEventListener('click', () => addExtraRow('personal'));
+    addEscolarExtraBtn?.addEventListener('click', () => addExtraRow('escolar'));
+    addInstitucionalExtraBtn?.addEventListener('click', () => addExtraRow('institucional'));
+
+    form.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove-extra-btn')) {
+        e.target.closest('.extra-row')?.remove();
+      }
     });
 
     resetBtn.addEventListener('click', () => {
       successPanel.classList.remove('visible');
       form.style.display = 'block';
+      const tabRow = document.querySelector('.tab-row');
+      if (tabRow) tabRow.style.display = '';
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      tabButtons.forEach(btn => btn.style.display = '');
       setTab(currentTab);
     });
 
