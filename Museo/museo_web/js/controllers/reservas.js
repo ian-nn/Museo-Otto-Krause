@@ -335,33 +335,87 @@ const availability = {
       btn.addEventListener('click', () => setTab(btn.dataset.tab));
     });
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!validate()) return;
 
-      const peopleCount = currentTab === 'institucional'
-        ? Number(getFieldValue('personas') || 0) + countExtraRows('institucional')
-        : currentTab === 'escolar'
-          ? Number(getFieldValue('alumnos') || 0) + Number(getFieldValue('docentes') || 0) + countExtraRows('escolar')
-          : 1 + countExtraRows('personal');
+    // 1. Identificamos qué tipo de reserva está activa (esto debe coincidir con la pestaña seleccionada)
+    const tipoReserva = document.getElementById('tipo_reserva').value; // 'publica' o 'institucional'
 
-      const pending = currentTab === 'institucional' && peopleCount > 30;
-      successPanel.classList.add('visible');
-      successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      successIcon.innerHTML = pending
-        ? '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
-        : '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-      successIcon.style.background = pending ? 'rgba(245, 158, 11, 0.14)' : 'rgba(34, 197, 94, 0.12)';
-      successTitle.textContent = pending ? '¡Reserva enviada!' : '¡Reserva confirmada!';
-      successText.innerHTML = pending
-        ? 'Tu solicitud fue recibida y quedó pendiente de revisión por el administrador.'
-        : 'Tu reserva fue aprobada. Recibirás una confirmación por email.';
-      form.style.display = 'none';
-      const tabRow = document.querySelector('.tab-row');
-      if (tabRow) tabRow.style.display = 'none';
-      const tabButtons = document.querySelectorAll('.tab-btn');
-      tabButtons.forEach(btn => btn.style.display = 'none');
-    });
+    // 2. Armamos el contrato JSON exacto recolectando TODOS los campos del HTML
+    // Usamos el operador ternario o null para no enviar datos basura al backend
+    const payload = {
+        tipo_reserva: tipoReserva,
+        fecha: document.getElementById('fecha').value,
+        horario: document.getElementById('horario').value,
+        email: document.getElementById('email').value,
+        telefono: document.getElementById('telefono').value, // Vital para ambos casos
+        
+        // --- Campos si es Reserva Pública ---
+        nombre: tipoReserva === 'publica' ? document.getElementById('nombre')?.value : null,
+        apellido: tipoReserva === 'publica' ? document.getElementById('apellido')?.value : null,
+        cantidad_personas: tipoReserva === 'publica' ? document.getElementById('cantidad_personas')?.value : null,
+
+        // --- Campos si es Reserva Institucional ---
+        nombre_docente: tipoReserva === 'institucional' ? document.getElementById('nombre_docente')?.value : null,
+        apellido_docente: tipoReserva === 'institucional' ? document.getElementById('apellido_docente')?.value : null,
+        institucion: tipoReserva === 'institucional' ? document.getElementById('institucion')?.value : null,
+        grado: tipoReserva === 'institucional' ? document.getElementById('grado')?.value : null,
+        cantidad_alumnos: tipoReserva === 'institucional' ? document.getElementById('cantidad_alumnos')?.value : null,
+        es_escuela: tipoReserva === 'institucional' ? document.getElementById('es_escuela')?.checked : false,
+        cue: (tipoReserva === 'institucional' && document.getElementById('es_escuela')?.checked) ? document.getElementById('cue')?.value : null
+    };
+
+    // 3. Mostramos estado de carga (Feedback visual al usuario)
+    const btnSubmit = form.querySelector('button[type="submit"]');
+    const textoOriginal = btnSubmit.textContent;
+    btnSubmit.textContent = 'Enviando...';
+    btnSubmit.disabled = true;
+
+    try {
+        // 4. Enviamos la petición a PHP
+        const response = await fetch('../museo_api/controllers/ReservaController.php', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        // 5. Manejamos las 3 respuestas acordadas en el Sprint
+        if (data.estado === 'aprobada') {
+            mostrarPanelExito('¡Reserva confirmada!', 'Tu reserva fue aprobada. Recibirás un email en los próximos minutos.', true);
+        } else if (data.estado === 'en_revision') {
+            mostrarPanelExito('¡Reserva enviada!', 'Tu solicitud (más de 30 personas) quedó pendiente de revisión por el administrador.', false);
+        } else if (data.estado === 'sin_cupos') {
+            alert('Lo sentimos, el cupo de visitas para ese horario ya está completo.');
+        } else {
+            alert('Error al procesar la reserva: ' + (data.mensaje || 'Problema desconocido'));
+        }
+
+    } catch (error) {
+        console.error('Error de red:', error);
+        alert('No se pudo conectar con el servidor del colegio. Revisa tu conexión.');
+    } finally {
+        // 6. Restauramos el botón
+        btnSubmit.textContent = textoOriginal;
+        btnSubmit.disabled = false;
+    }
+});
+
+function mostrarPanelExito(titulo, mensaje, esVerde) {
+    form.style.display = 'none';
+    document.querySelector('.tab-row').style.display = 'none';
+    
+    const successPanel = document.getElementById('success-panel');
+    document.getElementById('success-title').textContent = titulo;
+    document.getElementById('success-text').textContent = mensaje;
+    
+    // Cambiamos colores según si es revisión (amarillo) o aprobada (verde)
+    successPanel.style.backgroundColor = esVerde ? 'rgba(34, 197, 94, 0.12)' : 'rgba(245, 158, 11, 0.14)';
+    successPanel.classList.add('visible');
+}
 
     addPersonalExtraBtn?.addEventListener('click', () => addExtraRow('personal'));
     addEscolarExtraBtn?.addEventListener('click', () => addExtraRow('escolar'));

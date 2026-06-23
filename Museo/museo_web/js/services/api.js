@@ -1,7 +1,7 @@
 // api.js
 // Este servicio centraliza la URL base del backend PHP y expone helpers para las solicitudes HTTP.
 // Usamos una ruta relativa desde `museo_web` hacia la carpeta `museo_api`.
-const API_BASE_URL = 'http://localhost:8090/feature/inicio/Museo/museo_api';
+const API_BASE_URL = '../museo_api';
 
 /**
  * Envía datos a un endpoint PHP usando fetch con JSON.
