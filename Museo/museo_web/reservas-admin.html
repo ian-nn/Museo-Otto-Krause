@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reservas admin - Museo Otto Krause</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-logo">
+          <a href="dashboard.html" class="sidebar-logo">
+            <img src="public/unnamed.png" alt="Logo Museo Otto Krause" />
+            <span class="sidebar-logo-text">MUSE<span class="sidebar-logo-accent">OK</span></span>
+          </a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+        <nav class="sidebar-menu">
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Gestión</span>
+            <li class="sidebar-menu-item">
+              <a href="dashboard.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📊</span>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="reservas-admin.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Reservas</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="inventario.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📦</span>
+                <span>Inventario</span>
+              </a>
+            </li>
+          </div>
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Configuración</span>
+            <li class="sidebar-menu-item">
+              <a href="fechas-disponibles.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Fechas disponibles</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="historial.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📋</span>
+                <span>Historial</span>
+              </a>
+            </li>
+          </div>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-user-info">
+            <span class="sidebar-user-name" id="username-display">Admin</span>
+            <span>Administrador</span>
+          </div>
+          <a href="#" class="sidebar-logout-btn" id="logout-btn">Cerrar sesión</a>
+        </div>
+      </aside>
+      <div class="admin-content">
+        <header class="dashboard-header">
+          <h1 class="dashboard-title">Reservas</h1>
+          <p class="dashboard-subtitle">Gestiona las solicitudes de reserva del museo</p>
+        </header>
+
+        <section class="dashboard-section">
+          <div class="rv-bar">
+            <input type="search" id="reservation-search" class="rv-search" placeholder="Buscar por nombre, email o institución..." />
+            <select id="reservation-status-filter" class="rv-select">
+              <option value="">Todos los estados</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="aprobada">Aprobada</option>
+              <option value="rechazada">Rechazada</option>
+            </select>
+            <button class="btn btn-primary btn-sm" id="refresh-reservations">Actualizar</button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <div class="admin-table-title">Solicitudes de reserva recientes</div>
+            <table class="table" id="reservations-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Institución</th>
+                  <th>Personas</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>23/06/2026</td>
+                  <td>María González</td>
+                  <td>maria.gonzalez@email.com</td>
+                  <td>Escuela Nº 15</td>
+                  <td>28</td>
+                  <td><span class="badge badge-yellow">Pendiente</span></td>
+                  <td style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-approve btn-sm">Aprobar</button>
+                    <button class="btn btn-reject btn-sm">Rechazar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>22/06/2026</td>
+                  <td>Juan García</td>
+                  <td>juan.garcia@email.com</td>
+                  <td>Particular</td>
+                  <td>5</td>
+                  <td><span class="badge badge-green">Aprobada</span></td>
+                  <td style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-secondary btn-sm" disabled>Revisado</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>21/06/2026</td>
+                  <td>Laura Pérez</td>
+                  <td>laura.perez@email.com</td>
+                  <td>TecnoXYZ S.A.</td>
+                  <td>15</td>
+                  <td><span class="badge badge-red">Rechazada</span></td>
+                  <td style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-secondary btn-sm" disabled>Revisado</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="js/controllers/reservas-admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Historial de visitas - Museo Otto Krause</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+      <!-- SIDEBAR -->
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-logo">
+          <a href="dashboard.html" class="sidebar-logo">
+            <img src="public/unnamed.png" alt="Logo Museo Otto Krause" />
+            <span class="sidebar-logo-text">MUSE<span class="sidebar-logo-accent">OK</span></span>
+          </a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Gestión</span>
+            <li class="sidebar-menu-item">
+              <a href="dashboard.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📊</span>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="reservas-admin.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Reservas</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="inventario.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📦</span>
+                <span>Inventario</span>
+              </a>
+            </li>
+          </div>
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Configuración</span>
+            <li class="sidebar-menu-item">
+              <a href="fechas-disponibles.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Fechas disponibles</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="historial.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📋</span>
+                <span>Historial</span>
+              </a>
+            </li>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-user-info">
+            <span class="sidebar-user-name" id="username-display">Admin</span>
+            <span>Administrador</span>
+          </div>
+          <a href="#" class="sidebar-logout-btn" id="logout-btn">Cerrar sesión</a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+      </aside>
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <div class="admin-content">
+        <header class="dashboard-header">
+          <h1 class="dashboard-title">📋 Historial de visitas</h1>
+          <p class="dashboard-subtitle">Registro completo de todas las visitas realizadas</p>
+        </header>
+
+        <!-- FILTROS -->
+        <section class="dashboard-section">
+          <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+            <input type="date" class="form-input" id="date-from" placeholder="Desde..." style="flex: 1; min-width: 150px;">
+            <input type="date" class="form-input" id="date-to" placeholder="Hasta..." style="flex: 1; min-width: 150px;">
+            <select class="form-select" id="visit-type-filter" style="max-width: 200px;">
+              <option value="">Todos los tipos</option>
+              <option value="personal">Personal</option>
+              <option value="escolar">Escolar</option>
+              <option value="institucional">Institucional</option>
+            </select>
+            <button class="btn btn-secondary" id="export-btn">📥 Exportar CSV</button>
+          </div>
+        </section>
+
+        <!-- ESTADÍSTICAS RÁPIDAS -->
+        <section class="dashboard-section">
+          <h2 class="section-title">Resumen</h2>
+          <div class="data-grid">
+            <div class="data-card">
+              <div class="card-title">👥 Total de visitantes</div>
+              <div class="card-content">
+                <strong style="color: var(--color-brand-accent); font-size: 1.5rem;">1,247</strong>
+              </div>
+            </div>
+
+            <div class="data-card">
+              <div class="card-title">🎓 Visitas escolares</div>
+              <div class="card-content">
+                <strong style="color: #1976d2; font-size: 1.5rem;">892</strong>
+              </div>
+            </div>
+
+            <div class="data-card">
+              <div class="card-title">👤 Visitas personales</div>
+              <div class="card-content">
+                <strong style="color: #2e7d32; font-size: 1.5rem;">245</strong>
+              </div>
+            </div>
+
+            <div class="data-card">
+              <div class="card-title">🏢 Visitas institucionales</div>
+              <div class="card-content">
+                <strong style="color: #f57c00; font-size: 1.5rem;">110</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TABLA DE HISTORIAL -->
+        <section class="dashboard-section">
+          <h2 class="section-title">Registro de visitas</h2>
+          <p class="section-subtitle" id="visit-count">Mostrando 0 registros</p>
+          
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Tipo de visita</th>
+                  <th>Visitantes</th>
+                  <th>Contacto</th>
+                  <th>Institución</th>
+                  <th>Duración</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body">
+                <tr>
+                  <td>23/06/2026</td>
+                  <td><span class="badge badge-success">Escolar</span></td>
+                  <td>28 alumnos + 2 docentes</td>
+                  <td>María González</td>
+                  <td>Escuela Nº 15</td>
+                  <td>50 min</td>
+                  <td><span class="badge badge-success">Completada</span></td>
+                  <td><button class="btn btn-secondary btn-sm">👁️ Ver detalles</button></td>
+                </tr>
+                <tr>
+                  <td>22/06/2026</td>
+                  <td><span class="badge badge-info">Personal</span></td>
+                  <td>5 personas</td>
+                  <td>Juan García</td>
+                  <td>—</td>
+                  <td>50 min</td>
+                  <td><span class="badge badge-success">Completada</span></td>
+                  <td><button class="btn btn-secondary btn-sm">👁️ Ver detalles</button></td>
+                </tr>
+                <tr>
+                  <td>21/06/2026</td>
+                  <td><span class="badge badge-warning">Institucional</span></td>
+                  <td>15 personas</td>
+                  <td>Laura Pérez</td>
+                  <td>Empresa TecnoXYZ S.A.</td>
+                  <td>60 min</td>
+                  <td><span class="badge badge-success">Completada</span></td>
+                  <td><button class="btn btn-secondary btn-sm">👁️ Ver detalles</button></td>
+                </tr>
+                <tr>
+                  <td>20/06/2026</td>
+                  <td><span class="badge badge-success">Escolar</span></td>
+                  <td>32 alumnos + 3 docentes</td>
+                  <td>Carlos López</td>
+                  <td>Instituto Técnico Sur</td>
+                  <td>50 min</td>
+                  <td><span class="badge badge-success">Completada</span></td>
+                  <td><button class="btn btn-secondary btn-sm">👁️ Ver detalles</button></td>
+                </tr>
+                <tr>
+                  <td>19/06/2026</td>
+                  <td><span class="badge badge-info">Personal</span></td>
+                  <td>8 personas</td>
+                  <td>Familia Martínez</td>
+                  <td>—</td>
+                  <td>50 min</td>
+                  <td><span class="badge badge-success">Completada</span></td>
+                  <td><button class="btn btn-secondary btn-sm">👁️ Ver detalles</button></td>
+                </tr>
+                <tr>
+                  <td>18/06/2026</td>
+                  <td><span class="badge badge-success">Escolar</span></td>
+                  <td>25 alumnos + 2 docentes</td>
+                  <td>Andrea Rodríguez</td>
+                  <td>Escuela Primaria 42</td>
+                  <td>50 min</td>
+                  <td><span class="badge badge-success">Completada</span></td>
+                  <td><button class="btn btn-secondary btn-sm">👁️ Ver detalles</button></td>
+                </tr>
+                <tr>
+                  <td>17/06/2026</td>
+                  <td><span class="badge badge-warning">Institucional</span></td>
+                  <td>20 personas</td>
+                  <td>Roberto Díaz</td>
+                  <td>Asociación de Ingenieros</td>
+                  <td>60 min</td>
+                  <td><span class="badge badge-success">Completada</span></td>
+                  <td><button class="btn btn-secondary btn-sm">👁️ Ver detalles</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- MODAL PARA VER DETALLES -->
+        <div id="visit-details-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
+          <div style="background: var(--color-surface-secondary); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <h2 style="margin-top: 0;">Detalles de la visita</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+              <div>
+                <p style="color: var(--color-text-medium); font-size: 0.85rem; margin: 0 0 4px 0;">Tipo de visita</p>
+                <p style="margin: 0; font-weight: 600;">Escolar</p>
+              </div>
+              <div>
+                <p style="color: var(--color-text-medium); font-size: 0.85rem; margin: 0 0 4px 0;">Fecha</p>
+                <p style="margin: 0; font-weight: 600;">23/06/2026 - 09:00 hs</p>
+              </div>
+              <div>
+                <p style="color: var(--color-text-medium); font-size: 0.85rem; margin: 0 0 4px 0;">Cantidad de visitantes</p>
+                <p style="margin: 0; font-weight: 600;">30 personas</p>
+              </div>
+              <div>
+                <p style="color: var(--color-text-medium); font-size: 0.85rem; margin: 0 0 4px 0;">Duración</p>
+                <p style="margin: 0; font-weight: 600;">50 minutos</p>
+              </div>
+              <div>
+                <p style="color: var(--color-text-medium); font-size: 0.85rem; margin: 0 0 4px 0;">Docente responsable</p>
+                <p style="margin: 0; font-weight: 600;">María González</p>
+              </div>
+              <div>
+                <p style="color: var(--color-text-medium); font-size: 0.85rem; margin: 0 0 4px 0;">Institución</p>
+                <p style="margin: 0; font-weight: 600;">Escuela Nº 15</p>
+              </div>
+            </div>
+
+            <div style="padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08);">
+              <p style="color: var(--color-text-medium); font-size: 0.85rem; margin: 0 0 8px 0;">Notas / Comentarios</p>
+              <p style="margin: 0; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; color: var(--color-text-medium);">Visita exitosa. Grupo muy interesado en maquetas de motores históricos. Se extendió 10 minutos extra.</p>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+              <button class="btn btn-secondary" id="close-modal-btn">Cerrar</button>
+              <button class="btn btn-primary">📥 Descargar certificado</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="js/controllers/historial.js"></script>
+  </body>
+</html>

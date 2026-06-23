@@ -69,6 +69,7 @@ html,
 body {
   margin: 0;
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -84,7 +85,7 @@ h3 {
 
 .login-page {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   background: linear-gradient(160deg, var(--color-surface-tertiary) 0%, var(--color-brand-main) 50%, var(--color-surface-secondary) 100%);
   display: flex;
   align-items: center;
@@ -1074,9 +1075,12 @@ html {
 
 @media (max-width: 1024px) {
   .patrimonio-grid,
-  .patrimonio-cards,
-  .patrimonio-carousel {
+  .patrimonio-cards {
     grid-template-columns: 1fr;
+  }
+
+  .patrimonio-carousel {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .patrimonio-cards {
@@ -1089,6 +1093,10 @@ html {
 }
 
 @media (max-width: 768px) {
+  .patrimonio-carousel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .patrimonio-statsbar,
   .patrimonio-timeline {
     grid-template-columns: 1fr;
@@ -1116,6 +1124,12 @@ html {
   }
 }
 
+@media (max-width: 600px) {
+  .patrimonio-carousel {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 
 /* c. SECCIÓN INFORMATIVA DE RESERVAS (GRID SISTEMA) */
@@ -1128,7 +1142,7 @@ html {
   border-top: 1px solid rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   min-height: calc(100vh - var(--navbar-height));
-  width: 100vw;
+  width: 100%;
   max-width: none;
   margin: 0;
   display: flex;

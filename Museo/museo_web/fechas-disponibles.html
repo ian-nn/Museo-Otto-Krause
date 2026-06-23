@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fechas disponibles - Museo Otto Krause</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+      <!-- SIDEBAR -->
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-logo">
+          <a href="dashboard.html" class="sidebar-logo">
+            <img src="public/unnamed.png" alt="Logo Museo Otto Krause" />
+            <span class="sidebar-logo-text">MUSE<span class="sidebar-logo-accent">OK</span></span>
+          </a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Gestión</span>
+            <li class="sidebar-menu-item">
+              <a href="dashboard.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📊</span>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="reservas-admin.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Reservas</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="inventario.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📦</span>
+                <span>Inventario</span>
+              </a>
+            </li>
+          </div>
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Configuración</span>
+            <li class="sidebar-menu-item">
+              <a href="fechas-disponibles.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Fechas disponibles</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="historial.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📋</span>
+                <span>Historial</span>
+              </a>
+            </li>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-user-info">
+            <span class="sidebar-user-name" id="username-display">Admin</span>
+            <span>Administrador</span>
+          </div>
+          <a href="#" class="sidebar-logout-btn" id="logout-btn">Cerrar sesión</a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+      </aside>
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <div class="admin-content">
+        <header class="dashboard-header">
+          <h1 class="dashboard-title">📅 Fechas y horarios disponibles</h1>
+          <p class="dashboard-subtitle">Administra los horarios de visita y los días disponibles</p>
+        </header>
+
+        <!-- OPCIONES DE VISITA -->
+        <section class="dashboard-section">
+          <h2 class="section-title">Modalidades de visita</h2>
+          <p class="section-subtitle">Configura los horarios y disponibilidad para cada tipo de visita</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <!-- VISITA PERSONAL -->
+            <div class="data-card" style="border-left: 4px solid var(--color-brand-accent);">
+              <div class="card-title">👤 Visita Personal</div>
+              <div class="card-content">
+                <p>Visitantes individuales o grupos reducidos</p>
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+                  <p style="font-size: 0.85rem; margin: 0 0 8px 0;"><strong>Cupo máximo:</strong> 30 personas</p>
+                  <p style="font-size: 0.85rem; margin: 0 0 8px 0;"><strong>Duración:</strong> 50 minutos</p>
+                  <p style="font-size: 0.85rem; margin: 0;"><strong>Disponible:</strong> Martes y jueves</p>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" data-type="personal">Editar horarios</button>
+              </div>
+            </div>
+
+            <!-- VISITA ESCOLAR -->
+            <div class="data-card" style="border-left: 4px solid #1976d2;">
+              <div class="card-title">🎓 Visita Escolar</div>
+              <div class="card-content">
+                <p>Grupos de estudiantes con docentes</p>
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+                  <p style="font-size: 0.85rem; margin: 0 0 8px 0;"><strong>Cupo máximo:</strong> 32 alumnos</p>
+                  <p style="font-size: 0.85rem; margin: 0 0 8px 0;"><strong>Duración:</strong> 50 minutos</p>
+                  <p style="font-size: 0.85rem; margin: 0;"><strong>Disponible:</strong> Lunes a viernes</p>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" data-type="escolar">Editar horarios</button>
+              </div>
+            </div>
+
+            <!-- VISITA INSTITUCIONAL -->
+            <div class="data-card" style="border-left: 4px solid #2e7d32;">
+              <div class="card-title">🏢 Visita Institucional</div>
+              <div class="card-content">
+                <p>Empresas, organismos y entidades privadas</p>
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+                  <p style="font-size: 0.85rem; margin: 0 0 8px 0;"><strong>Cupo máximo:</strong> 30 personas</p>
+                  <p style="font-size: 0.85rem; margin: 0 0 8px 0;"><strong>Duración:</strong> 50-60 minutos</p>
+                  <p style="font-size: 0.85rem; margin: 0;"><strong>Disponible:</strong> Lunes a viernes</p>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" data-type="institucional">Editar horarios</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FECHAS BLOQUEADAS -->
+        <section class="dashboard-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+              <h2 class="section-title">Fechas bloqueadas</h2>
+              <p class="section-subtitle">Días no disponibles para visitas</p>
+            </div>
+            <button class="btn btn-primary" id="add-blocked-date-btn">+ Agregar fecha bloqueada</button>
+          </div>
+          
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Motivo</th>
+                  <th>Tipo</th>
+                  <th>Creado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="blocked-dates-table-body">
+                <tr>
+                  <td>15/07/2026</td>
+                  <td>Mantenimiento de instalaciones</td>
+                  <td><span class="badge badge-info">Mantenimiento</span></td>
+                  <td>20/06/2026</td>
+                  <td style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>22/07/2026</td>
+                  <td>Feriado nacional</td>
+                  <td><span class="badge badge-warning">Feriado</span></td>
+                  <td>01/01/2026</td>
+                  <td style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>25/07/2026</td>
+                  <td>Preparación de nueva exposición</td>
+                  <td><span class="badge badge-info">Evento especial</span></td>
+                  <td>10/06/2026</td>
+                  <td style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- HORARIOS SEMANALES -->
+        <section class="dashboard-section">
+          <h2 class="section-title">Horarios semanales</h2>
+          <p class="section-subtitle">Configuración de horarios regulares</p>
+          
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Día</th>
+                  <th>Horario matutino</th>
+                  <th>Horario vespertino</th>
+                  <th>Disponible</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Lunes</strong></td>
+                  <td>09:00 - 12:00</td>
+                  <td>14:00 - 17:00</td>
+                  <td><span class="badge badge-success">Abierto</span></td>
+                  <td><button class="btn btn-secondary btn-sm">✏️ Editar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Martes</strong></td>
+                  <td>09:00 - 12:00</td>
+                  <td>14:00 - 17:00</td>
+                  <td><span class="badge badge-success">Abierto</span></td>
+                  <td><button class="btn btn-secondary btn-sm">✏️ Editar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Miércoles</strong></td>
+                  <td>Cerrado</td>
+                  <td>Cerrado</td>
+                  <td><span class="badge badge-error">Cerrado</span></td>
+                  <td><button class="btn btn-secondary btn-sm">✏️ Editar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Jueves</strong></td>
+                  <td>09:00 - 12:00</td>
+                  <td>14:00 - 17:00</td>
+                  <td><span class="badge badge-success">Abierto</span></td>
+                  <td><button class="btn btn-secondary btn-sm">✏️ Editar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Viernes</strong></td>
+                  <td>09:00 - 12:00</td>
+                  <td>14:00 - 17:00</td>
+                  <td><span class="badge badge-success">Abierto</span></td>
+                  <td><button class="btn btn-secondary btn-sm">✏️ Editar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Sábado</strong></td>
+                  <td>Cerrado</td>
+                  <td>Cerrado</td>
+                  <td><span class="badge badge-error">Cerrado</span></td>
+                  <td><button class="btn btn-secondary btn-sm">✏️ Editar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Domingo</strong></td>
+                  <td>Cerrado</td>
+                  <td>Cerrado</td>
+                  <td><span class="badge badge-error">Cerrado</span></td>
+                  <td><button class="btn btn-secondary btn-sm">✏️ Editar</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="js/controllers/fechas.js"></script>
+  </body>
+</html>

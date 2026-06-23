@@ -39,7 +39,7 @@ form.addEventListener('submit', async (event) => {
       successElement.textContent = 'Inicio de sesión correcto. Redirigiendo...';
       successElement.classList.add('visible');
       // Pequeña espera para que el usuario vea el mensaje
-      setTimeout(() => window.location.href = 'panel.html', 700);
+      setTimeout(() => window.location.href = 'dashboard.html', 700);
       return;
     }
 

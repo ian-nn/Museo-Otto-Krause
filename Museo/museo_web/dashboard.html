@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Museo Otto Krause</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+      <!-- SIDEBAR -->
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-logo">
+          <a href="dashboard.html" class="sidebar-logo">
+            <img src="public/unnamed.png" alt="Logo Museo Otto Krause" />
+            <span class="sidebar-logo-text">MUSE<span class="sidebar-logo-accent">OK</span></span>
+          </a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Gestión</span>
+            <li class="sidebar-menu-item">
+              <a href="dashboard.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📊</span>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="reservas-admin.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Reservas</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="inventario.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📦</span>
+                <span>Inventario</span>
+              </a>
+            </li>
+          </div>
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Configuración</span>
+            <li class="sidebar-menu-item">
+              <a href="fechas-disponibles.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Fechas disponibles</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="historial.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📋</span>
+                <span>Historial</span>
+              </a>
+            </li>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-user-info">
+            <span class="sidebar-user-name" id="username-display">Admin</span>
+            <span>Administrador</span>
+          </div>
+          <a href="#" class="sidebar-logout-btn" id="logout-btn">Cerrar sesión</a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+      </aside>
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <div class="admin-content">
+        <header class="dashboard-header">
+          <h1 class="dashboard-title">Dashboard</h1>
+        </header>
+
+        <!-- SECCIÓN DE ESTADÍSTICAS -->
+        <section class="dashboard-section stats-section">
+          <div class="dash-grid">
+            <div class="dash-card">
+              <div class="card-value">0</div>
+              <div class="card-desc">Visitas aprobadas</div>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-value">1</div>
+              <div class="card-desc">Escuelas</div>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-value pending">2</div>
+              <div class="card-desc">Pendientes</div>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-value">12</div>
+              <div class="card-desc">Objetos en inventario</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="dashboard-grid-layout">
+            <div class="dashboard-panel">
+              <div class="panel-header">
+                <h2 class="section-title">Próximas visitas</h2>
+                <p class="section-subtitle">Solicitudes confirmadas y pendientes para la semana.</p>
+              </div>
+              <div class="dashboard-table-wrapper">
+                <table class="dashboard-table">
+                  <thead>
+                    <tr>
+                      <th>Referente</th>
+                      <th>Tipo</th>
+                      <th>Fecha</th>
+                      <th>Horario</th>
+                      <th>Estado</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Laura Pérez</td>
+                      <td>Institucional</td>
+                      <td>25/06/2026</td>
+                      <td>09:00</td>
+                      <td><span class="badge badge-pending">Pendiente</span></td>
+                      <td><button class="btn-icon">👁️</button></td>
+                    </tr>
+                    <tr>
+                      <td>Roberto Silva</td>
+                      <td>Escolar</td>
+                      <td>02/07/2026</td>
+                      <td>14:00</td>
+                      <td><span class="badge badge-pending">Pendiente</span></td>
+                      <td><button class="btn-icon">👁️</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="dashboard-aside">
+              <div class="widget-card">
+                <div class="widget-header">
+                  <h3>Fechas habilitadas</h3>
+                  <a href="fechas-disponibles.html" class="btn btn-primary btn-sm">Gestionar</a>
+                </div>
+                <div class="widget-list">
+                  <div class="widget-item">
+                    <div>
+                      <p class="widget-date">01/07/2026</p>
+                      <p class="widget-time">09:00 - 14:00</p>
+                    </div>
+                    <span class="badge badge-yellow">Personal</span>
+                  </div>
+                  <div class="widget-item">
+                    <div>
+                      <p class="widget-date">03/07/2026</p>
+                      <p class="widget-time">09:00</p>
+                    </div>
+                    <span class="badge badge-yellow">Personal</span>
+                  </div>
+                  <div class="widget-item">
+                    <div>
+                      <p class="widget-date">08/07/2026</p>
+                      <p class="widget-time">09:00 - 14:00</p>
+                    </div>
+                    <span class="badge badge-info">Escolar</span>
+                  </div>
+                  <div class="widget-item">
+                    <div>
+                      <p class="widget-date">10/07/2026</p>
+                      <p class="widget-time">14:00</p>
+                    </div>
+                    <span class="badge badge-red">Institucional</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="widget-card">
+                <div class="widget-header">
+                  <h3>Historial</h3>
+                  <a href="historial.html" class="btn btn-secondary btn-sm">Ver todo</a>
+                </div>
+                <div class="widget-list">
+                  <div class="widget-item history-item">
+                    <div>
+                      <p class="widget-title">Reserva archivada (Aprobada)</p>
+                      <p class="widget-time">Carlos López - Ahora mismo</p>
+                    </div>
+                  </div>
+                  <div class="widget-item history-item">
+                    <div>
+                      <p class="widget-title">Reserva archivada (Aprobada)</p>
+                      <p class="widget-time">María González - Hoy</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="js/controllers/dashboard.js"></script>
+  </body>
+</html>

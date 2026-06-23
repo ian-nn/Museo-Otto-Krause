@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventario - Museo Otto Krause</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <div class="admin-layout">
+      <!-- SIDEBAR -->
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-logo">
+          <a href="dashboard.html" class="sidebar-logo">
+            <img src="public/unnamed.png" alt="Logo Museo Otto Krause" />
+            <span class="sidebar-logo-text">MUSE<span class="sidebar-logo-accent">OK</span></span>
+          </a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Gestión</span>
+            <li class="sidebar-menu-item">
+              <a href="dashboard.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📊</span>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="reservas-admin.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Reservas</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="inventario.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📦</span>
+                <span>Inventario</span>
+              </a>
+            </li>
+          </div>
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Configuración</span>
+            <li class="sidebar-menu-item">
+              <a href="fechas-disponibles.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📅</span>
+                <span>Fechas disponibles</span>
+              </a>
+            </li>
+            <li class="sidebar-menu-item">
+              <a href="historial.html" class="sidebar-menu-link">
+                <span class="sidebar-menu-icon">📋</span>
+                <span>Historial</span>
+              </a>
+            </li>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-user-info">
+            <span class="sidebar-user-name" id="username-display">Admin</span>
+            <span>Administrador</span>
+          </div>
+          <a href="#" class="sidebar-logout-btn" id="logout-btn">Cerrar sesión</a>
+          <div class="admin-sidebar-label">ADMIN</div>
+        </div>
+      </aside>
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <div class="admin-content">
+        <header class="dashboard-header">
+          <h1 class="dashboard-title">📦 Inventario</h1>
+          <p class="dashboard-subtitle">Gestiona los objetos y artefactos del museo</p>
+        </header>
+
+        <!-- CONTROLES -->
+        <section class="dashboard-section">
+          <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="add-item-btn">+ Agregar objeto</button>
+            <input type="text" class="form-input" placeholder="Buscar en inventario..." id="search-input" style="flex: 1; min-width: 200px;">
+            <select class="form-select" id="category-filter" style="max-width: 200px;">
+              <option value="">Todas las categorías</option>
+              <option value="maquetas">Maquetas</option>
+              <option value="herramientas">Herramientas</option>
+              <option value="modelos">Modelos</option>
+              <option value="documentos">Documentos</option>
+              <option value="otros">Otros</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- TABLA DE INVENTARIO -->
+        <section class="dashboard-section">
+          <h2 class="section-title">Objetos registrados</h2>
+          <p class="section-subtitle" id="item-count">Total: 0 objetos</p>
+          
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Categoría</th>
+                  <th>Ubicación</th>
+                  <th>Estado</th>
+                  <th>Fecha registro</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-body">
+                <tr>
+                  <td>OBJ-001</td>
+                  <td>Maqueta de motor histórico</td>
+                  <td>Maquetas</td>
+                  <td>Vitrina A-1</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td>15/03/2026</td>
+                  <td style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>OBJ-002</td>
+                  <td>Herramienta de precisión - Tornillo calibrador</td>
+                  <td>Herramientas</td>
+                  <td>Vitrina B-2</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td>22/02/2026</td>
+                  <td style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>OBJ-003</td>
+                  <td>Modelo de puente en escala</td>
+                  <td>Modelos</td>
+                  <td>Vitrina C-3</td>
+                  <td><span class="badge badge-warning">En mantenimiento</span></td>
+                  <td>10/01/2026</td>
+                  <td style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>OBJ-004</td>
+                  <td>Documentación histórica - Planos 1920-1950</td>
+                  <td>Documentos</td>
+                  <td>Archivo - Caja 1</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td>05/12/2025</td>
+                  <td style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>OBJ-005</td>
+                  <td>Tornos antiguos - Conjunto de 3 unidades</td>
+                  <td>Herramientas</td>
+                  <td>Taller - Estante 2</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td>18/11/2025</td>
+                  <td style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- MODAL PARA AGREGAR OBJETO -->
+        <div id="add-item-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; display: flex; align-items: center; justify-content: center;">
+          <div style="background: var(--color-surface-secondary); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; max-width: 500px; width: 90%;">
+            <h2 style="margin-top: 0;">Agregar nuevo objeto</h2>
+            <form id="add-item-form">
+              <div class="form-group">
+                <label class="form-label">Nombre del objeto *</label>
+                <input type="text" class="form-input" required placeholder="Ej: Maqueta de motor">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Categoría *</label>
+                <select class="form-select" required>
+                  <option value="">Selecciona una categoría</option>
+                  <option value="maquetas">Maquetas</option>
+                  <option value="herramientas">Herramientas</option>
+                  <option value="modelos">Modelos</option>
+                  <option value="documentos">Documentos</option>
+                  <option value="otros">Otros</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ubicación *</label>
+                <input type="text" class="form-input" required placeholder="Ej: Vitrina A-1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea class="form-input" style="min-height: 100px;" placeholder="Descripción del objeto..."></textarea>
+              </div>
+              <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" id="cancel-add-btn">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Agregar objeto</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="js/controllers/inventario.js"></script>
+  </body>
+</html>
