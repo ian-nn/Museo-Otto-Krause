@@ -1,11 +1,10 @@
 // api.js
 // Este servicio centraliza la URL base del backend PHP y expone helpers para las solicitudes HTTP.
-// Usamos una ruta relativa desde `museo_web` hacia la carpeta `museo_api`.
 const API_BASE_URL = '../museo_api';
 
 /**
  * Envía datos a un endpoint PHP usando fetch con JSON.
- * @param {string} endpoint - Nombre del archivo PHP o ruta relativa.
+ * @param {string} endpoint - Ruta relativa al archivo PHP o al endpoint del router.
  * @param {object} body - Datos que se enviarán en el body de la petición.
  * @returns {Promise<object>} - Respuesta JSON del servidor.
  */
@@ -27,17 +26,17 @@ export async function postJson(endpoint, body) {
     throw new Error(`Respuesta inválida del servidor: se esperaba JSON pero se recibió ${contentType || 'texto'}. ${responseText.slice(0, 300)}`);
   }
 
-  let jsonData;
+  let jsonData = null;
   try {
-    jsonData = JSON.parse(responseText);
-  } catch (e) {
-    throw new Error(`JSON inválido recibido del servidor: ${e.message}. ${responseText.slice(0, 300)}`);
+    jsonData = responseText ? JSON.parse(responseText) : null;
+  } catch (error) {
+    throw new Error(`JSON inválido recibido del servidor: ${error.message}. ${responseText.slice(0, 300)}`);
   }
 
   if (!response.ok) {
-    const serverMessage = jsonData && jsonData.message ? ` - ${jsonData.message}` : '';
-    throw new Error(`Error de red: ${response.status} ${response.statusText}${serverMessage}`);
+    const serverMessage = jsonData?.message || jsonData?.errors?.[0]?.message || 'Error al procesar la solicitud.';
+    throw new Error(serverMessage);
   }
 
-  return jsonData;
+  return jsonData || {};
 }
