@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Museo Otto Krause</title>
+    <link rel="stylesheet" href="css/panel.css" />
+  </head>
+  <body class="dashboard-page">
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <div class="brand-block">
+            <div class="brand-mark">MK</div>
+            <div>
+              <h2>Museo Otto Krause</h2>
+              <p>Administración</p>
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="group-title">Gestión</div>
+            <nav class="sidebar-nav">
+              <a class="nav-item active" href="dashboard.html"><span class="nav-icon">▣</span><span>Dashboard</span></a>
+              <a class="nav-item" href="reservas-admin.html"><span class="nav-icon">☰</span><span>Reservas</span></a>
+              <a class="nav-item" href="inventario.html"><span class="nav-icon">◫</span><span>Inventario</span></a>
+              <a class="nav-item" href="fechas-disponibles.html"><span class="nav-icon">◷</span><span>Fechas disponibles</span></a>
+              <a class="nav-item" href="historial.html"><span class="nav-icon">◌</span><span>Historial</span></a>
+            </nav>
+          </div>
+
+          <div class="nav-group">
+            <div class="group-title">Configuración</div>
+            <nav class="sidebar-nav">
+              <a class="nav-item" href="fechas-disponibles.html"><span class="nav-icon">📅</span><span>Fechas disponibles</span></a>
+              <a class="nav-item" href="historial.html"><span class="nav-icon">🕒</span><span>Historial</span></a>
+            </nav>
+          </div>
+        </div>
+
+        <a class="logout-btn" href="index.html">Cerrar sesión</a>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Panel administrativo</p>
+            <h1>Dashboard</h1>
+          </div>
+        </header>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-accent"></div>
+            <div class="stat-content">
+              <strong>24</strong>
+              <span>Visitas hoy</span>
+            </div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-accent"></div>
+            <div class="stat-content">
+              <strong>142</strong>
+              <span>Objetos registrados</span>
+            </div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-accent"></div>
+            <div class="stat-content">
+              <strong>8</strong>
+              <span>Reservas pendientes</span>
+            </div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-accent"></div>
+            <div class="stat-content">
+              <strong>36</strong>
+              <span>Registros de historial</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel-card wide-card">
+            <div class="card-head">
+              <h3>Próximas reservas</h3>
+              <a href="reservas-admin.html">Ver más</a>
+            </div>
+            <table class="reservas-table">
+              <thead>
+                <tr>
+                  <th>Visitante</th>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Estado</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>María López</td>
+                  <td>26 jun 2026</td>
+                  <td>Personal</td>
+                  <td><span class="status-badge pending">Pendiente</span></td>
+                  <td><button class="icon-btn" aria-label="Ver">👁</button></td>
+                </tr>
+                <tr>
+                  <td>Escuela N°15</td>
+                  <td>27 jun 2026</td>
+                  <td>Escolar</td>
+                  <td><span class="status-badge pending">Pendiente</span></td>
+                  <td><button class="icon-btn" aria-label="Ver">👁</button></td>
+                </tr>
+                <tr>
+                  <td>Grupo Tecnológico</td>
+                  <td>28 jun 2026</td>
+                  <td>Institucional</td>
+                  <td><span class="status-badge pending">Pendiente</span></td>
+                  <td><button class="icon-btn" aria-label="Ver">👁</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <div class="side-stack">
+            <article class="panel-card">
+              <div class="card-head">
+                <h3>Fechas</h3>
+                <a class="btn btn-primary" href="fechas-disponibles.html">Gestionar</a>
+              </div>
+              <ul class="date-list">
+                <li>
+                  <div>
+                    <strong>26/06</strong>
+                    <span>Disponibilidad parcial</span>
+                  </div>
+                  <span class="tag tag-red">Personal</span>
+                </li>
+                <li>
+                  <div>
+                    <strong>27/06</strong>
+                    <span>Grupo escolar confirmado</span>
+                  </div>
+                  <span class="tag tag-blue">Escolar</span>
+                </li>
+                <li>
+                  <div>
+                    <strong>28/06</strong>
+                    <span>Visita institucional</span>
+                  </div>
+                  <span class="tag tag-beige">Inst.</span>
+                </li>
+              </ul>
+            </article>
+
+            <article class="panel-card">
+              <div class="card-head">
+                <h3>Historial</h3>
+                <a class="btn btn-secondary" href="historial.html">Ver todo</a>
+              </div>
+              <ul class="history-list">
+                <li>
+                  <div class="history-icon">◷</div>
+                  <div>
+                    <strong>Reserva confirmada</strong>
+                    <span>Hace 10 min</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="history-icon">◷</div>
+                  <div>
+                    <strong>Inventario actualizado</strong>
+                    <span>Hace 1 hora</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="history-icon">◷</div>
+                  <div>
+                    <strong>Fecha modificada</strong>
+                    <span>Hace 3 horas</span>
+                  </div>
+                </li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
