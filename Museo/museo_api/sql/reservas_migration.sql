@@ -154,7 +154,10 @@ CREATE TABLE cajones (
 
 CREATE TABLE objetos (
     id_objeto INT AUTO_INCREMENT PRIMARY KEY,
-    num_inventario VARCHAR(50) NOT NULL UNIQUE,
+    codigo_actual VARCHAR(50) NOT NULL UNIQUE,
+    codigo_antiguo VARCHAR(50) NOT NULL UNIQUE,
+    codigo_sigaf VARCHAR(50) NOT NULL UNIQUE,
+    codigo_fisico VARCHAR(50) NOT NULL UNIQUE,
     nombre_objeto VARCHAR(255) NOT NULL,
     descripcion TEXT,
     estado_conservacion VARCHAR(100),
