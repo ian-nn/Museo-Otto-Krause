@@ -73,7 +73,8 @@ body {
 
 body {
   font-family: var(--font-family-sans);
-  background: var(--color-surface-primary);
+  background: linear-gradient(180deg, #080606 0%, rgba(17, 0, 0, 0.96) 18%, rgba(45, 0, 8, 0.95) 58%, #120308 100%);
+  background-attachment: fixed;
 }
 
 h1,
@@ -84,7 +85,7 @@ h3 {
 
 .login-page {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   background: linear-gradient(160deg, var(--color-surface-tertiary) 0%, var(--color-brand-main) 50%, var(--color-surface-secondary) 100%);
   display: flex;
   align-items: center;
@@ -437,7 +438,8 @@ html {
   border-top-right-radius: 4px;
 }
 
-.nav-link:hover::before {
+.nav-link:hover::before,
+.nav-link.active::before {
   top: 0;
 }
 
@@ -454,11 +456,13 @@ html {
   border-radius: 2px;
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 100%;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active {
   color: var(--text-high);
 }
 
@@ -759,7 +763,7 @@ html {
 }
 
 .patrimonio-section {
-  background: radial-gradient(ellipse at top, #2a0a10 0%, var(--color-surface-primary) 55%);
+  background: transparent;
   padding: 80px 24px;
 }
 
@@ -778,6 +782,13 @@ html {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-bottom: 56px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.patrimonio-statsbar:hover {
+  transform: translateY(-6px);
+  border-color: rgba(217, 0, 16, 0.25);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(217, 0, 16, 0.08);
 }
 
 .patrimonio-stat {
@@ -879,6 +890,13 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 22px 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.patrimonio-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(217, 0, 16, 0.25);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(217, 0, 16, 0.08);
 }
 
 .patrimonio-card-icon {
@@ -1019,6 +1037,13 @@ html {
   overflow: hidden;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.patrimonio-coll-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(217, 0, 16, 0.25);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(217, 0, 16, 0.08);
 }
 
 .patrimonio-coll-card-text-only {
@@ -1122,13 +1147,11 @@ html {
 .reservas-section {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #080606 0%, rgba(17, 0, 0, 0.96) 18%, rgba(45, 0, 8, 0.95) 58%, #120308 100%);
-  background-size: cover;
-  background-repeat: no-repeat;
+  background: transparent;
   border-top: 1px solid rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   min-height: calc(100vh - var(--navbar-height));
-  width: 100vw;
+  width: 100%;
   max-width: none;
   margin: 0;
   display: flex;
@@ -1229,7 +1252,7 @@ html {
   color: var(--brand-accent);
   font-size: 1.35rem;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.05em;
   font-weight: 800;
   margin-bottom: 10px;
 }
@@ -1797,6 +1820,11 @@ html {
       outline: none;
       background: rgba(255, 255, 255, 0.03);
       color: var(--gray-800);
+    }
+
+    .form-select option {
+      background-color: #1a1a1a;
+      color: #e0e0e0;
     }
 
     .form-input:focus,

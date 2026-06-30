@@ -55,6 +55,30 @@ document.addEventListener('DOMContentLoaded', () => {
       header.classList.remove('scrolled');
     }
   });
+
+  // Scroll Spy for navbar items
+  const sections = document.querySelectorAll('section[id], footer[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const headerHeight = header ? header.offsetHeight : 72;
+      
+      if (window.scrollY >= sectionTop - headerHeight - 150) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (current && link.getAttribute('href').includes(current)) {
+        link.classList.add('active');
+      }
+    });
+  });
 });
 
 // --- ANIMACIÓN DE CONTADORES NUMÉRICOS (STATS) ---
