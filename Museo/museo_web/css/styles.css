@@ -495,7 +495,7 @@ html {
 }
 
 .btn-primary {
-  background: var(--brand-main);
+  background: var(--brand-accent);
   border: 1px solid var(--brand-accent);
   color: var(--text-high);
 }
@@ -503,14 +503,18 @@ html {
 /* Modificadores de Estado Obligatorios (SDD) */
 .btn-primary:hover,
 .btn-nav:hover {
-  background: var(--brand-accent);
+  background: var(--surface-primary);
   color: var(--text-high);
+  border-color: var(--brand-accent);
   box-shadow: 0 4px 12px rgba(217, 0, 16, 0.3);
 }
 
 .btn-primary:active,
 .btn-nav:active {
   transform: scale(0.98);
+  background: var(--surface-primary);
+  color: var(--text-high);
+  border-color: var(--brand-accent);
 }
 
 .btn-primary:focus-visible,
@@ -1003,6 +1007,7 @@ html {
   font-weight: 900;
   text-transform: uppercase;
   color: var(--text-high);
+  border-bottom: none;
 }
 
 .patrimonio-coll-link {
@@ -1026,24 +1031,35 @@ html {
 }
 
 .patrimonio-carousel {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
   gap: 18px;
-  overflow: hidden;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+}
+
+.patrimonio-carousel::-webkit-scrollbar {
+  height: 7px;
+}
+
+.patrimonio-carousel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
 }
 
 .patrimonio-coll-card {
+  min-width: 220px;
+  flex: 0 0 auto;
   border-radius: 10px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  scroll-snap-align: start;
 }
 
 .patrimonio-coll-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(217, 0, 16, 0.25);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(217, 0, 16, 0.08);
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .patrimonio-coll-card-text-only {
@@ -1148,8 +1164,8 @@ html {
   position: relative;
   overflow: hidden;
   background: transparent;
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  border-top: none;
+  border-bottom: none;
   min-height: calc(100vh - var(--navbar-height));
   width: 100%;
   max-width: none;

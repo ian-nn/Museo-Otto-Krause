@@ -48,6 +48,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const header = document.querySelector('.main-header');
+  const featuredCarousel = document.querySelector('.patrimonio-carousel');
+
+  function scrollFeaturedCarousel() {
+    if (!featuredCarousel) return;
+    const card = featuredCarousel.querySelector('.patrimonio-coll-card');
+    const cardWidth = card ? card.offsetWidth : featuredCarousel.clientWidth * 0.8;
+    const gap = 18;
+    const maxScroll = featuredCarousel.scrollWidth - featuredCarousel.clientWidth;
+
+    if (featuredCarousel.scrollLeft >= maxScroll - 5) {
+      featuredCarousel.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      featuredCarousel.scrollBy({ left: cardWidth + gap, behavior: 'smooth' });
+    }
+  }
+
+  if (featuredCarousel) {
+    setInterval(scrollFeaturedCarousel, 2000);
+  }
+
   window.addEventListener('scroll', () => {
     if (window.scrollY > 50) {
       header.classList.add('scrolled');
