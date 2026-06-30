@@ -1,0 +1,315 @@
+/* Branch-specific typography overrides for lautirichi/frontenddashboard */
+@import url('panel.css');
+
+:root {
+  --dashboard-heading-color: #141414;
+  --dashboard-subtitle-color: #595959;
+  --dashboard-text-color: #212121;
+  --dashboard-accent: #d90010;
+  --red: #d90010;
+  --dashboard-muted: #6f6f6f;
+  --dashboard-muted-strong: #444444;
+}
+
+body.dashboard-page {
+  background: #f5f5f5;
+}
+
+.sidebar {
+  background: #000000;
+}
+
+.sidebar::before {
+  background: var(--red);
+}
+
+.nav-item:hover {
+  color: #ffffff;
+  background: rgba(255,255,255,0.04);
+}
+
+.nav-item.active {
+  color: var(--red);
+  background: #1a1a1a;
+  border-left: 3px solid var(--red);
+  padding-left: 9px;
+}
+
+.nav-item.active .nav-icon {
+  color: var(--red);
+}
+
+.nav-item.active:hover {
+  color: var(--red);
+  background: #1a1a1a;
+}
+
+.logout-btn {
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #f2f2f2;
+}
+
+.eyebrow {
+  color: var(--dashboard-accent);
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.stat-card {
+  padding: 24px 24px;
+  min-height: 100px;
+  height: 100px;
+  border-left: 4px solid var(--red);
+}
+
+.stat-content strong {
+  color: var(--red);
+  font-weight: 800;
+}
+
+.stat-content span {
+  color: var(--dashboard-muted);
+  font-size: 0.9rem;
+}
+
+.panel-card {
+  padding: 26px;
+}
+
+.status-badge {
+  background: rgba(217, 0, 16, 0.08);
+  color: var(--dashboard-accent);
+  border: 1px solid rgba(217, 0, 16, 0.16);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 96px;
+  padding: 4px 8px;
+}
+
+.history-icon {
+  font-size: 0.9rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 0.55fr;
+  gap: 18px;
+  width: 100%;
+}
+
+.side-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.panel-card.wide-card {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .stats-grid {
+    gap: 12px;
+  }
+}
+
+/* Dashboard design overrides from MuseoOttoKrause(1) */
+.main-panel {
+  padding: 32px 34px 34px;
+}
+
+.stats-grid {
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  min-height: 100px;
+}
+
+.dashboard-grid {
+  grid-template-columns: 1.45fr 0.55fr;
+}
+
+.panel-card {
+  border-radius: 20px;
+}
+
+.card-head {
+  margin-bottom: 16px;
+}
+
+.card-head a {
+  border-radius: 8px;
+  padding: 8px 8px;
+}
+
+.btn-primary {
+  background: #c8001a;
+  color: #ffffff;
+  border: 1px solid #c8001a;
+  padding: 4px 10px;
+  min-height: auto;
+  height: auto;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  font-size: 10px;
+  font-weight: 800;
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-secondary,
+.card-head a.btn-secondary {
+  background: #ffffff;
+  color: #4B5563;
+  border: 1.5px solid #E5E5E5;
+  padding: 5px 10px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-family-heading);
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-secondary:hover,
+.card-head a.btn-secondary:hover {
+  color: #4B5563;
+  border-color: #4B5563;
+}
+
+.reservas-table th {
+  padding: 14px 12px;
+}
+
+.reservas-table td {
+  padding: 18px 12px;
+}
+
+.reservas-table td:last-child {
+  vertical-align: middle;
+}
+
+.status-cell {
+  text-align: left;
+}
+
+.status-with-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+}
+
+.btn-icon {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border: none;
+  background: transparent;
+  color: #232323;
+}
+
+.btn-icon.btn-view {
+  background: #f5f5f5;
+  border: 1px solid #d8d8d8;
+}
+
+.btn-icon.btn-view:hover {
+  background: #ebebeb;
+}
+
+.btn-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.date-list li,
+.history-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.date-list strong,
+.history-list strong {
+  margin-bottom: 4px;
+}
+
+.date-list span,
+.history-list span {
+  display: block;
+}
+
+.history-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: #f5f5f5;
+}
+
+.tag {
+  min-width: 72px;
+  justify-content: center;
+}
+
+.history-list li {
+  align-items: flex-start;
+}
+
+.history-list li > div {
+  flex: 1;
+}
+
+.history-list li > div span {
+  color: #6b7280;
+}
+
+.panel-card.wide-card {
+  min-height: 440px;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

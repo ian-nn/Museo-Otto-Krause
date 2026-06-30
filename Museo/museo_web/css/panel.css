@@ -4,7 +4,7 @@
   --color-surface-primary: #000000;
   --color-surface-secondary: #0d0d0d;
   --color-surface-tertiary: #1a1a1a;
-  --color-brand-accent: #d90010;
+  --color-brand-accent: #ffffff;
   --color-brand-accent-hover: #ff1a2b;
   --color-text-high: #ffffff;
   --color-text-medium: #8f8f8f;
@@ -28,8 +28,8 @@ body {
 h1, h2, h3 {
   margin: 0;
   font-family: var(--font-family-heading);
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-weight: 900;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -270,7 +270,7 @@ h1, h2, h3 {
 .card-head a {
   color: var(--color-brand-accent);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
