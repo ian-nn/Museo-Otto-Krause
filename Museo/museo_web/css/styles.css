@@ -77,6 +77,36 @@ body {
   background: var(--color-surface-primary);
 }
 
+body,
+p,
+span,
+a,
+button,
+input,
+select,
+textarea,
+li,
+h1,
+h2,
+h3,
+h4,
+.hero-tag,
+.hero-description,
+.section-tag,
+.patrimonio-stat-lbl,
+.patrimonio-eyebrow,
+.patrimonio-card-title,
+.patrimonio-timeline-title,
+.patrimonio-coll-link,
+.patrimonio-coll-name,
+.patrimonio-coll-period,
+.visit-info-label,
+.visit-details-list li,
+.btn,
+.nav-link {
+  letter-spacing: 0;
+}
+
 h1,
 h2,
 h3 {
@@ -599,7 +629,7 @@ html {
 .hero-tag {
   font-size: 0.75rem;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--color-brand-accent);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
@@ -628,7 +658,7 @@ html {
 .hero-description {
   font-size: 0.875rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   color: var(--color-text-medium);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   text-transform: uppercase;
@@ -749,7 +779,7 @@ html {
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0;
   margin-bottom: 12px;
 }
 
@@ -792,17 +822,18 @@ html {
 
 .patrimonio-stat-num {
   font-family: var(--font-family-heading);
-  font-size: 2rem;
+  font-size: clamp(2.4rem, 3.4vw, 3.4rem);
   font-weight: 900;
   color: var(--brand-accent);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
+  line-height: 0.95;
 }
 
 .patrimonio-stat-lbl {
   font-family: var(--font-family-heading);
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.55);
   margin-top: 6px;
@@ -820,7 +851,7 @@ html {
   font-family: var(--font-family-heading);
   font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--brand-accent);
   margin-bottom: 10px;
@@ -833,7 +864,7 @@ html {
   font-weight: 900;
   text-transform: uppercase;
   color: var(--text-high);
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
   margin: 0 0 18px 0;
   position: relative;
   padding-bottom: 14px;
@@ -894,7 +925,7 @@ html {
   font-family: var(--font-family-heading);
   font-size: 0.88rem;
   font-weight: 800;
-  letter-spacing: 0.05em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--text-high);
   margin-bottom: 8px;
@@ -919,7 +950,7 @@ html {
   font-family: var(--font-family-heading);
   font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--brand-accent);
   margin-bottom: 22px;
@@ -981,8 +1012,8 @@ html {
 }
 
 .patrimonio-coll-title {
-  font-family: var(--font-family-heading);
-  font-size: 1.4rem;
+  font-family: var(--font-display);
+  font-size: 22px;
   font-weight: 900;
   text-transform: uppercase;
   color: var(--text-high);
@@ -997,7 +1028,7 @@ html {
   font-family: var(--font-family-heading);
   font-size: 0.75rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
   padding: 9px 16px;
   border-radius: 7px;
@@ -1039,7 +1070,7 @@ html {
   font-family: var(--font-family-heading);
   font-size: 0.82rem;
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--text-high);
 }
@@ -1174,8 +1205,12 @@ html {
 
 
 .reservas-heading h2 {
+  font-family: var(--font-display);
   font-size: clamp(1.9rem, 4vw, 2.4rem);
-   color: var(--text-high);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-high);
+  letter-spacing: 0;
   margin: 0 0 16px 0;
   line-height: 1.1;
 }
@@ -1194,22 +1229,63 @@ html {
   margin-bottom: 0;
 }
 
-.visit-info-card {
-  background-color: #232323;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.visit-card {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  padding: 32px 28px;
+  transition: all 0.2s;
+  border-top: 3px solid rgba(200, 0, 26, 0.55);
 }
 
-.visit-info-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(217, 0, 16, 0.25);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(217, 0, 16, 0.08);
+.visit-card:hover {
+  background: rgba(200, 0, 26, 0.14);
+  border-color: rgba(200, 0, 26, 0.5);
+  transform: translateY(-4px);
+}
+
+.visit-card-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(200, 0, 26, 0.12);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.visit-card-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: white;
+  letter-spacing: 0;
+  margin-bottom: 10px;
+}
+
+.visit-card-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  margin: 0 0 20px 0;
+}
+
+.visit-card-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.visit-card-chip {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 4px;
 }
 
 .visit-hours {
@@ -1225,55 +1301,15 @@ html {
   font-size: 0.92rem;
 }
 
-.visit-info-label {
-  display: inline-block;
-  color: var(--brand-accent);
-  font-size: 1.35rem;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-
-.visit-info-card h3 {
-  color: var(--text-high);
-  font-size: 1rem;
-  margin: 0;
-  line-height: 1.35;
-}
-
-.visit-info-card p {
-  color: var(--text-medium);
-  font-size: 0.95rem;
-  line-height: 1.45;
-  margin: 0;
-}
-
-.visit-details-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
+.visit-info-card,
+.visit-info-label,
+.visit-details-list,
 .visit-details-list li {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-  padding: 6px 10px;
-  color: var(--text-high);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  display: none;
 }
 
 .action-wrapper {
-  margin-top: 8px;
-}
-
-.action-wrapper {
+  margin-top: 32px;
   display: flex;
   justify-content: center;
 }
@@ -1287,7 +1323,7 @@ html {
   border-radius: 999px;
   font-size: 0.95rem;
   padding: 13px 18px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
 }
 
 @media (max-width: 1100px) {

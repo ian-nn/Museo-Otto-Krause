@@ -115,22 +115,45 @@
 
         <div class="patrimonio-cards">
           <article class="patrimonio-card">
-            <div class="patrimonio-card-icon">⚙</div>
+            <div class="patrimonio-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z" />
+                <path d="M8 9h8" />
+                <path d="M8 13h5" />
+              </svg>
+            </div>
             <h3 class="patrimonio-card-title">Colecciones</h3>
             <p class="patrimonio-card-desc">Piezas, maquetas y herramientas que muestran la evolución del trabajo técnico.</p>
           </article>
           <article class="patrimonio-card">
-            <div class="patrimonio-card-icon">🛠</div>
+            <div class="patrimonio-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4 3 8l9 4 9-4-9-4Z" />
+                <path d="M7 10v4c0 1.7 2.2 3 5 3s5-1.3 5-3v-4" />
+                <path d="M5 11v3" />
+              </svg>
+            </div>
             <h3 class="patrimonio-card-title">Educación</h3>
             <p class="patrimonio-card-desc">Espacios que conectan la enseñanza práctica con la memoria institucional.</p>
           </article>
           <article class="patrimonio-card">
-            <div class="patrimonio-card-icon">📚</div>
+            <div class="patrimonio-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 4h10a2 2 0 0 1 2 2v12l-3-2-2 2-2-2-2 2-3-2V6a2 2 0 0 1 2-2Z" />
+                <path d="M9 8h6" />
+                <path d="M9 11h4" />
+              </svg>
+            </div>
             <h3 class="patrimonio-card-title">Memoria</h3>
             <p class="patrimonio-card-desc">Un relato vivo sobre la historia de la escuela, sus personas y su legado.</p>
           </article>
           <article class="patrimonio-card">
-            <div class="patrimonio-card-icon">⏳</div>
+            <div class="patrimonio-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="8" />
+                <path d="M12 7v5l3 2" />
+              </svg>
+            </div>
             <h3 class="patrimonio-card-title">Historia</h3>
             <p class="patrimonio-card-desc">Un recorrido por los hitos que marcaron la identidad técnica de la institución.</p>
           </article>
@@ -213,37 +236,52 @@
            <div class="reservas-card-panel">
           <p class="visit-hours visit-hours-top">Entrada pública gratuita · Martes y jueves</p>
           <div class="reservas-cards-grid">
-            <article class="visit-info-card public-card">
-              <span class="visit-info-label">PÚBLICA / PERSONAL</span>
-              <h3>Visita mensual abierta a cualquier persona fuera de la institución.</h3>
-              <p>Los grupos se forman con cupo limitado.</p>
-              <ul class="visit-details-list">
-                <li>Hasta 30 personas</li>
-                <li>50 min</li>
-                <li>Aprobación automática</li>
-              </ul>
+            <article class="visit-card public-card">
+              <div class="visit-card-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c8001a" stroke-width="2.2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <h3 class="visit-card-title">Personal</h3>
+              <p class="visit-card-desc">Visita abierta a cualquier persona fuera de la institución. Los grupos se forman con cupo limitado.</p>
+              <div class="visit-card-detail">
+                <span class="visit-card-chip">Hasta 30 personas</span>
+                <span class="visit-card-chip">50 min</span>
+                <span class="visit-card-chip">Aprobación automática</span>
+              </div>
             </article>
 
-            <article class="visit-info-card school-card">
-              <span class="visit-info-label">ESCOLAR</span>
-              <h3>Para docentes que traen alumnos de nivel primario, secundario o superior.</h3>
-              <p>Se requiere número de CUE de la institución.</p>
-              <ul class="visit-details-list">
-                <li>Hasta 32 alumnos</li>
-                <li>50 min</li>
-                <li>+32 → revisión</li>
-              </ul>
+            <article class="visit-card school-card">
+              <div class="visit-card-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c8001a" stroke-width="2.2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                  <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+              </div>
+              <h3 class="visit-card-title">Escolar</h3>
+              <p class="visit-card-desc">Para docentes que traen alumnos de nivel primario, secundario o superior. Se requiere número de CUE de la institución.</p>
+              <div class="visit-card-detail">
+                <span class="visit-card-chip">Hasta 32 alumnos</span>
+                <span class="visit-card-chip">50 min</span>
+                <span class="visit-card-chip">+32 → revisión</span>
+              </div>
             </article>
 
-            <article class="visit-info-card institutional-card">
-              <span class="visit-info-label">INSTITUCIONAL</span>
-              <h3>Para organismos públicos, empresas y entidades privadas.</h3>
-              <p>Incluye atención personalizada y posibilidad de actividades especiales.</p>
-              <ul class="visit-details-list">
-                <li>Hasta 30 participantes</li>
-                <li>50 min</li>
-                <li>+30 → revisión</li>
-              </ul>
+            <article class="visit-card institutional-card">
+              <div class="visit-card-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c8001a" stroke-width="2.2">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/>
+                  <path d="M8 21h8M12 17v4"/>
+                </svg>
+              </div>
+              <h3 class="visit-card-title">Institucional</h3>
+              <p class="visit-card-desc">Para organismos públicos, empresas y entidades privadas. Incluye atención personalizada y posibilidad de actividades especiales.</p>
+              <div class="visit-card-detail">
+                <span class="visit-card-chip">Hasta 30 participantes</span>
+                <span class="visit-card-chip">50 min</span>
+                <span class="visit-card-chip">+30 → revisión</span>
+              </div>
             </article>
           </div>
 
