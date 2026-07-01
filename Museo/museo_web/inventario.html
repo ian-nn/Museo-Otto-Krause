@@ -1,10 +1,494 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inventario - Museo Otto Krause</title>
-    <link rel="stylesheet" href="css/panel.css" />
+    <link rel="stylesheet" href="css/panel-lautirichi-frontenddashboard.css" />
+    <style>
+      .btn-sm {
+        font-family: var(--font-family-heading);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 7px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+
+      .btn-primary {
+        background: var(--color-brand-accent-hover);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #a80016;
+      }
+
+      .btn-secondary {
+        background: white;
+        color: #4b5563;
+        border: 1.5px solid #e5e5e5;
+      }
+
+      .btn-secondary:hover {
+        border-color: #1f2937;
+        color: #111111;
+      }
+
+      .inv-toolbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .inv-search,
+      .inv-filter-select {
+        flex: 1;
+        min-width: 200px;
+        border: 1.5px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 9px 14px;
+        font-size: 13px;
+        font-family: inherit;
+        background: white;
+        outline: none;
+      }
+
+      .inv-filter-select {
+        cursor: pointer;
+      }
+
+      .inv-view-toggle {
+        display: flex;
+        gap: 4px;
+        background: white;
+        border-radius: 8px;
+        padding: 3px;
+        border: 1.5px solid #e5e5e5;
+      }
+
+      .inv-view-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #4b5563;
+        background: transparent;
+        transition: all 0.18s ease;
+      }
+
+      .inv-view-btn.active {
+        background: var(--color-brand-accent-hover);
+        color: white;
+      }
+
+      .inv-count {
+        font-size: 12px;
+        color: #4b5563;
+        margin-bottom: 10px;
+      }
+
+      .inv-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+      }
+
+      .inv-card {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
+        border: 1px solid #e5e5e5;
+        background: var(--color-brand-accent-hover);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.2s ease;
+      }
+
+      .inv-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+      }
+
+      .inv-card-img {
+        height: 150px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #f0e8e8, #e0d0d0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .inv-card-initials {
+        font-family: var(--font-family-heading);
+        font-size: 48px;
+        font-weight: 900;
+        color: rgba(200, 0, 26, 0.15);
+        text-transform: uppercase;
+        letter-spacing: -2px;
+      }
+
+      .inv-card-code-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 2;
+        background: rgba(0, 0, 0, 0.65);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 4px;
+        letter-spacing: 0.05em;
+        font-family: var(--font-family-heading);
+      }
+
+      .inv-card-estado-dot {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        border: 2px solid white;
+      }
+
+      .inv-card-bottom {
+        background: var(--color-brand-accent-hover);
+        padding: 14px 16px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .inv-card-name {
+        font-family: var(--font-family-heading);
+        font-size: 16px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 4px;
+        line-height: 1.15;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .inv-card-sub {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 10px;
+        line-height: 1.45;
+        min-height: 2.9em;
+        overflow: hidden;
+      }
+
+      .inv-card-chips {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-top: auto;
+      }
+
+      .inv-chip {
+        font-size: 10px;
+        font-weight: 700;
+        color: white;
+        padding: 2px 7px;
+        border-radius: 3px;
+        letter-spacing: 0.04em;
+      }
+
+      .inv-list {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .inv-list-head,
+      .inv-list-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 80px;
+        gap: 0;
+        padding: 12px 16px;
+      }
+
+      .inv-list-head {
+        background: #f5f5f5;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #4b5563;
+        border-bottom: 2px solid #e5e5e5;
+      }
+
+      .inv-list-row {
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 13px;
+        align-items: center;
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+
+      .inv-list-row:hover {
+        background: rgba(200, 0, 26, 0.03);
+      }
+
+      .inv-list-row:last-child {
+        border-bottom: none;
+      }
+
+      .inv-list-name {
+        font-weight: 700;
+        color: #0d0d0d;
+      }
+
+      .inv-list-sub {
+        font-size: 11px;
+        color: #4b5563;
+        margin-top: 1px;
+      }
+
+      .pag {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 20px;
+      }
+
+      .pag-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1.5px solid #e5e5e5;
+        background: white;
+        color: #4b5563;
+        transition: all 0.18s ease;
+      }
+
+      .pag-btn:hover:not(:disabled) {
+        border-color: var(--color-brand-accent-hover);
+        color: var(--color-brand-accent-hover);
+      }
+
+      .pag-btn.active {
+        background: var(--color-brand-accent-hover);
+        color: white;
+        border-color: var(--color-brand-accent-hover);
+      }
+
+      .pag-btn:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 64px;
+        height: 24px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .badge-green {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .badge-yellow {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge-red {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(3px);
+      }
+
+      .modal {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        width: 100%;
+        max-width: 660px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      .modal-hdr {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .modal-title {
+        font-family: var(--font-family-heading);
+        font-size: 22px;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: #0d0d0d;
+      }
+
+      .modal-close {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 20px;
+        color: #4b5563;
+        flex-shrink: 0;
+      }
+
+      .modal-close:hover {
+        background: #e5e5e5;
+      }
+
+      .modal-chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+
+      .modal-section {
+        background: #f5f5f5;
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-bottom: 14px;
+      }
+
+      .modal-section-title {
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--color-brand-accent-hover);
+        margin-bottom: 12px;
+      }
+
+      .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .modal-field-label {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-brand-accent-hover);
+      }
+
+      .modal-field-val {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0d0d0d;
+        margin-top: 2px;
+      }
+
+      .modal-desc {
+        font-size: 14px;
+        color: #4b5563;
+        line-height: 1.7;
+        background: #f5f5f5;
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .inv-card img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      @media (max-width: 980px) {
+        .inv-list-head,
+        .inv-list-row {
+          grid-template-columns: 2fr 1fr 1fr 1fr;
+        }
+        .inv-list-head > div:nth-child(5),
+        .inv-list-row > div:nth-child(5),
+        .inv-list-head > div:nth-child(6),
+        .inv-list-row > div:nth-child(6) {
+          display: none;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .inv-toolbar { flex-direction: column; }
+        .inv-view-toggle { width: 100%; justify-content: flex-start; }
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+        navItems.forEach(function(item) {
+          var href = item.getAttribute('href');
+          if (href === window.location.pathname.split('/').pop()) {
+            item.classList.add('active');
+          }
+        });
+      });
+    </script>
   </head>
   <body class="dashboard-page">
     <div class="app-layout">
@@ -21,17 +505,17 @@
           <div class="nav-group">
             <div class="group-title">Gestión</div>
             <nav class="sidebar-nav">
-              <a class="nav-item" href="dashboard.html"><span class="nav-icon">▣</span><span>Dashboard</span></a>
-              <a class="nav-item" href="reservas-admin.html"><span class="nav-icon">☰</span><span>Reservas</span></a>
-              <a class="nav-item active" href="inventario.html"><span class="nav-icon">◫</span><span>Inventario</span></a>
+              <a class="nav-item" href="dashboard.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span>Dashboard</span></a>
+              <a class="nav-item" href="reservas-admin.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span>Reservas</span></a>
+              <a class="nav-item active" href="inventario.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></span><span>Inventario</span></a>
             </nav>
           </div>
 
           <div class="nav-group">
             <div class="group-title">Configuración</div>
             <nav class="sidebar-nav">
-              <a class="nav-item" href="fechas-disponibles.html"><span class="nav-icon">📅</span><span>Fechas disponibles</span></a>
-              <a class="nav-item" href="historial.html"><span class="nav-icon">🕒</span><span>Historial</span></a>
+              <a class="nav-item" href="fechas-disponibles.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>Fechas disponibles</span></a>
+              <a class="nav-item" href="historial.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span>Historial</span></a>
             </nav>
           </div>
         </div>
@@ -48,19 +532,339 @@
         </header>
 
         <section class="page-card">
-          <p>Vista de esqueleto para el módulo de inventario.</p>
-          <div class="placeholder-grid">
-            <div class="placeholder-box">
-              <h4>Objetos registrados</h4>
-              <p>Listado, filtros y estado de cada objeto.</p>
-            </div>
-            <div class="placeholder-box">
-              <h4>Acciones</h4>
-              <p>Agregar, editar o marcar objetos.</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px">
+            <h2 style="margin:0;font-family:var(--font-family-heading);font-size:26px;font-weight:900;text-transform:uppercase">Inventario</h2>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn-sm btn-secondary" type="button" id="btn-categories">Categorías</button>
+              <button class="btn-sm btn-secondary" type="button" id="btn-import">Importar planilla</button>
+              <button class="btn-sm btn-primary" type="button" id="btn-add">Agregar objeto</button>
             </div>
           </div>
+
+          <div class="inv-toolbar">
+            <input id="inv-search" class="inv-search" type="search" placeholder="Buscar sin importar acentos..." />
+            <select id="inv-sala" class="inv-filter-select" aria-label="Filtrar por sala"></select>
+            <select id="inv-cat" class="inv-filter-select" aria-label="Filtrar por categoría"></select>
+            <select id="inv-col" class="inv-filter-select" aria-label="Filtrar por colección"></select>
+            <div class="inv-view-toggle" aria-label="Toggle view">
+              <button class="inv-view-btn active" type="button" data-view="grid" title="Grilla">▣</button>
+              <button class="inv-view-btn" type="button" data-view="list" title="Lista">≡</button>
+            </div>
+          </div>
+
+          <div class="inv-count" id="inv-count">Mostrando 0 objetos</div>
+          <div id="inv-content"></div>
+          <div id="inv-pag"></div>
         </section>
       </main>
     </div>
+
+    <div class="modal-overlay hidden" id="inv-modal-overlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="inv-modal-title">
+        <div class="modal-hdr">
+          <div>
+            <h2 class="modal-title" id="inv-modal-title"></h2>
+            <div class="modal-chips" id="inv-modal-chips"></div>
+          </div>
+          <button class="modal-close" id="inv-modal-close" aria-label="Cerrar modal">×</button>
+        </div>
+        <div id="inv-modal-image" style="width:100%;height:280px;object-fit:cover;border-radius:12px;background:#f5f5f5;margin-bottom:18px;display:flex;align-items:center;justify-content:center;color:#4b5563;font-size:14px;"></div>
+        <div class="modal-section">
+          <div class="modal-section-title">Identificación</div>
+          <div class="modal-grid" id="inv-modal-identidad"></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">Ficha técnica</div>
+          <div class="modal-grid" id="inv-modal-ficha"></div>
+        </div>
+        <div class="modal-desc" id="inv-modal-desc"></div>
+        <div class="modal-actions">
+          <button class="btn-sm btn-secondary" type="button" id="inv-modal-close-2">Cerrar</button>
+          <button class="btn-sm btn-primary" type="button" id="inv-modal-edit">Editar objeto</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const INVENTARIO_DATA = [
+        { id: 'INV-001', nombre: 'Tablero eléctrico', codigo: 'TAB-1930', categoria: 'Electrónica', sala: 'Sala 1', estado: 'Bueno', coleccion: 'Industrial', autor: 'Desconocido', epoca: 'Década de 1930', dimensiones: '80 x 120 x 20 cm', propiedad: 'Donado', vitrina: 'Vitrina 4', descripcion: 'Tablero eléctrico histórico utilizado en la antigua planta de máquinas.', codigoAntiguo: 'T-001', codigoSigaf: 'SIG-101' },
+        { id: 'INV-002', nombre: 'Máquina de vapor', codigo: 'MV-1920', categoria: 'Mecánica', sala: 'Sala 1', estado: 'Regular', coleccion: 'Industrial', autor: 'Otto Krause', epoca: '1920s', dimensiones: '210 x 110 x 130 cm', propiedad: 'Propio', vitrina: 'Piso', descripcion: 'Máquina de vapor restaurada con paneles originales.', codigoAntiguo: 'M-032', codigoSigaf: 'SIG-112' },
+        { id: 'INV-003', nombre: 'Balanza antigua', codigo: 'BAL-1950', categoria: 'Instrumentos', sala: 'Sala 2', estado: 'Bueno', coleccion: 'Educativa', autor: 'Desconocido', epoca: '1950s', dimensiones: '45 x 45 x 80 cm', propiedad: 'Donado', vitrina: 'Estante 2', descripcion: 'Balanza de pesas utilizada en laboratorios escolares.', codigoAntiguo: 'B-110', codigoSigaf: 'SIG-214' },
+        { id: 'INV-004', nombre: 'Proyector de cine', codigo: 'PRY-1970', categoria: 'Audiovisual', sala: 'Sala 3', estado: 'Malo', coleccion: 'Tecnología', autor: 'Kodak', epoca: 'Década de 1970', dimensiones: '60 x 45 x 30 cm', propiedad: 'Propio', vitrina: 'Estante 5', descripcion: 'Proyector analógico usado en la sala de cine del museo.', codigoAntiguo: 'P-204', codigoSigaf: 'SIG-321' },
+        { id: 'INV-005', nombre: 'Canica de vidrio', codigo: 'CAV-1980', categoria: 'Juguetes', sala: 'Sala 2', estado: 'Bueno', coleccion: 'Social', autor: 'Desconocido', epoca: '1980s', dimensiones: '2 cm diámetro', propiedad: 'Donado', vitrina: 'Vitrina 1', descripcion: 'Canica antigua conservada en vitrina de colección escolar.', codigoAntiguo: 'J-018', codigoSigaf: 'SIG-410' },
+        { id: 'INV-006', nombre: 'Consola de mandos', codigo: 'CON-2000', categoria: 'Mecánica', sala: 'Sala 3', estado: 'Regular', coleccion: 'Industrial', autor: 'Otto Krause', epoca: '1970s', dimensiones: '140 x 70 x 90 cm', propiedad: 'Propio', vitrina: 'Piso', descripcion: 'Consola de control de instalaciones eléctricas históricas.', codigoAntiguo: 'C-078', codigoSigaf: 'SIG-509' },
+        { id: 'INV-007', nombre: 'Máquina de escribir', codigo: 'MW-1945', categoria: 'Oficina', sala: 'Sala 2', estado: 'Bueno', coleccion: 'Educativa', autor: 'Remington', epoca: '1945', dimensiones: '40 x 35 x 15 cm', propiedad: 'Donado', vitrina: 'Vitrina 3', descripcion: 'Máquina de escribir mecánica utilizada por los estudiantes.', codigoAntiguo: 'O-049', codigoSigaf: 'SIG-607' },
+        { id: 'INV-008', nombre: 'Generador de corriente', codigo: 'GEN-1955', categoria: 'Electrónica', sala: 'Sala 1', estado: 'Bueno', coleccion: 'Industrial', autor: 'Siemens', epoca: '1950s', dimensiones: '170 x 90 x 120 cm', propiedad: 'Propio', vitrina: 'Piso', descripcion: 'Generador histórico usado en experimentos eléctricos.', codigoAntiguo: 'E-221', codigoSigaf: 'SIG-703' }
+      ];
+
+      const STATE = {
+        view: 'grid',
+        query: '',
+        sala: '',
+        categoria: '',
+        coleccion: '',
+        page: 1,
+        perPageGrid: 6,
+        perPageList: 8,
+        currentItem: null
+      };
+
+      const invSearch = document.getElementById('inv-search');
+      const invSala = document.getElementById('inv-sala');
+      const invCat = document.getElementById('inv-cat');
+      const invCol = document.getElementById('inv-col');
+      const invContent = document.getElementById('inv-content');
+      const invCount = document.getElementById('inv-count');
+      const invPag = document.getElementById('inv-pag');
+      const invViewButtons = document.querySelectorAll('.inv-view-btn');
+      const invModalOverlay = document.getElementById('inv-modal-overlay');
+      const invModalTitle = document.getElementById('inv-modal-title');
+      const invModalChips = document.getElementById('inv-modal-chips');
+      const invModalImage = document.getElementById('inv-modal-image');
+      const invModalIdentidad = document.getElementById('inv-modal-identidad');
+      const invModalFicha = document.getElementById('inv-modal-ficha');
+      const invModalDesc = document.getElementById('inv-modal-desc');
+      const invModalClose = document.getElementById('inv-modal-close');
+      const invModalClose2 = document.getElementById('inv-modal-close-2');
+      const invModalEdit = document.getElementById('inv-modal-edit');
+      const btnAdd = document.getElementById('btn-add');
+      const btnImport = document.getElementById('btn-import');
+      const btnCategories = document.getElementById('btn-categories');
+
+      function normalize(text) {
+        return String(text || '').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+      }
+
+      function uniqueValues(field) {
+        return [...new Set(INVENTARIO_DATA.map(item => item[field]).filter(Boolean))].sort();
+      }
+
+      function estadoColor(estado) {
+        if (estado === 'Bueno') return '#16a34a';
+        if (estado === 'Regular') return '#d97706';
+        return '#b91c1c';
+      }
+
+      function chipColor(text) {
+        const key = normalize(text || '');
+        if (key.includes('electr')) return '#9333ea';
+        if (key.includes('mec')) return '#2563eb';
+        if (key.includes('instr')) return '#0f766e';
+        if (key.includes('jugu')) return '#db2777';
+        return '#374151';
+      }
+
+      function populateSelects() {
+        const salaOptions = uniqueValues('sala');
+        const catOptions = uniqueValues('categoria');
+        const colOptions = uniqueValues('coleccion');
+
+        invSala.innerHTML = `<option value="">Todas las salas</option>${salaOptions.map(value => `<option value="${value}">${value}</option>`).join('')}`;
+        invCat.innerHTML = `<option value="">Todas las categorías</option>${catOptions.map(value => `<option value="${value}">${value}</option>`).join('')}`;
+        invCol.innerHTML = `<option value="">Todas las colecciones</option>${colOptions.map(value => `<option value="${value}">${value}</option>`).join('')}`;
+      }
+
+      function getFilteredItems() {
+        const query = normalize(STATE.query);
+        return INVENTARIO_DATA.filter(item => {
+          if (STATE.sala && item.sala !== STATE.sala) return false;
+          if (STATE.categoria && item.categoria !== STATE.categoria) return false;
+          if (STATE.coleccion && item.coleccion !== STATE.coleccion) return false;
+          if (query) {
+            const values = [item.nombre, item.codigo, item.categoria, item.coleccion, item.sala, item.vitrina, item.autor, item.epoca, item.descripcion, item.codigoAntiguo, item.codigoSigaf];
+            return values.some(value => normalize(value).includes(query));
+          }
+          return true;
+        });
+      }
+
+      function renderPag(totalPages) {
+        if (totalPages <= 1) {
+          invPag.innerHTML = '';
+          return;
+        }
+
+        const buttons = [];
+        buttons.push(`<button class="pag-btn" data-page="${STATE.page - 1}" ${STATE.page === 1 ? 'disabled' : ''}>‹</button>`);
+
+        for (let i = 1; i <= totalPages; i++) {
+          if (totalPages > 7 && i > 2 && i < totalPages - 1 && Math.abs(i - STATE.page) > 1) {
+            if (i === 3 || i === totalPages - 2) buttons.push('<span style="padding:0 4px;color:#4b5563">…</span>');
+            continue;
+          }
+          buttons.push(`<button class="pag-btn ${i === STATE.page ? 'active' : ''}" data-page="${i}">${i}</button>`);
+        }
+
+        buttons.push(`<button class="pag-btn" data-page="${STATE.page + 1}" ${STATE.page === totalPages ? 'disabled' : ''}>›</button>`);
+        invPag.innerHTML = `<div class="pag">${buttons.join('')}</div>`;
+      }
+
+      function renderGrid(items) {
+        return `<div class="inv-grid">${items.map(item => `
+          <div class="inv-card" data-id="${item.id}">
+            <div class="inv-card-img">
+              ${item.imagen ? `<img src="${item.imagen}" alt="${item.nombre}"/>` : `<div class="inv-card-initials">${item.nombre.split(' ').map(w => w[0]).join('').slice(0,3)}</div>`}
+              <div class="inv-card-code-badge">${item.codigo}</div>
+              <div class="inv-card-estado-dot" style="background:${estadoColor(item.estado)}"></div>
+            </div>
+            <div class="inv-card-bottom">
+              <div class="inv-card-name">${item.nombre}</div>
+              <div class="inv-card-sub">${item.autor !== 'Desconocido' ? item.autor : item.categoria}<br>${item.epoca || item.sala + ' · ' + item.vitrina}</div>
+              <div class="inv-card-chips">
+                <span class="inv-chip" style="background:${chipColor(item.categoria)}">${item.categoria}</span>
+                <span class="inv-chip" style="background:${chipColor(item.coleccion)}">${item.coleccion}</span>
+                <span class="inv-chip" style="background:${item.propiedad === 'Donado' ? '#6b7280' : '#374151'}">${item.propiedad === 'Donado' ? 'DON' : 'PRO'}</span>
+              </div>
+            </div>
+          </div>
+        `).join('')}</div>`;
+      }
+
+      function renderList(items) {
+        return `
+          <div class="inv-list">
+            <div class="inv-list-head"><div>Nombre</div><div>Categoría</div><div>Sala</div><div>Estado</div><div>Colección</div><div>·</div></div>
+            ${items.map(item => `
+              <div class="inv-list-row" data-id="${item.id}">
+                <div>
+                  <div class="inv-list-name">${item.nombre}</div>
+                  <div class="inv-list-sub">${item.codigo}</div>
+                </div>
+                <div>${item.categoria}</div>
+                <div>${item.sala}</div>
+                <div>${item.estado}</div>
+                <div>${item.coleccion}</div>
+                <div><span class="badge ${item.estado === 'Bueno' ? 'badge-green' : item.estado === 'Regular' ? 'badge-yellow' : 'badge-red'}">${item.estado}</span></div>
+              </div>
+            `).join('')}
+          </div>`;
+      }
+
+      function renderInventory() {
+        const filtered = getFilteredItems();
+        const perPage = STATE.view === 'grid' ? STATE.perPageGrid : STATE.perPageList;
+        const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+        STATE.page = Math.min(STATE.page, totalPages);
+        const start = (STATE.page - 1) * perPage;
+        const pageItems = filtered.slice(start, start + perPage);
+
+        invCount.textContent = `Mostrando ${pageItems.length} de ${filtered.length} objetos (página ${STATE.page} de ${totalPages})`;
+        invContent.innerHTML = pageItems.length ? (STATE.view === 'grid' ? renderGrid(pageItems) : renderList(pageItems)) : '<div style="padding:24px;color:#4b5563;text-align:center">Sin resultados</div>';
+        renderPag(totalPages);
+      }
+
+      function openModal(itemId) {
+        const item = INVENTARIO_DATA.find(i => i.id === itemId);
+        if (!item) return;
+        STATE.currentItem = item;
+        invModalTitle.textContent = item.nombre;
+        invModalChips.innerHTML = `
+          <span class="inv-chip" style="background:${chipColor(item.categoria)}">${item.categoria}</span>
+          <span class="inv-chip" style="background:${chipColor(item.coleccion)}">${item.coleccion}</span>
+          <span class="inv-chip" style="background:${estadoColor(item.estado)}">${item.estado}</span>`;
+        invModalImage.innerHTML = item.imagen ? `<img src="${item.imagen}" alt="${item.nombre}"/>` : '<div>Sin imagen disponible</div>';
+        invModalIdentidad.innerHTML = `
+          <div><div class="modal-field-label">ID</div><div class="modal-field-val">${item.id}</div></div>
+          <div><div class="modal-field-label">Código actual</div><div class="modal-field-val">${item.codigo}</div></div>
+          <div><div class="modal-field-label">Categoría</div><div class="modal-field-val">${item.categoria}</div></div>
+          <div><div class="modal-field-label">Colección</div><div class="modal-field-val">${item.coleccion}</div></div>
+          <div><div class="modal-field-label">Sala</div><div class="modal-field-val">${item.sala}</div></div>
+          <div><div class="modal-field-label">Vitrina</div><div class="modal-field-val">${item.vitrina}</div></div>
+        `;
+        invModalFicha.innerHTML = `
+          <div><div class="modal-field-label">Autor / Procedencia</div><div class="modal-field-val">${item.autor}</div></div>
+          <div><div class="modal-field-label">Época</div><div class="modal-field-val">${item.epoca}</div></div>
+          <div><div class="modal-field-label">Dimensiones</div><div class="modal-field-val">${item.dimensiones}</div></div>
+          <div><div class="modal-field-label">Propietario</div><div class="modal-field-val">${item.propiedad}</div></div>
+          <div><div class="modal-field-label">Código antiguo</div><div class="modal-field-val">${item.codigoAntiguo || '—'}</div></div>
+          <div><div class="modal-field-label">Código SIGAF</div><div class="modal-field-val">${item.codigoSigaf || '—'}</div></div>
+        `;
+        invModalDesc.textContent = item.descripcion || 'Sin descripción disponible.';
+        invModalOverlay.classList.remove('hidden');
+        invModalOverlay.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeModal() {
+        STATE.currentItem = null;
+        invModalOverlay.classList.add('hidden');
+        invModalOverlay.setAttribute('aria-hidden', 'true');
+      }
+
+      function initEvents() {
+        invSearch.addEventListener('input', function() {
+          STATE.query = this.value;
+          STATE.page = 1;
+          renderInventory();
+        });
+
+        invSala.addEventListener('change', function() {
+          STATE.sala = this.value;
+          STATE.page = 1;
+          renderInventory();
+        });
+
+        invCat.addEventListener('change', function() {
+          STATE.categoria = this.value;
+          STATE.page = 1;
+          renderInventory();
+        });
+
+        invCol.addEventListener('change', function() {
+          STATE.coleccion = this.value;
+          STATE.page = 1;
+          renderInventory();
+        });
+
+        invViewButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            STATE.view = this.dataset.view;
+            invViewButtons.forEach(btn => btn.classList.toggle('active', btn === this));
+            STATE.page = 1;
+            renderInventory();
+          });
+        });
+
+        invContent.addEventListener('click', function(event) {
+          const card = event.target.closest('[data-id]');
+          if (!card) return;
+          openModal(card.dataset.id);
+        });
+
+        invPag.addEventListener('click', function(event) {
+          const button = event.target.closest('.pag-btn');
+          if (!button || button.disabled) return;
+          STATE.page = Number(button.dataset.page);
+          renderInventory();
+        });
+
+        invModalClose.addEventListener('click', closeModal);
+        invModalClose2.addEventListener('click', closeModal);
+        invModalOverlay.addEventListener('click', function(event) {
+          if (event.target === invModalOverlay) closeModal();
+        });
+
+        invModalEdit.addEventListener('click', function() {
+          alert('Función de edición no disponible en esta versión de demo.');
+        });
+
+        btnAdd.addEventListener('click', function() {
+          alert('Función de agregar objeto no disponible en esta demo.');
+        });
+
+        btnImport.addEventListener('click', function() {
+          alert('Función de importar planilla no disponible en esta demo.');
+        });
+
+        btnCategories.addEventListener('click', function() {
+          alert('Gestión de categorías no disponible en esta demo.');
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        populateSelects();
+        initEvents();
+        renderInventory();
+      });
+    </script>
   </body>
 </html>
