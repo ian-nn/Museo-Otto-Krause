@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reservas Admin - Museo Otto Krause</title>
+    <link rel="stylesheet" href="css/panel-lautirichi-frontenddashboard.css" />
+    <style>
+      .admin-page-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
+        gap: 28px;
+        align-items: start;
+        margin-bottom: 26px;
+      }
+
+      .admin-page-description {
+        color: #52525b;
+        max-width: 630px;
+        line-height: 1.7;
+      }
+
+      .admin-page-note {
+        color: #52525b;
+        font-size: 0.92rem;
+        line-height: 1.6;
+        justify-self: end;
+        text-align: right;
+        max-width: 360px;
+      }
+
+      .admin-page-note a {
+        color: var(--red);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .admin-page-note a:hover {
+        text-decoration: underline;
+      }
+
+      .admin-controls {
+        display: grid;
+        grid-template-columns: minmax(0, 2.4fr) minmax(180px, 0.8fr) minmax(180px, 0.8fr);
+        gap: 14px;
+        align-items: center;
+        margin-bottom: 0;
+      }
+
+      .search-input,
+      .select-filter {
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 16px;
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        background: #ffffff;
+        color: #111827;
+      }
+
+      .search-input {
+        background: #f8fafc;
+      }
+
+      .select-filter {
+        appearance: none;
+        background-image: linear-gradient(45deg, transparent 50%, #6b7280 50%), linear-gradient(135deg, #6b7280 50%, transparent 50%);
+        background-position: calc(100% - 18px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
+        background-size: 8px 8px;
+        background-repeat: no-repeat;
+        padding-right: 42px;
+      }
+
+      .search-input:focus,
+      .select-filter:focus {
+        outline: none;
+        box-shadow: none;
+        border-color: #d1d5db;
+      }
+
+      body.dashboard-page {
+        background: #f0f3f7;
+      }
+
+      .main-panel {
+        background: transparent;
+      }
+
+      .admin-table-wrap {
+        display: grid;
+        gap: 18px;
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 26px;
+        box-shadow: 0 24px 50px rgba(15, 23, 42, 0.08);
+      }
+
+      .reservas-table th,
+      .reservas-table td {
+        white-space: nowrap;
+      }
+
+      .reservas-table td {
+        padding: 18px 14px;
+      }
+
+      .action-buttons {
+        display: inline-flex;
+        gap: 8px;
+      }
+
+      .action-secondary {
+        background: #f3f4f6;
+      }
+
+      .action-secondary:hover {
+        background: #e5e7eb;
+      }
+
+      .action-success {
+        background: #dcfce7;
+        border-color: transparent;
+      }
+
+      .action-success:hover {
+        background: #bef264;
+      }
+
+      .action-btn svg {
+        display: block;
+      }
+
+      .reservas-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .reservas-table th {
+        text-align: left;
+        font-size: 0.77rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.11em;
+        color: #6b7280;
+        padding: 16px 14px 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .reservas-table td {
+        padding: 16px 14px;
+        border-bottom: 1px solid #f3f4f6;
+        color: #111827;
+        vertical-align: middle;
+      }
+
+      .reservas-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .referente-cell {
+        min-width: 180px;
+      }
+
+      .referente-cell strong {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 700;
+      }
+
+      .referente-cell span {
+        display: block;
+        font-size: 0.9rem;
+        color: #6b7280;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .status-badge.Pendiente {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .status-badge.Aprobada {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .status-badge.Rechazada {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .action-cell {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+        color: #111827;
+        cursor: pointer;
+        transition: background 0.18s ease, transform 0.18s ease;
+      }
+
+      .action-btn:hover {
+        background: #f3f4f6;
+        transform: translateY(-1px);
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(3px);
+      }
+
+      .modal {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 28px;
+        width: 100%;
+        max-width: 700px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
+      }
+
+      .modal-hdr {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+
+      .modal-title {
+        font-family: var(--font-family-heading);
+        font-size: 1.5rem;
+        font-weight: 900;
+        margin: 0;
+        color: #111827;
+      }
+
+      .modal-close {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        border: none;
+        background: #f3f4f6;
+        color: #374151;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      .modal-close:hover {
+        background: #e5e7eb;
+      }
+
+      .modal-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .modal-section {
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .modal-field-label {
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 8px;
+      }
+
+      .modal-field-val {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #111827;
+        line-height: 1.5;
+      }
+
+      .modal-desc {
+        font-size: 0.95rem;
+        color: #374151;
+        line-height: 1.8;
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 20px;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .btn-approve,
+      .btn-reject {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.18s ease;
+      }
+
+      .btn-approve {
+        background: #22c55e;
+        color: white;
+      }
+
+      .btn-reject {
+        background: #ef4444;
+        color: white;
+      }
+
+      .btn-approve:hover,
+      .btn-reject:hover {
+        transform: translateY(-1px);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        .admin-page-header {
+          grid-template-columns: 1fr;
+        }
+
+        .admin-page-note {
+          justify-self: flex-start;
+          text-align: left;
+        }
+
+        .modal-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+        navItems.forEach(function(item) {
+          var href = item.getAttribute('href');
+          if (href === window.location.pathname.split('/').pop()) {
+            item.classList.add('active');
+          }
+        });
+      });
+    </script>
+  </head>
+  <body class="dashboard-page">
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <div class="brand-block">
+            <div class="brand-mark">MK</div>
+            <div>
+              <h2>Museo Otto Krause</h2>
+              <p>Administración</p>
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="group-title">Gestión</div>
+            <nav class="sidebar-nav">
+              <a class="nav-item" href="dashboard.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span>Dashboard</span></a>
+              <a class="nav-item active" href="reservas-admin.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span>Reservas</span></a>
+              <a class="nav-item" href="inventario.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></span><span>Inventario</span></a>
+            </nav>
+          </div>
+
+          <div class="nav-group">
+            <div class="group-title">Configuración</div>
+            <nav class="sidebar-nav">
+              <a class="nav-item" href="fechas-disponibles.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>Fechas disponibles</span></a>
+              <a class="nav-item" href="historial.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span>Historial</span></a>
+            </nav>
+          </div>
+        </div>
+
+        <a class="logout-btn" href="index.html">Cerrar sesión</a>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Panel administrativo</p>
+            <h1>Reservas</h1>
+          </div>
+        </header>
+
+        <section class="page-card">
+          <div class="admin-table-wrap">
+            <div class="admin-controls" style="margin-bottom: 18px;">
+              <input id="search-reservas" class="search-input" type="search" placeholder="Buscar por nombre, email..." aria-label="Buscar reservas" />
+              <select id="filter-tipo" class="select-filter" aria-label="Filtrar por tipo">
+                <option value="">Todos los tipos</option>
+                <option value="Escolar">Escolar</option>
+                <option value="Personal">Personal</option>
+                <option value="Institucional">Institucional</option>
+              </select>
+              <select id="filter-estado" class="select-filter" aria-label="Filtrar por estado">
+                <option value="">Todos los estados</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Aprobada">Aprobada</option>
+                <option value="Rechazada">Rechazada</option>
+              </select>
+            </div>
+            <table class="reservas-table">
+              <thead>
+                <tr>
+                  <th>Referente</th>
+                  <th>Tipo</th>
+                  <th>Personas</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-reservas-body">
+                <tr>
+                  <td colspan="6" style="text-align:center;color:#6b7280;padding:28px">Cargando reservas...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-overlay hidden" id="reserva-modal-overlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reserva-modal-title">
+        <div class="modal-hdr">
+          <div>
+            <p class="eyebrow" style="margin-bottom:8px">Detalle de reserva</p>
+            <h2 class="modal-title" id="reserva-modal-title"></h2>
+          </div>
+          <button class="modal-close" id="reserva-modal-close" aria-label="Cerrar modal">×</button>
+        </div>
+
+        <div class="modal-grid">
+          <div class="modal-section">
+            <div class="modal-field-label">Referente</div>
+            <div class="modal-field-val" id="modal-referente"></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-field-label">Tipo de visita</div>
+            <div class="modal-field-val" id="modal-tipo"></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-field-label">Fecha</div>
+            <div class="modal-field-val" id="modal-fecha"></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-field-label">Horario</div>
+            <div class="modal-field-val" id="modal-horario"></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-field-label">Personas</div>
+            <div class="modal-field-val" id="modal-personas"></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-field-label">Estado actual</div>
+            <div class="modal-field-val" id="modal-estado"></div>
+          </div>
+        </div>
+
+        <div class="modal-desc" id="modal-observaciones"></div>
+
+        <div class="modal-actions">
+          <button class="btn-approve" id="reserva-approve-btn">Aprobar</button>
+          <button class="btn-reject" id="reserva-reject-btn">Rechazar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const reservasData = [
+        {
+          id: 'RV-027',
+          nombre: 'Sofía Martínez',
+          email: 'sofia.martinez@mail.com',
+          tipo: 'Escolar',
+          fecha: '2026-07-08',
+          horario: '09:00',
+          personas: '38 (35 est. + 3 doc.)',
+          estado: 'Pendiente',
+          observaciones: 'Solicitan guía didáctico y un recorrido enfocado en la maquinaria clásica. Ingresan por el acceso principal del colegio.'
+        },
+        {
+          id: 'RV-033',
+          nombre: 'Marcos Gómez',
+          email: 'marcos.gomez@mail.com',
+          tipo: 'Personal',
+          fecha: '2026-07-10',
+          horario: '14:00',
+          personas: '4',
+          estado: 'Aprobada',
+          observaciones: 'Visita familiar con interés en la sala de historia y la colección de artefactos industriales.'
+        },
+        {
+          id: 'RV-041',
+          nombre: 'Carolina Ríos',
+          email: 'carolina.rios@mail.com',
+          tipo: 'Institucional',
+          fecha: '2026-07-12',
+          horario: '09:00',
+          personas: '14',
+          estado: 'Pendiente',
+          observaciones: 'Solicitan atención especial en la exhibición de proyectos escolares y el laboratorio histórico.'
+        }
+      ];
+
+      let currentReserva = null;
+
+      function formatDate(dateString) {
+        const [year, month, day] = dateString.split('-');
+        return `${day}/${month}/${year}`;
+      }
+
+      function getStatusBadge(status) {
+        return `<span class="status-badge ${status}">${status}</span>`;
+      }
+
+      function openReservaModal(id) {
+        currentReserva = reservasData.find(item => item.id === id);
+        if (!currentReserva) return;
+
+        document.getElementById('reserva-modal-title').textContent = `Reserva ${currentReserva.id}`;
+        document.getElementById('modal-referente').textContent = `${currentReserva.nombre} · ${currentReserva.email}`;
+        document.getElementById('modal-tipo').textContent = currentReserva.tipo;
+        document.getElementById('modal-fecha').textContent = formatDate(currentReserva.fecha);
+        document.getElementById('modal-horario').textContent = currentReserva.horario;
+        document.getElementById('modal-personas').textContent = currentReserva.personas;
+        document.getElementById('modal-estado').innerHTML = getStatusBadge(currentReserva.estado);
+        document.getElementById('modal-observaciones').textContent = currentReserva.observaciones;
+
+        document.getElementById('reserva-modal-overlay').classList.remove('hidden');
+        document.getElementById('reserva-modal-overlay').setAttribute('aria-hidden', 'false');
+      }
+
+      function closeReservaModal() {
+        currentReserva = null;
+        document.getElementById('reserva-modal-overlay').classList.add('hidden');
+        document.getElementById('reserva-modal-overlay').setAttribute('aria-hidden', 'true');
+      }
+
+      function updateReservaStatus(status) {
+        if (!currentReserva) return;
+        currentReserva.estado = status;
+        renderReservasTable();
+        closeReservaModal();
+      }
+
+      function updateReservaStatusFromRow(id, status) {
+        const reserva = reservasData.find(item => item.id === id);
+        if (!reserva) return;
+        reserva.estado = status;
+        renderReservasTable();
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('search-reservas').addEventListener('input', renderReservasTable);
+        document.getElementById('filter-tipo').addEventListener('change', renderReservasTable);
+        document.getElementById('filter-estado').addEventListener('change', renderReservasTable);
+
+        renderReservasTable();
+
+        document.getElementById('reserva-modal-close').addEventListener('click', closeReservaModal);
+        document.getElementById('reserva-approve-btn').addEventListener('click', function() { updateReservaStatus('Aprobada'); });
+        document.getElementById('reserva-reject-btn').addEventListener('click', function() { updateReservaStatus('Rechazada'); });
+
+        document.getElementById('reserva-modal-overlay').addEventListener('click', function(event) {
+          if (event.target.id === 'reserva-modal-overlay') {
+            closeReservaModal();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

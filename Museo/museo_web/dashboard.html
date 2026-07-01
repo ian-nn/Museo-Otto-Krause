@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Museo Otto Krause</title>
+    <link rel="stylesheet" href="css/panel-lautirichi-frontenddashboard.css" />
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var userName = 'administrador PP';
+        var brandTitle = document.querySelector('.brand-block h2');
+        if (brandTitle) {
+          brandTitle.textContent = userName;
+        }
+
+        var navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+        navItems.forEach(function(item) {
+          var href = item.getAttribute('href');
+          if (href === window.location.pathname.split('/').pop()) {
+            item.classList.add('active');
+          }
+        });
+      });
+    </script>
+  </head>
+  <body class="dashboard-page">
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <div class="brand-block">
+            <div class="brand-mark">MK</div>
+            <div>
+              <h2>Museo Otto Krause</h2>
+              <p>Administración</p>
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="group-title">Gestión</div>
+            <nav class="sidebar-nav">
+              <a class="nav-item active" href="dashboard.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span>Dashboard</span></a>
+              <a class="nav-item" href="reservas-admin.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span>Reservas</span></a>
+              <a class="nav-item" href="inventario.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></span><span>Inventario</span></a>
+            </nav>
+          </div>
+
+          <div class="nav-group">
+            <div class="group-title">Configuración</div>
+            <nav class="sidebar-nav">
+              <a class="nav-item" href="fechas-disponibles.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>Fechas disponibles</span></a>
+              <a class="nav-item" href="historial.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span>Historial</span></a>
+            </nav>
+          </div>
+        </div>
+
+        <a class="logout-btn" href="index.html">Cerrar sesión</a>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Panel administrativo</p>
+            <h1>Dashboard</h1>
+          </div>
+        </header>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-accent"></div>
+            <div class="stat-content">
+              <strong>0</strong>
+              <span>Visitas aprobadas</span>
+            </div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-accent"></div>
+            <div class="stat-content">
+              <strong>1</strong>
+              <span>Escuelas</span>
+            </div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-accent"></div>
+            <div class="stat-content">
+              <strong>1</strong>
+              <span>Pendientes</span>
+            </div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-accent"></div>
+            <div class="stat-content">
+              <strong>12</strong>
+              <span>Objetos en inventario</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel-card wide-card">
+            <div class="card-head">
+              <h3>PRÓXIMAS VISITAS</h3>
+            </div>
+            <table class="reservas-table">
+              <thead>
+                <tr>
+                  <th>Referente</th>
+                  <th>Tipo</th>
+                  <th>Fecha</th>
+                  <th>Horario</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-reservas-body">
+                <tr>
+                  <td colspan="5" style="text-align:center;color:var(--gray-700);padding:24px">Cargando reservas...</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <div class="side-stack">
+            <article class="panel-card">
+              <div class="card-head">
+                <h3>FECHAS HABILITADAS</h3>
+                <a class="btn btn-primary" href="fechas-disponibles.html">Gestionar</a>
+              </div>
+              <ul class="date-list">
+                <li>
+                  <div>
+                    <strong>01/07/2026</strong>
+                    <span>09:00 - 14:00</span>
+                  </div>
+                  <span class="tag tag-red">Personal</span>
+                </li>
+                <li>
+                  <div>
+                    <strong>03/07/2026</strong>
+                    <span>09:00</span>
+                  </div>
+                  <span class="tag tag-red">Personal</span>
+                </li>
+                <li>
+                  <div>
+                    <strong>08/07/2026</strong>
+                    <span>09:00 - 14:00</span>
+                  </div>
+                  <span class="tag tag-blue">Escolar</span>
+                </li>
+                <li>
+                  <div>
+                    <strong>10/07/2026</strong>
+                    <span>14:00</span>
+                  </div>
+                  <span class="tag tag-beige">Institucional</span>
+                </li>
+              </ul>
+            </article>
+
+            <article class="panel-card">
+              <div class="card-head">
+                <h3>HISTORIAL</h3>
+                <a class="btn btn-secondary" href="historial.html">Ver todo</a>
+              </div>
+              <ul class="history-list">
+                    <li>
+                  <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg></div>
+                  <div>
+                    <strong>Reserva archivada</strong>
+                    <span>(Pendiente): Laura ...</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg></div>
+                  <div>
+                    <strong>Reserva archivada</strong>
+                    <span>(Aprobada): Carlos ...</span>
+                  </div>
+                </li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="js/controllers/reservas.js"></script>
+  </body>
+</html>
