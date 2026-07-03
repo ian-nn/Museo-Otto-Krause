@@ -64,19 +64,133 @@
           </div>
         </header>
 
-        <section class="page-card">
-          <p>Vista de esqueleto para el módulo de fechas disponibles.</p>
-          <div class="placeholder-grid">
-            <div class="placeholder-box">
-              <h4>Calendario</h4>
-              <p>Espacios libres y fechas reservadas.</p>
+        <div class="page-description">
+          <p>Definí qué días están habilitados para reservar y ajustá su cupo máximo. Cada fecha es exclusiva de un solo tipo de visita: no se mezclan Personal, Escolar e Institucional en la misma fecha.</p>
+        </div>
+
+        <div class="fechas-grid">
+          <!-- LEFT CARD: FECHAS CONFIGURADAS -->
+          <div class="panel-card fechas-table-card">
+            <div class="card-head">
+              <h3>Fechas configuradas (4)</h3>
             </div>
-            <div class="placeholder-box">
-              <h4>Gestión</h4>
-              <p>Agregar o modificar disponibilidades.</p>
-            </div>
+            
+            <table class="fechas-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Horarios</th>
+                  <th>Ocupación</th>
+                  <th>Cupo máximo</th>
+                  <th>Estado</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="fecha-col"><strong>01/07/2026</strong></td>
+                  <td><span class="tipo-chip personal">PERSONAL</span></td>
+                  <td><span class="horario-chip">09:00</span> - 14:00</td>
+                  <td class="ocupacion">0</td>
+                  <td class="cupo-input"><input type="number" value="32" min="0"></td>
+                  <td><span class="estado-chip pasada">Pasada</span></td>
+                  <td class="acciones">
+                    <button class="icon-btn view-btn" title="Ver reservas de esta fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    <button class="icon-btn delete-btn" title="Eliminar fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="fecha-col"><strong>05/07/2026</strong></td>
+                  <td><span class="tipo-chip personal">PERSONAL</span></td>
+                  <td><span class="horario-chip">09:00</span></td>
+                  <td class="ocupacion">0</td>
+                  <td class="cupo-input"><input type="number" value="32" min="0"></td>
+                  <td><span class="estado-chip proxima">Próxima</span></td>
+                  <td class="acciones">
+                    <button class="icon-btn view-btn" title="Ver reservas de esta fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    <button class="icon-btn delete-btn" title="Eliminar fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="fecha-col"><strong>08/07/2026</strong></td>
+                  <td><span class="tipo-chip escolar">ESCOLAR</span></td>
+                  <td><span class="horario-chip">09:00</span> - 14:00</td>
+                  <td class="ocupacion">0</td>
+                  <td class="cupo-input"><input type="number" value="32" min="0"></td>
+                  <td><span class="estado-chip proxima">Próxima</span></td>
+                  <td class="acciones">
+                    <button class="icon-btn view-btn" title="Ver reservas de esta fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    <button class="icon-btn delete-btn" title="Eliminar fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="fecha-col"><strong>10/07/2026</strong></td>
+                  <td><span class="tipo-chip institucional">INSTITUCIONAL</span></td>
+                  <td><span class="horario-chip">14:00</span></td>
+                  <td class="ocupacion">0</td>
+                  <td class="cupo-input"><input type="number" value="32" min="0"></td>
+                  <td><span class="estado-chip proxima">Próxima</span></td>
+                  <td class="acciones">
+                    <button class="icon-btn view-btn" title="Ver reservas de esta fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    <button class="icon-btn delete-btn" title="Eliminar fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </section>
+
+          <!-- RIGHT CARD: AGREGAR FECHA -->
+          <div style="background:white;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.08);position:sticky;top:84px">
+            <div style="font-family:var(--font-display);font-size:18px;font-weight:800;text-transform:uppercase;color:#000000;margin-bottom:16px">Agregar fecha</div>
+
+            <form style="display:flex;flex-direction:column;gap:16px">
+              <!-- Tipo de Visita -->
+              <div>
+                <label style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4b5563;display:block;margin-bottom:8px">Tipo de visita <span style="color:#c8001a">*</span></label>
+                <div id="tipo-fecha-group" style="display:flex;gap:6px">
+                  <button type="button" class="tipo-fecha-btn-estoes selected" data-tipo="personal" style="flex:1;padding:9px 10px;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:1.5px solid #c8001a;background:#c8001a1a;color:#c8001a">Personal</button>
+                  <button type="button" class="tipo-fecha-btn-estoes" data-tipo="escolar" style="flex:1;padding:9px 10px;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:1.5px solid #e5e5e5;background:white;color:#4b5563">Escolar</button>
+                  <button type="button" class="tipo-fecha-btn-estoes" data-tipo="institucional" style="flex:1;padding:9px 10px;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:1.5px solid #e5e5e5;background:white;color:#4b5563">Instit.</button>
+                </div>
+                <div style="font-size:11px;color:#4b5563;margin-top:6px">Esta fecha quedará habilitada únicamente para este tipo de reserva.</div>
+              </div>
+
+              <!-- Fecha -->
+              <div>
+                <label style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4b5563;display:block;margin-bottom:6px">Fecha <span style="color:#c8001a">*</span></label>
+                <input type="date" id="fecha-input" class="form-input-estoes" value="" style="width:100%"/>
+              </div>
+
+              <!-- Horarios Habilitados -->
+              <div>
+                <label style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4b5563;display:block;margin-bottom:8px">Horarios habilitados</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px;cursor:pointer">
+                  <input type="checkbox" id="fecha-h09" checked style="accent-color:#c8001a;width:16px;height:16px"/> 09:00 hs
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer">
+                  <input type="checkbox" id="fecha-h14" checked style="accent-color:#c8001a;width:16px;height:16px"/> 14:00 hs
+                </label>
+              </div>
+
+              <!-- Cupo Máximo -->
+              <div>
+                <label style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4b5563;display:block;margin-bottom:6px">Cupo máximo de personas</label>
+                <input type="number" id="fecha-cupo" class="form-input-estoes" value="32" min="1" style="width:100%"/>
+                <div style="font-size:11px;color:#4b5563;margin-top:5px">Por defecto: 32. Editable también después, desde la columna "Cupo máximo" de la tabla.</div>
+              </div>
+
+              <!-- Error message -->
+              <div id="fecha-err" style="display:none;font-size:12px;color:#c8001a;margin-bottom:10px"></div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn-sm btn-primary-estoes" style="width:100%;padding:10px">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:5px;vertical-align:middle"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Agregar fecha
+              </button>
+            </form>
+          </div>
+        </div>
       </main>
     </div>
   </body>

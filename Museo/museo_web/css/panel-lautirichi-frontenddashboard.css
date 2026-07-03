@@ -198,6 +198,453 @@ body.dashboard-page {
   white-space: nowrap;
 }
 
+/* ===== FECHAS DISPONIBLES PAGE STYLES ===== */
+
+.page-description {
+  margin-bottom: 24px;
+  padding: 0;
+}
+
+.page-description p {
+  color: #666666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.fechas-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  width: 100%;
+}
+
+.fechas-table-card,
+.agregar-fecha-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 26px;
+}
+
+.card-head h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* ===== TABLE STYLES ===== */
+
+.fechas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.fechas-table thead {
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.fechas-table th {
+  text-align: left;
+  padding: 12px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #999999;
+}
+
+.fechas-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #f5f5f5;
+  color: #333333;
+  vertical-align: middle;
+}
+
+.fechas-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.fecha-col {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Type chips */
+.tipo-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.tipo-chip.personal {
+  background: #ffe6e8;
+  color: #d90010;
+}
+
+.tipo-chip.escolar {
+  background: #e6f2ff;
+  color: #0066cc;
+}
+
+.tipo-chip.institucional {
+  background: #f5f0e6;
+  color: #b8860b;
+}
+
+/* Horario chip */
+.horario-chip {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #2db84d;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Ocupacion */
+.ocupacion {
+  text-align: center;
+  color: #666666;
+  font-weight: 600;
+}
+
+/* Cupo input */
+.cupo-input {
+  padding: 0;
+}
+
+.cupo-input input {
+  width: 50px;
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.cupo-input input:focus {
+  outline: none;
+  border-color: #d90010;
+  box-shadow: 0 0 0 2px rgba(217, 0, 16, 0.1);
+}
+
+/* Estado chips */
+.estado-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.estado-chip.pasada {
+  background: #e8e8e8;
+  color: #666666;
+}
+
+.estado-chip.proxima {
+  background: #e6f5ea;
+  color: #2db84d;
+}
+
+/* Action buttons */
+.acciones {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background: #f0f0f0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.icon-btn.view-btn:hover {
+  background: #e8e8e8;
+}
+
+.icon-btn.delete-btn {
+  background: #ffe6e8;
+  color: #d90010;
+}
+
+.icon-btn.delete-btn:hover {
+  background: #ffc8ce;
+}
+
+/* ===== FORM STYLES ===== */
+
+.agregar-fecha-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1a1a1a;
+}
+
+.required {
+  color: #d90010;
+}
+
+/* Tipo buttons */
+.tipo-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.tipo-btn {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #666666;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tipo-btn:hover {
+  border-color: #d90010;
+  color: #d90010;
+}
+
+.tipo-btn.selected {
+  border-color: #d90010;
+  background: #d90010;
+  color: #ffffff;
+}
+
+/* Form inputs */
+.form-input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: var(--font-family-sans);
+  color: #333333;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #d90010;
+  box-shadow: 0 0 0 2px rgba(217, 0, 16, 0.1);
+}
+
+.form-input::placeholder {
+  color: #999999;
+}
+
+/* Date input wrapper */
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-input {
+  width: 100%;
+  padding-right: 36px;
+}
+
+.date-icon {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  font-size: 0.95rem;
+}
+
+/* Checkboxes */
+.horarios-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333333;
+  font-weight: 600;
+}
+
+.horario-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #d90010;
+}
+
+/* Help text */
+.form-help {
+  font-size: 0.8rem;
+  color: #999999;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Submit button */
+.btn-agregar {
+  padding: 12px 20px;
+  background: #d90010;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 12px;
+}
+
+.btn-agregar:hover {
+  background: #b80010;
+  box-shadow: 0 4px 12px rgba(217, 0, 16, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .fechas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .tipo-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .fechas-table {
+    font-size: 0.8rem;
+  }
+
+  .fechas-table th,
+  .fechas-table td {
+    padding: 8px 4px;
+  }
+}
+
+/* ===== ESTILOS COMPATIBLES CON MUSEOOKRAUSE ESTOES.HTML ===== */
+
+.form-input-estoes {
+  border: 1.5px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.18s;
+  outline: none;
+  background: white;
+}
+
+.form-input-estoes:focus {
+  border-color: #c8001a;
+}
+
+.form-input-estoes.err {
+  border-color: #c8001a;
+  background: rgba(200, 0, 26, 0.03);
+}
+
+.tipo-fecha-btn-estoes {
+  transition: all 0.18s ease;
+}
+
+.tipo-fecha-btn-estoes:hover {
+  border-color: #c8001a !important;
+  color: #c8001a !important;
+}
+
+.tipo-fecha-btn-estoes.selected {
+  border-color: #c8001a !important;
+  background: #c8001a1a !important;
+  color: #c8001a !important;
+}
+
+.btn-sm {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary-estoes {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  background: #c8001a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary-estoes:hover {
+  background: #a80016;
+}
+
 .btn-secondary:hover,
 .card-head a.btn-secondary:hover {
   color: #4B5563;
