@@ -790,7 +790,7 @@ html {
 }
 
 .patrimonio-section {
-  background: radial-gradient(ellipse at top, #2a0a10 0%, var(--color-surface-primary) 55%);
+  background: linear-gradient(180deg, #1a0505 0%, #0f0303 25%, #0a0808 50%, #080606 100%);
   padding: 80px 24px;
 }
 
@@ -1154,11 +1154,9 @@ html {
 .reservas-section {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #080606 0%, rgba(17, 0, 0, 0.96) 18%, rgba(45, 0, 8, 0.95) 58%, #120308 100%);
+  background: linear-gradient(180deg, #080606 0%, #080707 20%, #090808 40%, #0a0909 60%, #0b0a0a 80%, #0c0b0b 100%);
   background-size: cover;
   background-repeat: no-repeat;
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   min-height: calc(100vh - var(--navbar-height));
   width: 100vw;
   max-width: none;
