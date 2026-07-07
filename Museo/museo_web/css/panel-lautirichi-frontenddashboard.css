@@ -303,14 +303,17 @@ body.dashboard-page {
 
 /* Horario chip */
 .horario-chip {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: #2db84d;
-  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  color: #4b5563;
   font-size: 0.75rem;
   font-weight: 700;
   white-space: nowrap;
+  margin-right: 4px;
 }
 
 /* Ocupacion */
@@ -597,14 +600,12 @@ body.dashboard-page {
 }
 
 .tipo-fecha-btn-estoes:hover {
-  border-color: #c8001a !important;
-  color: #c8001a !important;
+  border-color: #c8001a;
+  color: #c8001a;
 }
 
 .tipo-fecha-btn-estoes.selected {
-  border-color: #c8001a !important;
-  background: #c8001a1a !important;
-  color: #c8001a !important;
+  /* Selected state is controlled inline by JS to allow per-type colors */
 }
 
 .btn-sm {
