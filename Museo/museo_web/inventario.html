@@ -632,6 +632,47 @@
         background: #a80016;
       }
 
+      .delete-confirm-modal {
+        max-width: 440px;
+        text-align: center;
+      }
+
+      .delete-confirm-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(200, 0, 26, .1);
+        color: var(--red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 4px auto 16px;
+      }
+
+      .delete-confirm-title {
+        font-family: var(--font-family-heading);
+        font-size: 1.35rem;
+        font-weight: 900;
+        color: var(--black);
+        margin-bottom: 8px;
+      }
+
+      .delete-confirm-text {
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+
+      .delete-confirm-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .delete-confirm-actions .btn-sm {
+        flex: 1;
+      }
+
       .cat-modal-table {
         width: 100%;
         border-collapse: collapse;
@@ -731,7 +772,7 @@
         bottom: 24px;
         right: 24px;
         z-index: 999;
-        background: var(--black);
+        background: #000000;
         color: white;
         padding: 14px 20px;
         border-radius: 12px;
@@ -900,6 +941,20 @@
       </div>
     </div>
 
+    <div class="modal-overlay hidden" id="delete-confirm-overlay" aria-hidden="true">
+      <div class="modal delete-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title">
+        <div class="delete-confirm-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h2 class="delete-confirm-title" id="delete-confirm-title">¿Eliminar este objeto?</h2>
+        <p class="delete-confirm-text" id="delete-confirm-text"></p>
+        <div class="delete-confirm-actions">
+          <button class="btn-sm btn-secondary" type="button" id="delete-confirm-cancel">Cancelar</button>
+          <button class="btn-sm btn-primary" type="button" id="delete-confirm-accept">Sí, eliminar</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       const ico = {
         check: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`
@@ -948,9 +1003,30 @@
       const invModalClose = document.getElementById('inv-modal-close');
       const invModalClose2 = document.getElementById('inv-modal-close-2');
       const invModalEdit = document.getElementById('inv-modal-edit');
+      const deleteConfirmOverlay = document.getElementById('delete-confirm-overlay');
+      const deleteConfirmTitle = document.getElementById('delete-confirm-title');
+      const deleteConfirmText = document.getElementById('delete-confirm-text');
+      const deleteConfirmCancel = document.getElementById('delete-confirm-cancel');
+      const deleteConfirmAccept = document.getElementById('delete-confirm-accept');
       const btnAdd = document.getElementById('btn-add');
       const btnImport = document.getElementById('btn-import');
       const btnCategories = document.getElementById('btn-categories');
+
+      let pendingDeleteAction = null;
+
+      function openDeleteConfirm(title, message, action) {
+        pendingDeleteAction = action;
+        deleteConfirmTitle.textContent = title;
+        deleteConfirmText.innerHTML = message;
+        deleteConfirmOverlay.classList.remove('hidden');
+        deleteConfirmOverlay.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeDeleteConfirm() {
+        pendingDeleteAction = null;
+        deleteConfirmOverlay.classList.add('hidden');
+        deleteConfirmOverlay.setAttribute('aria-hidden', 'true');
+      }
 
       function normalize(text) {
         return String(text || '').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
@@ -1449,32 +1525,27 @@
 
               if (action === 'delete') {
                 const itemsUsing = INVENTARIO_DATA.filter(item => item.categoria === name).length;
-                if (itemsUsing > 0) {
-                  const reassignmentValue = window.prompt(`Hay ${itemsUsing} objetos usando "${name}". Ingresá otra categoría para reasignarlos o dejá vacío para dejarla sin categoría.`, '');
-                  const targetValue = reassignmentValue === null ? null : reassignmentValue.trim();
-                  if (reassignmentValue !== null && targetValue === '') {
+                const detail = itemsUsing > 0
+                  ? `Hay <strong style="color:var(--red)">${itemsUsing} objeto${itemsUsing !== 1 ? 's' : ''}</strong> usando esta categoría. Quedarán sin categoría asignada.`
+                  : 'Esta categoría no está siendo usada por ningún objeto.';
+                openDeleteConfirm(
+                  `¿Eliminar "${escapeHtml(name)}"?`,
+                  `${detail}<br><span style="font-size:13px">Esta acción no se puede deshacer.</span>`,
+                  () => {
                     INVENTARIO_DATA.forEach(item => {
                       if (item.categoria === name) item.categoria = '';
                     });
-                  } else if (targetValue) {
-                    INVENTARIO_DATA.forEach(item => {
-                      if (item.categoria === name) item.categoria = targetValue;
-                    });
+
+                    const categoryIndex = INVENTARIO_DATA.findIndex(item => item.nombre === `Categoría ${name}` && item.codigo.startsWith('CAT-'));
+                    if (categoryIndex >= 0) {
+                      INVENTARIO_DATA.splice(categoryIndex, 1);
+                    }
+
+                    populateSelects();
+                    renderInventory();
+                    refreshModal();
                   }
-                }
-
-                INVENTARIO_DATA.forEach(item => {
-                  if (item.categoria === name) item.categoria = '';
-                });
-
-                const categoryIndex = INVENTARIO_DATA.findIndex(item => item.nombre === `Categoría ${name}` && item.codigo.startsWith('CAT-'));
-                if (categoryIndex >= 0) {
-                  INVENTARIO_DATA.splice(categoryIndex, 1);
-                }
-
-                populateSelects();
-                renderInventory();
-                refreshModal();
+                );
               }
             });
           });
@@ -1806,7 +1877,11 @@
         const invModalDelete = document.getElementById('inv-modal-delete');
         invModalDelete.addEventListener('click', function() {
           if (!STATE.currentItem) return;
-          if (confirm('¿Estás seguro de que deseas eliminar este objeto?')) {
+          const itemToDelete = STATE.currentItem;
+          openDeleteConfirm(
+            '¿Eliminar este objeto?',
+            `Estás a punto de eliminar <strong style="color:var(--red)">"${escapeHtml(itemToDelete.nombre)}"</strong> (${escapeHtml(itemToDelete.codigo)}) del inventario.<br><span style="font-size:13px">Esta acción no se puede deshacer.</span>`,
+            () => {
             const index = INVENTARIO_DATA.findIndex(i => i.id === STATE.currentItem.id);
             if (index >= 0) {
               const deletedName = INVENTARIO_DATA[index].nombre;
@@ -1815,7 +1890,18 @@
               closeModal();
               renderInventory();
             }
-          }
+            }
+          );
+        });
+
+        deleteConfirmCancel.addEventListener('click', closeDeleteConfirm);
+        deleteConfirmAccept.addEventListener('click', function() {
+          const action = pendingDeleteAction;
+          closeDeleteConfirm();
+          if (action) action();
+        });
+        deleteConfirmOverlay.addEventListener('click', function(event) {
+          if (event.target === deleteConfirmOverlay) closeDeleteConfirm();
         });
 
         btnAdd.addEventListener('click', function() {

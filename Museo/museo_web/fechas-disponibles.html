@@ -144,6 +144,58 @@
         </div>
       </main>
     </div>
+
+    <div class="modal-overlay hidden" id="delete-fecha-overlay" aria-hidden="true" style="position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)">
+      <div role="dialog" aria-modal="true" aria-labelledby="delete-fecha-title" style="background:#ffffff;border-radius:20px;padding:28px;width:100%;max-width:440px;box-shadow:0 24px 70px rgba(15,23,42,.12);text-align:center">
+        <div style="width:56px;height:56px;border-radius:50%;background:rgba(200,0,26,.1);color:#c8001a;display:flex;align-items:center;justify-content:center;margin:4px auto 16px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h2 id="delete-fecha-title" style="font-family:var(--font-display);font-size:1.35rem;font-weight:900;text-transform:uppercase;color:#0d0d0d;margin:0 0 8px">¿Eliminar esta fecha?</h2>
+        <p id="delete-fecha-text" style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 24px"></p>
+        <div style="display:flex;gap:10px">
+          <button class="btn-sm btn-secondary" type="button" id="delete-fecha-cancel" style="flex:1">Cancelar</button>
+          <button class="btn-sm btn-primary-estoes" type="button" id="delete-fecha-accept" style="flex:1">Sí, eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container" aria-live="polite"></div>
+    <style>
+      #toast-container .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 20px;
+        background: #000000;
+        color: #ffffff;
+        border-left: 4px solid #c8001a;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
+        font-size: 14px;
+        font-weight: 600;
+        animation: toastIn .3s ease;
+      }
+
+      #toast-container .toast-icon {
+        width: 20px;
+        height: 20px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: #c8001a;
+      }
+
+      @keyframes toastIn {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    </style>
+
     <script>
       const fechasIniciales = [
         { id: 1, fecha: '2026-07-01', tipo: 'personal', horarios: ['09:00', '14:00'], cupo: 32 },
@@ -180,6 +232,33 @@
       const cupoInput = document.getElementById('fecha-cupo');
       const h09Input = document.getElementById('fecha-h09');
       const h14Input = document.getElementById('fecha-h14');
+      const deleteFechaOverlay = document.getElementById('delete-fecha-overlay');
+      const deleteFechaText = document.getElementById('delete-fecha-text');
+      const toastContainer = document.getElementById('toast-container');
+      let pendingFechaDelete = null;
+
+      function showToast(message) {
+        toastContainer.innerHTML = `<div class="toast"><div class="toast-icon">✓</div>${message}</div>`;
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => {
+          toastContainer.innerHTML = '';
+        }, 3500);
+      }
+
+      function openFechaDeleteConfirm(fecha, action) {
+        pendingFechaDelete = action;
+        deleteFechaText.innerHTML = `Estás a punto de eliminar la fecha <strong style="color:#c8001a">${formatDate(fecha.fecha)}</strong> para visitas ${tipoMeta[fecha.tipo].label.toLowerCase()}.<br><span style="font-size:13px">Esta acción no se puede deshacer.</span>`;
+        deleteFechaOverlay.classList.remove('hidden');
+        deleteFechaOverlay.style.display = 'flex';
+        deleteFechaOverlay.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeFechaDeleteConfirm() {
+        pendingFechaDelete = null;
+        deleteFechaOverlay.classList.add('hidden');
+        deleteFechaOverlay.style.display = 'none';
+        deleteFechaOverlay.setAttribute('aria-hidden', 'true');
+      }
 
       function formatDate(fecha) {
         const [year, month, day] = fecha.split('-');
@@ -357,6 +436,7 @@
 
         renderFechas();
         resetForm();
+        showToast('Fecha habilitada correctamente');
       });
 
       document.addEventListener('click', (event) => {
@@ -370,12 +450,27 @@
         }
 
         if (button.dataset.action === 'remove-fecha') {
-          state.fechas = state.fechas.filter((fecha) => fecha.id !== id);
-          if (state.fechaDetalleAbierta === id) {
-            state.fechaDetalleAbierta = null;
-          }
-          renderFechas();
+          const fechaToDelete = state.fechas.find((fecha) => fecha.id === id);
+          if (!fechaToDelete) return;
+          openFechaDeleteConfirm(fechaToDelete, () => {
+            state.fechas = state.fechas.filter((fecha) => fecha.id !== id);
+            if (state.fechaDetalleAbierta === id) {
+              state.fechaDetalleAbierta = null;
+            }
+            renderFechas();
+            showToast('Fecha eliminada');
+          });
         }
+      });
+
+      document.getElementById('delete-fecha-cancel').addEventListener('click', closeFechaDeleteConfirm);
+      document.getElementById('delete-fecha-accept').addEventListener('click', () => {
+        const action = pendingFechaDelete;
+        closeFechaDeleteConfirm();
+        if (action) action();
+      });
+      deleteFechaOverlay.addEventListener('click', (event) => {
+        if (event.target === deleteFechaOverlay) closeFechaDeleteConfirm();
       });
 
       document.addEventListener('change', (event) => {

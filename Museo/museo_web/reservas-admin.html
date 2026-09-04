@@ -354,6 +354,40 @@
         display: none;
       }
 
+      #toast-container .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 20px;
+        background: #000000;
+        color: #ffffff;
+        border-left: 4px solid var(--red);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
+        font-size: 14px;
+        font-weight: 600;
+        animation: toastIn .3s ease;
+      }
+
+      #toast-container .toast-icon {
+        width: 20px;
+        height: 20px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: var(--red);
+      }
+
+      @keyframes toastIn {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+
       @media (max-width: 900px) {
         .admin-page-header {
           grid-template-columns: 1fr;
@@ -507,6 +541,8 @@
       </div>
     </div>
 
+    <div id="toast-container" aria-live="polite"></div>
+
     <script>
       const reservasData = [
         {
@@ -545,6 +581,14 @@
       ];
 
       let currentReserva = null;
+      let toastTimer = null;
+
+      function showToast(message) {
+        const container = document.getElementById('toast-container');
+        container.innerHTML = `<div class="toast"><div class="toast-icon">✓</div>${message}</div>`;
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => { container.innerHTML = ''; }, 3500);
+      }
 
       function formatDate(dateString) {
         const [year, month, day] = dateString.split('-');
@@ -583,6 +627,7 @@
         currentReserva.estado = status;
         renderReservasTable();
         closeReservaModal();
+        showToast(`Reserva ${status.toLowerCase()} correctamente`);
       }
 
       function updateReservaStatusFromRow(id, status) {
@@ -590,6 +635,7 @@
         if (!reserva) return;
         reserva.estado = status;
         renderReservasTable();
+        showToast(`Reserva ${status.toLowerCase()} correctamente`);
       }
 
       document.addEventListener('DOMContentLoaded', function() {

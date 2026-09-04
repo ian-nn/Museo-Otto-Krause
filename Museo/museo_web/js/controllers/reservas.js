@@ -106,7 +106,7 @@ const availability = {
       row.style.marginTop = '10px';
       row.style.padding = '10px';
       row.style.border = '1px dashed var(--gray-200)';
-      row.style.borderRadius = '8px';
+      row.style.borderRadius = '0';
       row.innerHTML = `
         <div class="form-row" style="margin-bottom:8px;">
           <div class="form-field">

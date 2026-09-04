@@ -1786,7 +1786,7 @@ html {
 
     .form-card {
       background: #232323;
-      border-radius: 16px;
+      border-radius: 0;
       padding: 32px;
       box-shadow: var(--shadow);
       border: 1px solid rgba(255, 255, 255, 0.06);
@@ -1933,7 +1933,7 @@ html {
 
     .reserva-success {
       background: #232323;
-      border-radius: 16px;
+      border-radius: 0;
       padding: 48px;
       text-align: center;
       box-shadow: var(--shadow);
