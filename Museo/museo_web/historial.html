@@ -5,6 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Historial - Museo Otto Krause</title>
     <link rel="stylesheet" href="css/panel-lautirichi-frontenddashboard.css" />
+    <style>
+      .history-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+      .history-header h2{font-family:var(--font-family-heading);font-size:26px;font-weight:900;text-transform:uppercase;margin:0}
+      .history-description{font-size:14px;color:var(--gray-700);margin:0 0 20px}
+      .history-toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+      .history-search,.history-select,.history-date{border:1.5px solid var(--gray-200);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;background:white;outline:none}
+      .history-search{flex:2;min-width:200px}
+      .history-select{min-width:160px}
+      .history-date{width:150px}
+      .history-date-group{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-700);font-weight:600}
+      .history-count{font-size:12px;color:var(--gray-700);margin-bottom:10px}
+      .history-records{background:white;border-radius:12px;box-shadow:var(--shadow);padding:10px 24px;overflow:hidden}
+      .history-record-head,.history-record{display:grid;grid-template-columns:2fr 4fr 2fr 40px;gap:18px;align-items:center}
+      .history-record-head{padding:10px 14px;border-bottom:2px solid #e5e5e5;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-700)}
+      .history-record{padding:12px 14px;border-bottom:1px solid #e5e5e5;font-size:13px;min-height:48px;transition:background .15s ease}
+      .history-record:last-child{border-bottom:0}
+      .history-record:hover{background:rgba(200,0,26,.025)}
+      .history-type{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+      .history-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+      .history-message{max-width:460px;line-height:1.45}
+      .history-date-value{white-space:nowrap;color:var(--gray-700);font-size:12px}
+      .history-view{width:30px;height:30px;border:1px solid var(--gray-200);border-radius:6px;background:var(--gray-100);color:var(--gray-700);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+      .history-view:hover{background:var(--gray-200)}
+      .history-empty{text-align:center;padding:32px;color:var(--gray-700)}
+      [hidden]{display:none !important}
+      .history-confirm-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
+      .history-confirm-modal{width:100%;max-width:420px;background:white;border-radius:20px;padding:32px;text-align:center;box-sizing:border-box}
+      .history-confirm-icon{width:56px;height:56px;border-radius:50%;background:rgba(200,0,26,.1);color:var(--red);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+      .history-confirm-title{font-family:var(--font-family-heading);font-size:20px;font-weight:900;text-transform:uppercase;color:var(--black);margin:0 0 8px}
+      .history-confirm-text{font-size:14px;color:var(--gray-700);line-height:1.6;margin:0 0 24px}
+      .history-confirm-actions{display:flex;gap:10px}
+      .history-confirm-actions button{flex:1}
+      @media(max-width:720px){.history-header{flex-direction:column}.history-toolbar{align-items:stretch}.history-date-group{justify-content:space-between}.history-date{flex:1;width:auto}.history-records{padding:8px 12px;overflow-x:auto}.history-record-head,.history-record{min-width:680px}}
+    </style>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         var userName = 'administrador PP';
@@ -65,19 +99,165 @@
         </header>
 
         <section class="page-card">
-          <p>Vista de esqueleto para el módulo de historial.</p>
-          <div class="placeholder-grid">
-            <div class="placeholder-box" id="historial-1">
-              <h4>Historial: reserva 1</h4>
-              <p>Detalle rápido de la reserva archivada pendiente.</p>
+          <div class="history-header">
+            <div>
+              <p class="history-description">Registro permanente de las acciones realizadas en el sistema.</p>
             </div>
-            <div class="placeholder-box" id="historial-2">
-              <h4>Historial: reserva 2</h4>
-              <p>Detalle rápido de la reserva archivada aprobada.</p>
-            </div>
+            <button class="btn-sm btn-secondary" type="button" id="history-clear" hidden>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              Vaciar historial
+            </button>
           </div>
+          <div class="history-toolbar">
+            <input class="history-search" id="history-search" type="search" placeholder="Buscar por nombre, acción..." />
+            <select class="history-select" id="history-type" aria-label="Filtrar por tipo">
+              <option value="">Todos los tipos</option>
+              <option value="reserva">Reservas</option>
+              <option value="obj">Objetos</option>
+            </select>
+            <label class="history-date-group">Desde <input class="history-date" id="history-from" type="date" /></label>
+            <label class="history-date-group">Hasta <input class="history-date" id="history-to" type="date" /></label>
+            <button class="btn-sm btn-secondary" type="button" id="history-reset" hidden>Limpiar filtros</button>
+          </div>
+          <div class="history-count" id="history-count"></div>
+          <div class="history-records">
+            <div class="history-record-head"><div>Tipo</div><div>Descripción</div><div>Fecha y hora</div><div></div></div>
+            <div id="history-rows"></div>
+          </div>
+          <div id="history-pagination"></div>
         </section>
       </main>
     </div>
+
+    <div class="history-confirm-overlay" id="history-confirm-overlay" hidden aria-hidden="true">
+      <div class="history-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="history-confirm-title">
+        <div class="history-confirm-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h2 class="history-confirm-title" id="history-confirm-title">¿Vaciar el historial?</h2>
+        <p class="history-confirm-text">Se eliminarán todos los registros guardados. Esta acción no se puede deshacer.</p>
+        <div class="history-confirm-actions">
+          <button class="btn-sm btn-secondary" type="button" id="history-confirm-cancel">Cancelar</button>
+          <button class="btn-sm btn-primary" type="button" id="history-confirm-accept">Sí, vaciar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const HISTORY_STORAGE_KEY = 'museo_otto_krause_history';
+      const HISTORY_PAGE_SIZE = 20;
+      const HISTORY_ICONS = {
+        reserva_aprobada: { path: 'M20 6 9 17l-5-5', color: '#16a34a' },
+        reserva_rechazada: { path: 'M18 6 6 18M6 6l12 12', color: '#dc2626' },
+        reserva_nueva: { path: 'M12 5v14M5 12h14', color: '#2563eb' },
+        reserva_archivada: { path: 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', color: '#6b7280' },
+        obj_agregado: { path: 'M12 5v14M5 12h14', color: '#7c3aed' },
+        obj_editado: { path: 'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7', color: '#d97706' },
+        obj_eliminado: { path: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6', color: '#dc2626' },
+        obj_importado: { path: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12', color: '#059669' }
+      };
+
+      const initialHistory = [
+        { id: 1, type: 'reserva_aprobada', msg: 'Reserva aprobada: María González', ts: '2026-08-28T10:20:00', entityId: null },
+        { id: 2, type: 'obj_agregado', msg: 'Objeto agregado: "Tablero eléctrico"', ts: '2026-08-27T14:05:00', entityId: 'INV-001' },
+        { id: 3, type: 'obj_editado', msg: 'Objeto editado: "Máquina de vapor"', ts: '2026-08-26T09:40:00', entityId: 'INV-002' },
+        { id: 4, type: 'reserva_archivada:RV-027', msg: 'Reserva archivada (Pendiente): Sofía Martínez - visita del 08/07/2026', ts: '2026-09-08T11:10:00', entityId: 'RV-027' },
+        { id: 5, type: 'reserva_archivada:RV-033', msg: 'Reserva archivada (Aprobada): Marcos Gómez - visita del 10/07/2026', ts: '2026-09-08T11:10:01', entityId: 'RV-033' },
+        { id: 6, type: 'reserva_archivada:RV-041', msg: 'Reserva archivada (Pendiente): Carolina Ríos - visita del 12/07/2026', ts: '2026-09-08T11:10:02', entityId: 'RV-041' }
+      ];
+
+      let history = loadHistory();
+      let historyPage = 1;
+
+      function loadHistory() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY));
+          return Array.isArray(saved) ? saved : initialHistory;
+        } catch (_) {
+          return initialHistory;
+        }
+      }
+
+      function escapeHistoryHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' })[char]);
+      }
+
+      function normalizeHistory(value) {
+        return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      }
+
+      function saveHistory() {
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+      }
+
+      function getFilteredHistory() {
+        const query = normalizeHistory(document.getElementById('history-search').value);
+        const type = document.getElementById('history-type').value;
+        const from = document.getElementById('history-from').value;
+        const to = document.getElementById('history-to').value;
+        return history.filter(entry => {
+          if (type && !entry.type.startsWith(type)) return false;
+          const date = new Date(entry.ts).toISOString().slice(0, 10);
+          if (from && date < from) return false;
+          if (to && date > to) return false;
+          return !query || normalizeHistory(entry.msg).includes(query);
+        }).sort((a, b) => new Date(b.ts) - new Date(a.ts));
+      }
+
+      function renderHistory() {
+        const filtered = getFilteredHistory();
+        const totalPages = Math.max(1, Math.ceil(filtered.length / HISTORY_PAGE_SIZE));
+        historyPage = Math.min(historyPage, totalPages);
+        const pageItems = filtered.slice((historyPage - 1) * HISTORY_PAGE_SIZE, historyPage * HISTORY_PAGE_SIZE);
+        document.getElementById('history-count').textContent = `${filtered.length} resultado${filtered.length !== 1 ? 's' : ''} · página ${historyPage} de ${totalPages}`;
+        document.getElementById('history-clear').hidden = history.length === 0;
+        const hasFilters = ['history-search', 'history-type', 'history-from', 'history-to'].some(id => document.getElementById(id).value);
+        document.getElementById('history-reset').hidden = !hasFilters;
+        document.getElementById('history-rows').innerHTML = pageItems.length ? pageItems.map(renderHistoryRow).join('') : '<div class="history-empty">Sin resultados para esta búsqueda</div>';
+        renderHistoryPagination(totalPages);
+      }
+
+      function openHistoryConfirm() {
+        const overlay = document.getElementById('history-confirm-overlay');
+        overlay.hidden = false;
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeHistoryConfirm() {
+        const overlay = document.getElementById('history-confirm-overlay');
+        overlay.hidden = true;
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+
+      function renderHistoryRow(entry) {
+        const historyType = entry.type.split(':')[0];
+        const config = HISTORY_ICONS[historyType] || { path: 'M12 5v14M5 12h14', color: '#6b7280' };
+        const date = new Date(entry.ts);
+        const label = historyType.replace(/_/g, ' ');
+        const destination = entry.entityId ? (historyType.startsWith('obj') ? 'inventario.html' : 'reservas-admin.html') : '';
+        const action = destination ? `<a class="history-view" href="${destination}" title="Ver registro" aria-label="Ver registro"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>` : '';
+        return `<div class="history-record"><div class="history-type" style="color:${config.color}"><span class="history-icon" style="background:${config.color}1a"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${config.color}" stroke-width="2.5"><path d="${config.path}"/></svg></span>${escapeHistoryHtml(label)}</div><div class="history-message">${escapeHistoryHtml(entry.msg)}</div><div class="history-date-value">${date.toLocaleDateString('es-AR')} ${date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</div><div>${action}</div></div>`;
+      }
+
+      function renderHistoryPagination(totalPages) {
+        const target = document.getElementById('history-pagination');
+        if (totalPages <= 1) { target.innerHTML = ''; return; }
+        const buttons = [`<button class="pag-btn" data-history-page="${historyPage - 1}" ${historyPage === 1 ? 'disabled' : ''}>‹</button>`];
+        for (let page = 1; page <= totalPages; page++) buttons.push(`<button class="pag-btn ${page === historyPage ? 'active' : ''}" data-history-page="${page}">${page}</button>`);
+        buttons.push(`<button class="pag-btn" data-history-page="${historyPage + 1}" ${historyPage === totalPages ? 'disabled' : ''}>›</button>`);
+        target.innerHTML = `<div class="pag">${buttons.join('')}</div>`;
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        ['history-search', 'history-type', 'history-from', 'history-to'].forEach(id => document.getElementById(id).addEventListener('input', () => { historyPage = 1; renderHistory(); }));
+        document.getElementById('history-reset').addEventListener('click', () => { ['history-search', 'history-type', 'history-from', 'history-to'].forEach(id => document.getElementById(id).value = ''); historyPage = 1; renderHistory(); });
+        document.getElementById('history-clear').addEventListener('click', openHistoryConfirm);
+        document.getElementById('history-confirm-cancel').addEventListener('click', closeHistoryConfirm);
+        document.getElementById('history-confirm-accept').addEventListener('click', () => { history = []; saveHistory(); historyPage = 1; closeHistoryConfirm(); renderHistory(); });
+        document.getElementById('history-confirm-overlay').addEventListener('click', event => { if (event.target.id === 'history-confirm-overlay') closeHistoryConfirm(); });
+        document.getElementById('history-pagination').addEventListener('click', event => { const button = event.target.closest('[data-history-page]'); if (!button || button.disabled) return; historyPage = Number(button.dataset.historyPage); renderHistory(); });
+        renderHistory();
+      });
+    </script>
   </body>
 </html>

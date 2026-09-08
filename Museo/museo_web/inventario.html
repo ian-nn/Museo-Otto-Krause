@@ -472,6 +472,11 @@
         justify-content: center;
         padding: 20px;
         backdrop-filter: blur(3px);
+        overflow: hidden;
+      }
+
+      #delete-confirm-overlay {
+        z-index: 300;
       }
 
       .modal {
@@ -481,7 +486,10 @@
         width: 100%;
         max-width: 660px;
         max-height: 90vh;
-        overflow-y: auto;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
         position: relative;
       }
 
@@ -526,6 +534,39 @@
         margin-bottom: 16px;
       }
 
+      .modal-scroll-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 2px;
+      }
+
+      #inv-modal-image {
+        flex: 0 0 auto;
+        width: 100%;
+        min-height: 80px;
+        max-height: 280px;
+        overflow: hidden;
+        margin-bottom: 18px;
+      }
+
+      #inv-modal-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 12px;
+      }
+
+      .modal > form {
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
       .modal-section {
         background: #f5f5f5;
         border-radius: 10px;
@@ -546,6 +587,17 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
+        min-width: 0;
+      }
+
+      .modal-grid > div {
+        min-width: 0;
+      }
+
+      .modal-field-label,
+      .modal-field-val {
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
 
       .modal-field-label {
@@ -583,6 +635,8 @@
         margin-top: 24px;
         padding-top: 16px;
         border-top: 1px solid #e5e5e5;
+        flex-shrink: 0;
+        background: white;
       }
 
       .modal-actions .btn-sm {
@@ -764,6 +818,28 @@
       @media (max-width: 720px) {
         .inv-toolbar { flex-direction: column; }
         .inv-view-toggle { width: 100%; justify-content: flex-start; }
+
+        .modal-overlay {
+          padding: 10px;
+        }
+
+        .modal {
+          max-height: calc(100vh - 20px);
+          padding: 22px 18px;
+          border-radius: 14px;
+        }
+
+        .modal-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-actions {
+          flex-direction: column;
+        }
+
+        .modal-actions .btn-sm {
+          width: 100%;
+        }
       }
 
       /* TOAST */
@@ -784,6 +860,14 @@
         gap: 10px;
         animation: toastIn .3s ease;
         border-left: 4px solid var(--red);
+      }
+
+      #toast-container {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 1000;
+        pointer-events: none;
       }
 
       @keyframes toastIn {
@@ -914,16 +998,18 @@
           </div>
           <button class="modal-close" id="inv-modal-close" aria-label="Cerrar modal">×</button>
         </div>
-        <div id="inv-modal-image" style="width:100%;height:280px;object-fit:cover;border-radius:12px;background:#f5f5f5;margin-bottom:18px;display:flex;align-items:center;justify-content:center;color:#4b5563;font-size:14px;"></div>
-        <div class="modal-section">
-          <div class="modal-section-title">Identificación</div>
-          <div class="modal-grid" id="inv-modal-identidad"></div>
+        <div class="modal-scroll-body">
+          <div id="inv-modal-image" style="background:#f5f5f5;display:flex;align-items:center;justify-content:center;color:#4b5563;font-size:14px;"></div>
+          <div class="modal-section">
+            <div class="modal-section-title">Identificación</div>
+            <div class="modal-grid" id="inv-modal-identidad"></div>
+          </div>
+          <div class="modal-desc" id="inv-modal-desc"></div>
+          <div class="modal-section">
+            <div class="modal-section-title">Ficha técnica</div>
+            <div class="modal-grid" id="inv-modal-ficha"></div>
+          </div>
         </div>
-        <div class="modal-section">
-          <div class="modal-section-title">Ficha técnica</div>
-          <div class="modal-grid" id="inv-modal-ficha"></div>
-        </div>
-        <div class="modal-desc" id="inv-modal-desc"></div>
         <div class="modal-actions">
           <button class="btn-sm btn-close" type="button" id="inv-modal-close-2">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -978,8 +1064,8 @@
         categoria: '',
         coleccion: '',
         page: 1,
-        perPageGrid: 6,
-        perPageList: 8,
+        perPageGrid: 10,
+        perPageList: 10,
         currentItem: null,
         toast: null,
         toastTimer: null
@@ -1036,6 +1122,19 @@
         return [...new Set(INVENTARIO_DATA.map(item => item[field]).filter(Boolean))].sort();
       }
 
+      function nextObjectId() {
+        const highestId = INVENTARIO_DATA.reduce((highest, item) => {
+          const numericId = Number(String(item.id || '').replace(/^INV-/, ''));
+          return Number.isFinite(numericId) ? Math.max(highest, numericId) : highest;
+        }, 0);
+        return `INV-${String(highestId + 1).padStart(3, '0')}`;
+      }
+
+      function hasDuplicateCode(code, excludedId = '') {
+        const normalizedCode = normalize(code);
+        return INVENTARIO_DATA.some(item => item.id !== excludedId && normalize(item.codigo) === normalizedCode);
+      }
+
       function estadoColor(estado) {
         if (estado === 'Bueno') return '#16a34a';
         if (estado === 'Regular') return '#d97706';
@@ -1059,6 +1158,9 @@
         invSala.innerHTML = `<option value="">Todas las salas</option>${salaOptions.map(value => `<option value="${value}">${value}</option>`).join('')}`;
         invCat.innerHTML = `<option value="">Todas las categorías</option>${catOptions.map(value => `<option value="${value}">${value}</option>`).join('')}`;
         invCol.innerHTML = `<option value="">Todas las colecciones</option>${colOptions.map(value => `<option value="${value}">${value}</option>`).join('')}`;
+        invSala.value = salaOptions.includes(STATE.sala) ? STATE.sala : '';
+        invCat.value = catOptions.includes(STATE.categoria) ? STATE.categoria : '';
+        invCol.value = colOptions.includes(STATE.coleccion) ? STATE.coleccion : '';
       }
 
       function getFilteredItems() {
@@ -1098,18 +1200,18 @@
 
       function renderGrid(items) {
         return `<div class="inv-grid">${items.map(item => `
-          <div class="inv-card" data-id="${item.id}">
+          <div class="inv-card" data-id="${escapeHtml(item.id)}">
             <div class="inv-card-img">
-              ${item.imagen ? `<img src="${item.imagen}" alt="${item.nombre}"/>` : `<div class="inv-card-initials">${item.nombre.split(' ').map(w => w[0]).join('').slice(0,3)}</div>`}
-              <div class="inv-card-code-badge">${item.codigo}</div>
+              ${item.imagen ? `<img src="${escapeHtml(item.imagen)}" alt="${escapeHtml(item.nombre)}"/>` : `<div class="inv-card-initials">${escapeHtml(item.nombre.split(' ').map(w => w[0]).join('').slice(0,3))}</div>`}
+              <div class="inv-card-code-badge">${escapeHtml(item.codigo)}</div>
               <div class="inv-card-estado-dot" style="background:${estadoColor(item.estado)}"></div>
             </div>
             <div class="inv-card-bottom">
-              <div class="inv-card-name">${item.nombre}</div>
-              <div class="inv-card-sub">${item.autor !== 'Desconocido' ? item.autor : item.categoria}<br>${item.epoca || item.sala + ' · ' + item.vitrina}</div>
+              <div class="inv-card-name">${escapeHtml(item.nombre)}</div>
+              <div class="inv-card-sub">${escapeHtml(item.autor !== 'Desconocido' ? item.autor : item.categoria)}<br>${escapeHtml(item.epoca || item.sala + ' · ' + item.vitrina)}</div>
               <div class="inv-card-chips">
-                <span class="inv-chip" style="background:${chipColor(item.categoria)}">${item.categoria}</span>
-                <span class="inv-chip" style="background:${chipColor(item.coleccion)}">${item.coleccion}</span>
+                <span class="inv-chip" style="background:${chipColor(item.categoria)}">${escapeHtml(item.categoria)}</span>
+                <span class="inv-chip" style="background:${chipColor(item.coleccion)}">${escapeHtml(item.coleccion)}</span>
                 <span class="inv-chip" style="background:${item.propiedad === 'Donado' ? '#6b7280' : '#374151'}">${item.propiedad === 'Donado' ? 'DON' : 'PRO'}</span>
               </div>
             </div>
@@ -1122,16 +1224,16 @@
           <div class="inv-list">
             <div class="inv-list-head"><div>Nombre</div><div>Categoría</div><div>Sala</div><div>Estado</div><div>Colección</div><div>·</div></div>
             ${items.map(item => `
-              <div class="inv-list-row" data-id="${item.id}">
+              <div class="inv-list-row" data-id="${escapeHtml(item.id)}">
                 <div>
-                  <div class="inv-list-name">${item.nombre}</div>
-                  <div class="inv-list-sub">${item.codigo}</div>
+                  <div class="inv-list-name">${escapeHtml(item.nombre)}</div>
+                  <div class="inv-list-sub">${escapeHtml(item.codigo)}</div>
                 </div>
-                <div>${item.categoria}</div>
-                <div>${item.sala}</div>
-                <div>${item.estado}</div>
-                <div>${item.coleccion}</div>
-                <div><span class="badge ${item.estado === 'Bueno' ? 'badge-green' : item.estado === 'Regular' ? 'badge-yellow' : 'badge-red'}">${item.estado}</span></div>
+                <div>${escapeHtml(item.categoria)}</div>
+                <div>${escapeHtml(item.sala)}</div>
+                <div>${escapeHtml(item.estado)}</div>
+                <div>${escapeHtml(item.coleccion)}</div>
+                <div><span class="badge ${item.estado === 'Bueno' ? 'badge-green' : item.estado === 'Regular' ? 'badge-yellow' : 'badge-red'}">${escapeHtml(item.estado)}</span></div>
               </div>
             `).join('')}
           </div>`;
@@ -1159,7 +1261,7 @@
           <span class="inv-chip" style="background:${chipColor(item.categoria)}">${item.categoria}</span>
           <span class="inv-chip" style="background:${chipColor(item.coleccion)}">${item.coleccion}</span>
           <span class="inv-chip" style="background:${estadoColor(item.estado)}">${item.estado}</span>`;
-        invModalImage.innerHTML = item.imagen ? `<img src="${item.imagen}" alt="${item.nombre}"/>` : '<div>Sin imagen disponible</div>';
+        invModalImage.innerHTML = item.imagen ? `<img src="${escapeHtml(item.imagen)}" alt="${escapeHtml(item.nombre)}"/>` : '<div>Sin imagen disponible</div>';
         invModalIdentidad.innerHTML = `
           <div><div class="modal-field-label">ID</div><div class="modal-field-val">${item.id}</div></div>
           <div><div class="modal-field-label">Código actual</div><div class="modal-field-val">${item.codigo}</div></div>
@@ -1282,7 +1384,7 @@
         const ownerName = values.propiedad || values.Propiedad || values.PROPIEDAD || 'Propio';
 
         return {
-          id: `INV-${String(INVENTARIO_DATA.length + 1).padStart(3, '0')}`,
+          id: '',
           nombre: nombre.trim(),
           codigo: codigo.trim(),
           categoria: categoryName.trim(),
@@ -1384,6 +1486,7 @@
                 if (existingIndex >= 0) {
                   INVENTARIO_DATA[existingIndex] = { ...INVENTARIO_DATA[existingIndex], ...item };
                 } else {
+                  item.id = nextObjectId();
                   INVENTARIO_DATA.push(item);
                 }
               });
@@ -1476,7 +1579,7 @@
               if (!item.categoria) item.categoria = value;
             });
             INVENTARIO_DATA.push({
-              id: `INV-${String(INVENTARIO_DATA.length + 1).padStart(3, '0')}`,
+              id: nextObjectId(),
               nombre: `Categoría ${value}`,
               codigo: `CAT-${Date.now()}`,
               categoria: value,
@@ -1560,6 +1663,8 @@
 
       function openEditObjectModal(itemId = null, isNew = false) {
         const item = itemId ? INVENTARIO_DATA.find(entry => entry.id === itemId) : null;
+        let selectedImage = item?.imagen || '';
+        let imageReadPending = false;
         const editingItem = item || {
           id: '',
           nombre: '',
@@ -1600,7 +1705,7 @@
 
             <form id="object-edit-form" style="display:block; margin-top:0">
               <div class="obj-upload-box" id="edit-img-preview">
-                ${editingItem.imagen ? `<img src="${editingItem.imagen}"/>` : 'Sin imagen cargada'}
+                ${editingItem.imagen ? `<img src="${escapeHtml(editingItem.imagen)}" alt="Vista previa"/>` : 'Sin imagen cargada'}
               </div>
 
               <label class="obj-upload-btn" style="margin-bottom:4px;">
@@ -1739,6 +1844,37 @@
         const closeButtons = overlay.querySelectorAll('[data-close-edit]');
         closeButtons.forEach(btn => btn.addEventListener('click', close));
 
+        overlay.querySelector('#edit-img-input').addEventListener('change', function(event) {
+          const file = event.target.files && event.target.files[0];
+          if (!file) return;
+
+          if (!file.type.startsWith('image/')) {
+            alert('Seleccioná un archivo de imagen válido.');
+            event.target.value = '';
+            return;
+          }
+
+          if (file.size > 5 * 1024 * 1024) {
+            alert('La imagen no puede superar los 5 MB.');
+            event.target.value = '';
+            return;
+          }
+
+          imageReadPending = true;
+          const reader = new FileReader();
+          reader.onload = function() {
+            selectedImage = String(reader.result || '');
+            imageReadPending = false;
+            overlay.querySelector('#edit-img-preview').innerHTML = `<img src="${escapeHtml(selectedImage)}" alt="Vista previa"/>`;
+          };
+          reader.onerror = function() {
+            imageReadPending = false;
+            event.target.value = '';
+            alert('No se pudo leer la imagen seleccionada.');
+          };
+          reader.readAsDataURL(file);
+        });
+
         overlay.querySelector('#object-edit-form').addEventListener('submit', function(event) {
           event.preventDefault();
           const formData = new FormData(this);
@@ -1760,17 +1896,28 @@
             descripcion: String(formData.get('descripcion') || '').trim(),
             codigoAntiguo: String(formData.get('codigoAntiguo') || '').trim(),
             codigoSigaf: String(formData.get('codigoSigaf') || '').trim(),
-            codigoFisico: String(formData.get('codigoFisico') || '').trim()
+            codigoFisico: String(formData.get('codigoFisico') || '').trim(),
+            imagen: selectedImage
           };
+
+          if (imageReadPending) {
+            alert('Esperá a que termine de cargarse la imagen.');
+            return;
+          }
 
           if (!nextItem.nombre || !nextItem.codigo) {
             alert('El nombre y el código son obligatorios.');
             return;
           }
 
+          if (hasDuplicateCode(nextItem.codigo, isNew ? '' : itemId)) {
+            alert('Ya existe un objeto con ese código. Ingresá un código único.');
+            return;
+          }
+
           if (isNew) {
             const newItem = {
-              id: `INV-${String(INVENTARIO_DATA.length + 1).padStart(3, '0')}`,
+              id: nextObjectId(),
               ...nextItem
             };
             INVENTARIO_DATA.push(newItem);
@@ -1882,13 +2029,13 @@
             '¿Eliminar este objeto?',
             `Estás a punto de eliminar <strong style="color:var(--red)">"${escapeHtml(itemToDelete.nombre)}"</strong> (${escapeHtml(itemToDelete.codigo)}) del inventario.<br><span style="font-size:13px">Esta acción no se puede deshacer.</span>`,
             () => {
-            const index = INVENTARIO_DATA.findIndex(i => i.id === STATE.currentItem.id);
+            const index = INVENTARIO_DATA.findIndex(i => i.id === itemToDelete.id);
             if (index >= 0) {
               const deletedName = INVENTARIO_DATA[index].nombre;
               INVENTARIO_DATA.splice(index, 1);
-              showToast(`"${deletedName}" eliminado del inventario`);
               closeModal();
               renderInventory();
+              showToast(`"${deletedName}" eliminado del inventario`);
             }
             }
           );

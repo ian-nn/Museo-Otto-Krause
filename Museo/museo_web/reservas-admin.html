@@ -583,6 +583,35 @@
       let currentReserva = null;
       let toastTimer = null;
 
+      function archivePastReservations() {
+        const historyKey = 'museo_otto_krause_history';
+        let history = [];
+        try {
+          const saved = JSON.parse(localStorage.getItem(historyKey));
+          history = Array.isArray(saved) ? saved : [];
+        } catch (_) {
+          history = [];
+        }
+
+        const today = new Date().toISOString().slice(0, 10);
+        const archivedIds = new Set(history.filter(entry => entry.type === 'reserva_archivada').map(entry => entry.entityId));
+        const pastReservations = reservasData.filter(reserva => reserva.fecha && reserva.fecha < today && !archivedIds.has(reserva.id));
+
+        if (!pastReservations.length) return;
+
+        const now = Date.now();
+        pastReservations.forEach((reserva, index) => {
+          history.push({
+            id: `reserva_archivada:${reserva.id}`,
+            type: 'reserva_archivada',
+            msg: `Reserva archivada (${reserva.estado}): ${reserva.nombre} - visita del ${formatDate(reserva.fecha)}`,
+            ts: now + index,
+            entityId: reserva.id
+          });
+        });
+        localStorage.setItem(historyKey, JSON.stringify(history));
+      }
+
       function showToast(message) {
         const container = document.getElementById('toast-container');
         container.innerHTML = `<div class="toast"><div class="toast-icon">✓</div>${message}</div>`;
@@ -597,6 +626,27 @@
 
       function getStatusBadge(status) {
         return `<span class="status-badge ${status}">${status}</span>`;
+      }
+
+      function renderReservasTable() {
+        const query = document.getElementById('search-reservas').value.trim().toLowerCase();
+        const tipo = document.getElementById('filter-tipo').value;
+        const estado = document.getElementById('filter-estado').value;
+        const rows = reservasData.filter(reserva => {
+          const searchable = `${reserva.nombre} ${reserva.email}`.toLowerCase();
+          return (!query || searchable.includes(query)) && (!tipo || reserva.tipo === tipo) && (!estado || reserva.estado === estado);
+        }).map(reserva => `
+          <tr>
+            <td class="referente-cell"><strong>${reserva.nombre}</strong><span>${reserva.email}</span></td>
+            <td>${reserva.tipo}</td>
+            <td>${reserva.personas}</td>
+            <td>${formatDate(reserva.fecha)}</td>
+            <td>${getStatusBadge(reserva.estado)}</td>
+            <td class="action-cell"><div class="action-buttons"><button class="action-btn action-secondary" type="button" data-reserva-id="${reserva.id}" aria-label="Ver reserva" title="Ver reserva"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+          </tr>`).join('');
+
+        document.getElementById('admin-reservas-body').innerHTML = rows || '<tr><td colspan="6" style="text-align:center;color:#6b7280;padding:28px">Sin resultados</td></tr>';
+        document.querySelectorAll('[data-reserva-id]').forEach(button => button.addEventListener('click', () => openReservaModal(button.dataset.reservaId)));
       }
 
       function openReservaModal(id) {
@@ -639,6 +689,7 @@
       }
 
       document.addEventListener('DOMContentLoaded', function() {
+        archivePastReservations();
         document.getElementById('search-reservas').addEventListener('input', renderReservasTable);
         document.getElementById('filter-tipo').addEventListener('change', renderReservasTable);
         document.getElementById('filter-estado').addEventListener('change', renderReservasTable);
