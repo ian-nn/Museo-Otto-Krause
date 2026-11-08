@@ -9,7 +9,7 @@ class Database {
         $db   = 'museo_db'; //YO LA NOMBRE ASI PORQUE QUISE PERO SE PUEDE CAMBIAR EL NOMBRE
         $user = 'root';      
         $pass = '';          
-        $charset = 'utf8';
+        $charset = 'utf8mb4';
 
         // DSN para MySQL
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -23,10 +23,11 @@ class Database {
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ]);
         } catch (PDOException $e) {
+            error_log('Database connection failed: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 "success" => false,
-                "message" => "Error de conexión a la base de datos: " . $e->getMessage()
+                "message" => "No se pudo conectar con la base de datos."
             ]);
             exit;
         }

@@ -7,16 +7,12 @@
     <link rel="stylesheet" href="css/panel-lautirichi-frontenddashboard.css" />
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        var userName = 'administrador PP';
-        var brandTitle = document.querySelector('.brand-block h2');
-        if (brandTitle) {
-          brandTitle.textContent = userName;
-        }
+        const username = localStorage.getItem('username') || 'Administración';
+        const brandTitle = document.querySelector('.brand-block h2');
+        if (brandTitle) brandTitle.textContent = username;
 
-        var navItems = document.querySelectorAll('.sidebar-nav .nav-item');
-        navItems.forEach(function(item) {
-          var href = item.getAttribute('href');
-          if (href === window.location.pathname.split('/').pop()) {
+        document.querySelectorAll('.sidebar-nav .nav-item').forEach(function(item) {
+          if (item.getAttribute('href') === window.location.pathname.split('/').pop()) {
             item.classList.add('active');
           }
         });
@@ -34,25 +30,22 @@
               <p>Administración</p>
             </div>
           </div>
-
           <div class="nav-group">
             <div class="group-title">Gestión</div>
             <nav class="sidebar-nav">
-              <a class="nav-item" href="dashboard.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span>Dashboard</span></a>
-              <a class="nav-item" href="reservas-admin.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span>Reservas</span></a>
-              <a class="nav-item" href="inventario.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></span><span>Inventario</span></a>
+              <a class="nav-item" href="dashboard.html"><span>Dashboard</span></a>
+              <a class="nav-item" href="reservas-admin.html"><span>Reservas</span></a>
+              <a class="nav-item" href="inventario.html"><span>Inventario</span></a>
             </nav>
           </div>
-
           <div class="nav-group">
             <div class="group-title">Configuración</div>
             <nav class="sidebar-nav">
-              <a class="nav-item active" href="fechas-disponibles.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>Fechas disponibles</span></a>
-              <a class="nav-item" href="historial.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span>Historial</span></a>
+              <a class="nav-item active" href="fechas-disponibles.html"><span>Fechas disponibles</span></a>
+              <a class="nav-item" href="historial.html"><span>Historial</span></a>
             </nav>
           </div>
         </div>
-
         <a class="logout-btn" href="index.html">Cerrar sesión</a>
       </aside>
 
@@ -63,431 +56,35 @@
             <h1>Fechas disponibles</h1>
           </div>
         </header>
-
         <div class="page-description">
-          <p>Definí qué días están habilitados para reservar y ajustá su cupo máximo. Cada fecha es exclusiva de un solo tipo de visita: no se mezclan Personal, Escolar e Institucional en la misma fecha.</p>
+          <p>Fechas y horarios futuros que todavía tienen cupos disponibles.</p>
         </div>
-
-        <div class="fechas-grid">
-          <!-- LEFT CARD: FECHAS CONFIGURADAS -->
-          <div class="panel-card fechas-table-card">
+        <section class="fechas-grid">
+          <article class="panel-card fechas-table-card" style="grid-column:1 / -1">
             <div class="card-head">
-              <h3 id="fechas-count-title">Fechas configuradas (4)</h3>
+              <h3 id="fechas-count-title">Cargando fechas...</h3>
             </div>
-            
-            <table class="fechas-table">
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Tipo</th>
-                  <th>Horarios</th>
-                  <th>Ocupación</th>
-                  <th>Cupo máximo</th>
-                  <th>Estado</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="fechas-table-body"></tbody>
-            </table>
-          </div>
-
-          <!-- RIGHT CARD: AGREGAR FECHA -->
-          <div style="background:white;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.08);position:sticky;top:84px">
-            <div style="font-family:var(--font-display);font-size:18px;font-weight:800;text-transform:uppercase;color:#000000;margin-bottom:16px">Agregar fecha</div>
-
-            <form id="agregar-fecha-form" style="display:flex;flex-direction:column;gap:16px">
-              <!-- Tipo de Visita -->
-              <div>
-                <label style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4b5563;display:block;margin-bottom:8px">Tipo de visita <span style="color:#c8001a">*</span></label>
-                <div id="tipo-fecha-group" style="display:flex;gap:6px">
-                  <button type="button" class="tipo-fecha-btn-estoes selected" data-tipo="personal" style="flex:1;padding:9px 10px;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:1.5px solid #c8001a;background:#c8001a1a;color:#c8001a">Personal</button>
-                  <button type="button" class="tipo-fecha-btn-estoes" data-tipo="escolar" style="flex:1;padding:9px 10px;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:1.5px solid #e5e5e5;background:white;color:#4b5563">Escolar</button>
-                  <button type="button" class="tipo-fecha-btn-estoes" data-tipo="institucional" style="flex:1;padding:9px 10px;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:1.5px solid #e5e5e5;background:white;color:#4b5563">Instit.</button>
-                </div>
-                <div style="font-size:11px;color:#4b5563;margin-top:6px">Esta fecha quedará habilitada únicamente para este tipo de reserva.</div>
-              </div>
-
-              <!-- Fecha -->
-              <div>
-                <label style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4b5563;display:block;margin-bottom:6px">Fecha <span style="color:#c8001a">*</span></label>
-                <input type="date" id="fecha-input" class="form-input-estoes" value="" style="width:100%"/>
-              </div>
-
-              <!-- Horarios Habilitados -->
-              <div>
-                <label style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4b5563;display:block;margin-bottom:8px">Horarios habilitados</label>
-                <label style="display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px;cursor:pointer">
-                  <input type="checkbox" id="fecha-h09" checked style="accent-color:#c8001a;width:16px;height:16px"/> 09:00 hs
-                </label>
-                <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer">
-                  <input type="checkbox" id="fecha-h14" checked style="accent-color:#c8001a;width:16px;height:16px"/> 14:00 hs
-                </label>
-              </div>
-
-              <!-- Cupo Máximo -->
-              <div>
-                <label style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4b5563;display:block;margin-bottom:6px">Cupo máximo de personas</label>
-                <input type="number" id="fecha-cupo" class="form-input-estoes" value="32" min="1" style="width:100%"/>
-                <div style="font-size:11px;color:#4b5563;margin-top:5px">Por defecto: 32. Editable también después, desde la columna "Cupo máximo" de la tabla.</div>
-              </div>
-
-              <!-- Error message -->
-              <div id="fecha-err" style="display:none;font-size:12px;color:#c8001a;margin-bottom:10px"></div>
-
-              <!-- Submit Button -->
-              <button type="submit" class="btn-sm btn-primary-estoes" style="width:100%;padding:10px">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:5px;vertical-align:middle"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Agregar fecha
-              </button>
-            </form>
-          </div>
-        </div>
+            <div class="admin-table-wrap">
+              <table class="fechas-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Fecha y horario</th>
+                    <th>Tipo de visita</th>
+                    <th>Ocupación</th>
+                    <th>Cupo máximo</th>
+                    <th>Cupos disponibles</th>
+                  </tr>
+                </thead>
+                <tbody id="fechas-table-body">
+                  <tr><td colspan="6">Cargando fechas...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
       </main>
     </div>
-
-    <div class="modal-overlay hidden" id="delete-fecha-overlay" aria-hidden="true" style="position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)">
-      <div role="dialog" aria-modal="true" aria-labelledby="delete-fecha-title" style="background:#ffffff;border-radius:20px;padding:28px;width:100%;max-width:440px;box-shadow:0 24px 70px rgba(15,23,42,.12);text-align:center">
-        <div style="width:56px;height:56px;border-radius:50%;background:rgba(200,0,26,.1);color:#c8001a;display:flex;align-items:center;justify-content:center;margin:4px auto 16px">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
-        <h2 id="delete-fecha-title" style="font-family:var(--font-display);font-size:1.35rem;font-weight:900;text-transform:uppercase;color:#0d0d0d;margin:0 0 8px">¿Eliminar esta fecha?</h2>
-        <p id="delete-fecha-text" style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 24px"></p>
-        <div style="display:flex;gap:10px">
-          <button class="btn-sm btn-secondary" type="button" id="delete-fecha-cancel" style="flex:1">Cancelar</button>
-          <button class="btn-sm btn-primary-estoes" type="button" id="delete-fecha-accept" style="flex:1">Sí, eliminar</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="toast-container" aria-live="polite"></div>
-    <style>
-      #toast-container .toast {
-        position: fixed;
-        right: 24px;
-        bottom: 24px;
-        z-index: 999;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 20px;
-        background: #000000;
-        color: #ffffff;
-        border-left: 4px solid #c8001a;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
-        font-size: 14px;
-        font-weight: 600;
-        animation: toastIn .3s ease;
-      }
-
-      #toast-container .toast-icon {
-        width: 20px;
-        height: 20px;
-        display: grid;
-        place-items: center;
-        flex-shrink: 0;
-        border-radius: 50%;
-        background: #c8001a;
-      }
-
-      @keyframes toastIn {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-    </style>
-
-    <script>
-      const fechasIniciales = [
-        { id: 1, fecha: '2026-07-01', tipo: 'personal', horarios: ['09:00', '14:00'], cupo: 32 },
-        { id: 2, fecha: '2026-07-05', tipo: 'personal', horarios: ['09:00'], cupo: 32 },
-        { id: 3, fecha: '2026-07-08', tipo: 'escolar', horarios: ['09:00', '14:00'], cupo: 32 },
-        { id: 4, fecha: '2026-07-10', tipo: 'institucional', horarios: ['14:00'], cupo: 32 }
-      ];
-
-      const reservasIniciales = [
-        { id: 101, fecha: '2026-07-01', tipo: 'personal', nombre: 'Carlos', apellido: 'Mendez', horario: '09:00', estado: 'aprobada' },
-        { id: 102, fecha: '2026-07-08', tipo: 'escolar', nombre: 'María', apellido: 'González', horario: '14:00', estado: 'pendiente' },
-        { id: 103, fecha: '2026-07-08', tipo: 'escolar', nombre: 'Lucía', apellido: 'Pérez', horario: '09:00', estado: 'aprobada' }
-      ];
-
-      const tipoMeta = {
-        personal: { label: 'PERSONAL', className: 'personal', color: '#c8001a' },
-        escolar: { label: 'ESCOLAR', className: 'escolar', color: '#0066cc' },
-        institucional: { label: 'INSTITUCIONAL', className: 'institucional', color: '#b8860b' }
-      };
-
-      const state = {
-        tipoSeleccionado: 'personal',
-        fechas: fechasIniciales.map((fecha) => ({ ...fecha })),
-        reservas: reservasIniciales.map((reserva) => ({ ...reserva })),
-        fechaDetalleAbierta: null
-      };
-
-      const tableBody = document.getElementById('fechas-table-body');
-      const countTitle = document.getElementById('fechas-count-title');
-      const form = document.getElementById('agregar-fecha-form');
-      const tipoButtons = Array.from(document.querySelectorAll('.tipo-fecha-btn-estoes'));
-      const errorBox = document.getElementById('fecha-err');
-      const fechaInput = document.getElementById('fecha-input');
-      const cupoInput = document.getElementById('fecha-cupo');
-      const h09Input = document.getElementById('fecha-h09');
-      const h14Input = document.getElementById('fecha-h14');
-      const deleteFechaOverlay = document.getElementById('delete-fecha-overlay');
-      const deleteFechaText = document.getElementById('delete-fecha-text');
-      const toastContainer = document.getElementById('toast-container');
-      let pendingFechaDelete = null;
-
-      function showToast(message) {
-        toastContainer.innerHTML = `<div class="toast"><div class="toast-icon">✓</div>${message}</div>`;
-        window.clearTimeout(showToast.timer);
-        showToast.timer = window.setTimeout(() => {
-          toastContainer.innerHTML = '';
-        }, 3500);
-      }
-
-      function openFechaDeleteConfirm(fecha, action) {
-        pendingFechaDelete = action;
-        deleteFechaText.innerHTML = `Estás a punto de eliminar la fecha <strong style="color:#c8001a">${formatDate(fecha.fecha)}</strong> para visitas ${tipoMeta[fecha.tipo].label.toLowerCase()}.<br><span style="font-size:13px">Esta acción no se puede deshacer.</span>`;
-        deleteFechaOverlay.classList.remove('hidden');
-        deleteFechaOverlay.style.display = 'flex';
-        deleteFechaOverlay.setAttribute('aria-hidden', 'false');
-      }
-
-      function closeFechaDeleteConfirm() {
-        pendingFechaDelete = null;
-        deleteFechaOverlay.classList.add('hidden');
-        deleteFechaOverlay.style.display = 'none';
-        deleteFechaOverlay.setAttribute('aria-hidden', 'true');
-      }
-
-      function formatDate(fecha) {
-        const [year, month, day] = fecha.split('-');
-        return `${day}/${month}/${year}`;
-      }
-
-      function estadoFecha(fecha) {
-        const hoy = new Date();
-        const fechaObj = new Date(`${fecha}T00:00:00`);
-        hoy.setHours(0, 0, 0, 0);
-        return fechaObj < hoy ? 'pasada' : 'proxima';
-      }
-
-      function personasCountForFecha(fecha, tipo) {
-        return state.reservas.filter((reserva) => reserva.fecha === fecha && reserva.tipo === tipo && reserva.estado !== 'rechazada').length;
-      }
-
-      function renderFechaDetailRow(fecha) {
-        const items = state.reservas.filter((reserva) => reserva.fecha === fecha.fecha && reserva.tipo === fecha.tipo && reserva.estado !== 'rechazada');
-
-        if (!items.length) {
-          return `
-            <tr>
-              <td colspan="7" style="background:#f9fafb;padding:12px 10px;font-size:12px;color:#6b7280;text-align:center">
-                Sin reservas para esta fecha todavía.
-              </td>
-            </tr>`;
-        }
-
-        const content = items.map((reserva) => `
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:white;border:1px solid #f3f4f6;border-radius:8px;margin-bottom:6px">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:4px;background:${reserva.tipo === 'personal' ? '#c8001a1a' : reserva.tipo === 'escolar' ? '#e6f2ff' : '#f5f0e6'};color:${reserva.tipo === 'personal' ? '#c8001a' : reserva.tipo === 'escolar' ? '#0066cc' : '#b8860b'}">${reserva.tipo}</span>
-              <span style="font-size:13px;font-weight:600;color:#111827">${reserva.nombre} ${reserva.apellido || ''}</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#4b5563">
-              <span>${reserva.horario || ''} hs</span>
-              <span style="padding:2px 8px;border-radius:999px;background:${reserva.estado === 'aprobada' ? '#e6f5ea' : '#fef3c7'};color:${reserva.estado === 'aprobada' ? '#166534' : '#92400e'}">${reserva.estado === 'aprobada' ? 'Aprobada' : 'Pendiente'}</span>
-            </div>
-          </div>`).join('');
-
-        return `
-          <tr>
-            <td colspan="7" style="background:#f9fafb;padding:12px 10px">
-              <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#6b7280;margin-bottom:8px">Reservas para el ${formatDate(fecha.fecha)}</div>
-              ${content}
-            </td>
-          </tr>`;
-      }
-
-      function setTipoSeleccionado(tipo) {
-        state.tipoSeleccionado = tipo;
-        const meta = tipoMeta[tipo] || { color: '#c8001a' };
-        const color = meta.color;
-        tipoButtons.forEach((button) => {
-          const isActive = button.getAttribute('data-tipo') === tipo;
-          button.classList.toggle('selected', isActive);
-          if (isActive) {
-            button.style.border = '1.5px solid ' + color;
-            button.style.background = color + '1a';
-            button.style.color = color;
-          } else {
-            button.style.border = '1.5px solid #e5e5e5';
-            button.style.background = '#ffffff';
-            button.style.color = '#4b5563';
-          }
-        });
-      }
-
-      function renderFechas() {
-        const sorted = [...state.fechas].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-        countTitle.textContent = `Fechas configuradas (${sorted.length})`;
-
-        if (!sorted.length) {
-          tableBody.innerHTML = '<tr><td colspan="7" style="padding:24px 8px;text-align:center;color:#6b7280">No hay fechas configuradas todavía.</td></tr>';
-          return;
-        }
-
-        tableBody.innerHTML = sorted.map((fecha) => {
-          const meta = tipoMeta[fecha.tipo] || tipoMeta.personal;
-          const horarios = fecha.horarios && fecha.horarios.length
-            ? fecha.horarios.map((horario) => `<span class="horario-chip">${horario}</span>`).join('')
-            : '<span class="horario-chip">Sin horario</span>';
-          const estado = estadoFecha(fecha.fecha);
-          const estadoClass = estado === 'pasada' ? 'pasada' : 'proxima';
-          const ocupacion = personasCountForFecha(fecha.fecha, fecha.tipo);
-          const cupo = fecha.cupo || 32;
-          const pct = Math.min(100, Math.round((ocupacion / cupo) * 100));
-          const barColor = pct >= 100 ? '#ef4444' : pct >= 75 ? '#f59e0b' : '#22c55e';
-          const ocupacionColor = pct >= 100 ? '#c8001a' : pct >= 75 ? '#f59e0b' : '#166534';
-
-          let ocupacionHtml = '';
-          if (fecha.tipo === 'personal') {
-            ocupacionHtml = `
-              <div style="display:flex;align-items:center;gap:8px">
-                <div style="width:56px;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;flex-shrink:0">
-                  <div style="width:${pct}%;height:100%;background:${barColor}"></div>
-                </div>
-                <span style="font-size:11px;color:#4b5563;white-space:nowrap">${ocupacion}/</span>
-                <span style="font-size:11px;color:#4b5563;white-space:nowrap">${cupo}</span>
-              </div>
-              <div style="font-size:10px;color:#6b7280;margin-top:3px">${ocupacion} personas</div>`;
-          } else {
-            ocupacionHtml = `
-              <div style="display:flex;align-items:center;gap:6px">
-                <span style="font-size:18px;font-weight:900;color:${ocupacionColor};font-family:var(--font-display)">${ocupacion}</span>
-                <span style="font-size:11px;color:#4b5563">/</span>
-                <span style="font-size:11px;color:#4b5563">${cupo}</span>
-              </div>
-              <div style="font-size:10px;color:#6b7280;margin-top:3px">${fecha.tipo === 'escolar' ? 'estudiantes/docentes' : 'personas'} ocupados</div>`;
-          }
-
-          return `
-            <tr>
-              <td class="fecha-col"><strong>${formatDate(fecha.fecha)}</strong></td>
-              <td><span class="tipo-chip ${meta.className}">${meta.label}</span></td>
-              <td>${horarios}</td>
-              <td>${ocupacionHtml}</td>
-              <td class="cupo-input"><input type="number" data-cupo-id="${fecha.id}" value="${cupo}" min="0"></td>
-              <td><span class="estado-chip ${estadoClass}">${estado === 'pasada' ? 'Pasada' : 'Próxima'}</span></td>
-              <td class="acciones">
-                <button class="icon-btn view-btn" type="button" data-action="toggle-detail" data-id="${fecha.id}" title="Ver reservas de esta fecha">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
-                <button class="icon-btn delete-btn" type="button" data-action="remove-fecha" data-id="${fecha.id}" title="Eliminar fecha">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                </button>
-              </td>
-            </tr>
-            ${state.fechaDetalleAbierta === fecha.id ? renderFechaDetailRow(fecha) : ''}`;
-        }).join('');
-      }
-
-      function resetForm() {
-        setTipoSeleccionado('personal');
-        fechaInput.value = '';
-        h09Input.checked = true;
-        h14Input.checked = true;
-        cupoInput.value = '32';
-        errorBox.style.display = 'none';
-        errorBox.textContent = '';
-      }
-
-      tipoButtons.forEach((button) => {
-        button.addEventListener('click', () => setTipoSeleccionado(button.getAttribute('data-tipo')));
-      });
-
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        const fecha = fechaInput.value.trim();
-        const horarios = [];
-        if (h09Input.checked) horarios.push('09:00');
-        if (h14Input.checked) horarios.push('14:00');
-
-        if (!fecha) {
-          errorBox.textContent = 'Seleccioná una fecha para continuar.';
-          errorBox.style.display = 'block';
-          return;
-        }
-
-        if (!horarios.length) {
-          errorBox.textContent = 'Seleccioná al menos un horario habilitado.';
-          errorBox.style.display = 'block';
-          return;
-        }
-
-        state.fechas.push({
-          id: Date.now(),
-          fecha,
-          tipo: state.tipoSeleccionado,
-          horarios,
-          cupo: Number(cupoInput.value) || 32
-        });
-
-        renderFechas();
-        resetForm();
-        showToast('Fecha habilitada correctamente');
-      });
-
-      document.addEventListener('click', (event) => {
-        const button = event.target.closest('button[data-action]');
-        if (!button) return;
-
-        const id = Number(button.dataset.id);
-        if (button.dataset.action === 'toggle-detail') {
-          state.fechaDetalleAbierta = state.fechaDetalleAbierta === id ? null : id;
-          renderFechas();
-        }
-
-        if (button.dataset.action === 'remove-fecha') {
-          const fechaToDelete = state.fechas.find((fecha) => fecha.id === id);
-          if (!fechaToDelete) return;
-          openFechaDeleteConfirm(fechaToDelete, () => {
-            state.fechas = state.fechas.filter((fecha) => fecha.id !== id);
-            if (state.fechaDetalleAbierta === id) {
-              state.fechaDetalleAbierta = null;
-            }
-            renderFechas();
-            showToast('Fecha eliminada');
-          });
-        }
-      });
-
-      document.getElementById('delete-fecha-cancel').addEventListener('click', closeFechaDeleteConfirm);
-      document.getElementById('delete-fecha-accept').addEventListener('click', () => {
-        const action = pendingFechaDelete;
-        closeFechaDeleteConfirm();
-        if (action) action();
-      });
-      deleteFechaOverlay.addEventListener('click', (event) => {
-        if (event.target === deleteFechaOverlay) closeFechaDeleteConfirm();
-      });
-
-      document.addEventListener('change', (event) => {
-        const input = event.target;
-        if (!input.matches('input[data-cupo-id]')) return;
-
-        const id = Number(input.dataset.cupoId);
-        const fecha = state.fechas.find((item) => item.id === id);
-        if (fecha) {
-          fecha.cupo = Number(input.value) || 0;
-          renderFechas();
-        }
-      });
-
-      fechaInput.min = new Date().toISOString().split('T')[0];
-      setTipoSeleccionado('personal');
-      renderFechas();
-    </script>
+    <script src="js/controllers/fechas-disponibles.js" defer></script>
   </body>
 </html>

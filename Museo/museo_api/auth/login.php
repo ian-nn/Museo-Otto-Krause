@@ -39,6 +39,7 @@ if ($username === '' || $password === '') {
 // contra la base de datos y las cuentas de ejemplo más abajo.
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../helpers/JWTHelper.php';
 
 $conn = Database::getInstance();
 
@@ -83,7 +84,11 @@ if (!$authenticated) {
     exit();
 }
 
-$token = bin2hex(random_bytes(32));
+$token = JWTHelper::encode([
+    'id_usuario' => (int) $user['id_usuario'],
+    'username' => $user['nombre_usuario'],
+    'rol' => $role,
+]);
 
 echo json_encode([
     'success' => true,

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/panel-lautirichi-frontenddashboard.css" />
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        var userName = 'administrador PP';
+        var userName = localStorage.getItem('username') || 'Administración';
         var brandTitle = document.querySelector('.brand-block h2');
         if (brandTitle) {
           brandTitle.textContent = userName;
@@ -68,29 +68,29 @@
           <article class="stat-card">
             <div class="stat-accent"></div>
             <div class="stat-content">
-              <strong>0</strong>
+              <strong id="stat-approved">—</strong>
               <span>Visitas aprobadas</span>
             </div>
           </article>
           <article class="stat-card">
             <div class="stat-accent"></div>
             <div class="stat-content">
-              <strong>1</strong>
+              <strong id="stat-schools">—</strong>
               <span>Escuelas</span>
             </div>
           </article>
           <article class="stat-card">
             <div class="stat-accent"></div>
             <div class="stat-content">
-              <strong>1</strong>
+              <strong id="stat-pending">—</strong>
               <span>Pendientes</span>
             </div>
           </article>
           <article class="stat-card">
             <div class="stat-accent"></div>
             <div class="stat-content">
-              <strong>12</strong>
-              <span>Objetos en inventario</span>
+              <strong id="stat-total">—</strong>
+              <span>Reservas totales</span>
             </div>
           </article>
         </section>
@@ -124,64 +124,14 @@
                 <h3>FECHAS HABILITADAS</h3>
                 <a class="btn btn-primary" href="fechas-disponibles.html">Gestionar</a>
               </div>
-              <ul class="date-list">
-                <li>
-                  <div>
-                    <strong>01/07/2026</strong>
-                    <span>09:00 - 14:00</span>
-                  </div>
-                  <span class="tag tag-red">Personal</span>
-                </li>
-                <li>
-                  <div>
-                    <strong>03/07/2026</strong>
-                    <span>09:00</span>
-                  </div>
-                  <span class="tag tag-red">Personal</span>
-                </li>
-                <li>
-                  <div>
-                    <strong>08/07/2026</strong>
-                    <span>09:00 - 14:00</span>
-                  </div>
-                  <span class="tag tag-blue">Escolar</span>
-                </li>
-                <li>
-                  <div>
-                    <strong>10/07/2026</strong>
-                    <span>14:00</span>
-                  </div>
-                  <span class="tag tag-beige">Institucional</span>
-                </li>
-              </ul>
-            </article>
-
-            <article class="panel-card">
-              <div class="card-head">
-                <h3>HISTORIAL</h3>
-                <a class="btn btn-secondary" href="historial.html">Ver todo</a>
-              </div>
-              <ul class="history-list">
-                    <li>
-                  <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg></div>
-                  <div>
-                    <strong>Reserva archivada</strong>
-                    <span>(Pendiente): Laura ...</span>
-                  </div>
-                </li>
-                <li>
-                  <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg></div>
-                  <div>
-                    <strong>Reserva archivada</strong>
-                    <span>(Aprobada): Carlos ...</span>
-                  </div>
-                </li>
+              <ul class="date-list" id="dashboard-fechas-list">
+                <li>Cargando fechas disponibles...</li>
               </ul>
             </article>
           </div>
         </section>
       </main>
     </div>
-    <script type="module" src="js/controllers/reservas.js"></script>
+    <script src="js/controllers/dashboard.js" defer></script>
   </body>
 </html>

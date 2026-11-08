@@ -1,20 +1,4 @@
-const availability = {
-      personal: [
-        { date: '2026-07-01', times: ['09:00', '14:00'] },
-        { date: '2026-07-03', times: ['09:00'] },
-        { date: '2026-07-08', times: ['14:00'] }
-      ],
-      escolar: [
-        { date: '2026-07-02', times: ['09:00', '14:00'] },
-        { date: '2026-07-06', times: ['09:00'] },
-        { date: '2026-07-10', times: ['14:00'] }
-      ],
-      institucional: [
-        { date: '2026-07-04', times: ['09:00', '14:00'] },
-        { date: '2026-07-09', times: ['09:00'] },
-        { date: '2026-07-12', times: ['14:00'] }
-      ]
-    };
+let visitasDisponibles = [];
 
     const header = document.querySelector('.main-header');
     window.addEventListener('scroll', () => {
@@ -30,6 +14,8 @@ const availability = {
     const successIcon = document.getElementById('success-icon');
     const successTitle = document.getElementById('success-title');
     const successText = document.getElementById('success-text');
+    const apiError = document.getElementById('reserva-api-error');
+    const submitButton = form.querySelector('[type="submit"]');
     const resetBtn = document.getElementById('reset-btn');
     const addPersonalExtraBtn = document.getElementById('add-personal-extra');
     const addEscolarExtraBtn = document.getElementById('add-escolar-extra');
@@ -70,14 +56,31 @@ const availability = {
     }
 
     function updateDateOptions() {
-      const options = availability[currentTab];
       fechaSelect.innerHTML = '<option value="">— Seleccioná una fecha —</option>';
-      options.forEach(item => {
+      const expectedType = currentTab === 'personal' ? 'Publica' : 'Institucional';
+      const dates = [...new Set(visitasDisponibles
+        .filter(visit => visit.tipo_visita === expectedType)
+        .map(visit => visit.fecha_hora.slice(0, 10)))];
+      dates.forEach(date => {
         const option = document.createElement('option');
-        option.value = item.date;
-        option.textContent = `${formatDate(item.date)} (${item.times.join(' / ')})`;
+        option.value = date;
+        option.textContent = formatDate(date);
         fechaSelect.appendChild(option);
       });
+    }
+
+    async function loadAvailableVisits() {
+      try {
+        const response = await fetch('../museo_api/get-visitas.php');
+        const result = await response.json();
+        if (!response.ok || result.success !== true || !Array.isArray(result.visitas)) {
+          throw new Error(result.message || 'No se pudieron cargar las fechas disponibles.');
+        }
+        visitasDisponibles = result.visitas;
+        updateDateOptions();
+      } catch (error) {
+        apiError.textContent = error.message || 'No se pudieron cargar las fechas disponibles.';
+      }
     }
 
     function getFieldValue(name) {
@@ -139,7 +142,11 @@ const availability = {
         institucional: institucionalExtraList
       };
       const list = listMap[tabType];
-      return list ? list.querySelectorAll('.extra-row').length : 0;
+      return list
+        ? Array.from(list.querySelectorAll('.extra-row')).filter(row =>
+          Array.from(row.querySelectorAll('input')).some(input => input.value.trim())
+        ).length
+        : 0;
     }
 
     function setError(field, message) {
@@ -247,17 +254,18 @@ const availability = {
 
       extraGroups.forEach(({ list }) => {
         if (!list) return;
-        list.querySelectorAll('.extra-row').forEach((row, index) => {
+        list.querySelectorAll('.extra-row').forEach(row => {
           const inputs = row.querySelectorAll('input');
           const nombre = inputs[0]?.value.trim();
           const apellido = inputs[1]?.value.trim();
           const dni = inputs[2]?.value.trim();
 
-          if (nombre && !namePattern.test(nombre)) {
+          if (!nombre && !apellido && !dni) return;
+          if (!nombre || !namePattern.test(nombre)) {
             inputs[0].classList.add('err');
             valid = false;
           }
-          if (apellido && !namePattern.test(apellido)) {
+          if (!apellido || !namePattern.test(apellido)) {
             inputs[1].classList.add('err');
             valid = false;
           }
@@ -318,16 +326,17 @@ const availability = {
     document.querySelectorAll('input[data-text-only="true"], input[data-numeric-only="true"], input[data-phone-only="true"], input[data-maxlength]').forEach(applyInputRestrictions);
 
     fechaSelect.addEventListener('change', () => {
-      const selected = availability[currentTab].find(item => item.date === fechaSelect.value);
+      const expectedType = currentTab === 'personal' ? 'Publica' : 'Institucional';
+      const selected = visitasDisponibles.filter(visit =>
+        visit.tipo_visita === expectedType && visit.fecha_hora.slice(0, 10) === fechaSelect.value
+      );
       horarioSelect.innerHTML = '<option value="">— Seleccioná un horario —</option>';
-      if (selected) {
-        selected.times.forEach(time => {
-          const option = document.createElement('option');
-          option.value = time;
-          option.textContent = `${time} hs`;
-          horarioSelect.appendChild(option);
-        });
-      }
+      selected.forEach(visit => {
+        const option = document.createElement('option');
+        option.value = visit.id_visita;
+        option.textContent = `${visit.fecha_hora.slice(11, 16)} hs · ${visit.cupos_disponibles} cupos`;
+        horarioSelect.appendChild(option);
+      });
       clearErrors();
     });
 
@@ -335,32 +344,43 @@ const availability = {
       btn.addEventListener('click', () => setTab(btn.dataset.tab));
     });
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!validate()) return;
 
-      const peopleCount = currentTab === 'institucional'
-        ? Number(getFieldValue('personas') || 0) + countExtraRows('institucional')
-        : currentTab === 'escolar'
-          ? Number(getFieldValue('alumnos') || 0) + Number(getFieldValue('docentes') || 0) + countExtraRows('escolar')
-          : 1 + countExtraRows('personal');
+      apiError.textContent = '';
+      submitButton.disabled = true;
+      const payload = Object.fromEntries(new FormData(form).entries());
+      payload.tipo = currentTab;
+      payload.id_visita = Number(horarioSelect.value);
+      payload.extra_personas = countExtraRows(currentTab);
 
-      const pending = currentTab === 'institucional' && peopleCount > 30;
-      successPanel.classList.add('visible');
-      successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      successIcon.innerHTML = pending
-        ? '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
-        : '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-      successIcon.style.background = pending ? 'rgba(245, 158, 11, 0.14)' : 'rgba(34, 197, 94, 0.12)';
-      successTitle.textContent = pending ? '¡Reserva enviada!' : '¡Reserva confirmada!';
-      successText.innerHTML = pending
-        ? 'Tu solicitud fue recibida y quedó pendiente de revisión por el administrador.'
-        : 'Tu reserva fue aprobada. Recibirás una confirmación por email.';
-      form.style.display = 'none';
-      const tabRow = document.querySelector('.tab-row');
-      if (tabRow) tabRow.style.display = 'none';
-      const tabButtons = document.querySelectorAll('.tab-btn');
-      tabButtons.forEach(btn => btn.style.display = 'none');
+      try {
+        const response = await fetch('../museo_api/crear-reserva.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (!response.ok || result.success !== true) {
+          throw new Error(result.message || 'No se pudo enviar la reserva.');
+        }
+
+        successPanel.classList.add('visible');
+        successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        successIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+        successIcon.style.background = 'rgba(245, 158, 11, 0.14)';
+        successTitle.textContent = '¡Reserva enviada!';
+        successText.textContent = result.message;
+        form.style.display = 'none';
+        const tabRow = document.querySelector('.tab-row');
+        if (tabRow) tabRow.style.display = 'none';
+        tabButtons.forEach(btn => btn.style.display = 'none');
+      } catch (error) {
+        apiError.textContent = error.message || 'No se pudo enviar la reserva.';
+      } finally {
+        submitButton.disabled = false;
+      }
     });
 
     addPersonalExtraBtn?.addEventListener('click', () => addExtraRow('personal'));
@@ -374,6 +394,7 @@ const availability = {
     });
 
     resetBtn.addEventListener('click', () => {
+      apiError.textContent = '';
       successPanel.classList.remove('visible');
       form.style.display = 'block';
       const tabRow = document.querySelector('.tab-row');
@@ -384,3 +405,4 @@ const availability = {
     });
 
     setTab('personal');
+    loadAvailableVisits();
