@@ -1,15 +1,22 @@
-const API_URL = '../museo_api/get-admin-reservas.php';
+const RESERVATIONS_API = '../museo_api/get-all-reservations.php';
+const STATUS_API = '../museo_api/update-reservation-status.php';
 const reservationsBody = document.getElementById('admin-reservas-body');
+const confirmationOverlay = document.getElementById('status-confirm-overlay');
+const confirmButton = document.getElementById('status-confirm-apply');
+const cancelButton = document.getElementById('status-confirm-cancel');
+const closeButton = document.getElementById('status-confirm-close');
 let reservations = [];
+let pendingStatusChange = null;
+let confirmationTrigger = null;
 
 function displayStatus(status) {
   return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
-function formatDate(dateTime) {
-  const [date] = dateTime.split(' ');
+function formatDateTime(dateTime) {
+  const [date, time = ''] = dateTime.split(' ');
   const [year, month, day] = date.split('-');
-  return `${day}/${month}/${year}`;
+  return { date: `${day}/${month}/${year}`, time: time.slice(0, 5) };
 }
 
 function showTableMessage(message) {
@@ -17,7 +24,22 @@ function showTableMessage(message) {
   const row = reservationsBody.insertRow();
   const cell = row.insertCell();
   cell.colSpan = 6;
+  cell.className = 'table-message';
   cell.textContent = message;
+}
+
+function createActionButton(reservation, status, label, icon, className) {
+  const button = document.createElement('button');
+  button.className = `action-btn ${className}`;
+  button.type = 'button';
+  button.dataset.reservaId = reservation.id;
+  button.dataset.reservaTipo = reservation.tipo_reserva;
+  button.dataset.nuevoEstado = status;
+  button.setAttribute('aria-label', `${label} reserva de ${reservation.nombre} ${reservation.apellido}`);
+  button.title = `${label} reserva`;
+  button.disabled = reservation.estado === status;
+  button.innerHTML = icon;
+  return button;
 }
 
 function renderReservations() {
@@ -33,7 +55,7 @@ function renderReservations() {
 
   reservationsBody.replaceChildren();
   if (!filtered.length) {
-    showTableMessage('Sin resultados.');
+    showTableMessage(reservations.length ? 'Sin resultados.' : 'No hay reservas registradas.');
     return;
   }
 
@@ -47,8 +69,10 @@ function renderReservations() {
     email.textContent = reservation.email;
     referenteCell.append(referente, email);
     row.insertCell().textContent = reservation.tipo;
-    row.insertCell().textContent = reservation.cantidad_personas;
-    row.insertCell().textContent = formatDate(reservation.fecha_hora);
+
+    const dateTime = formatDateTime(reservation.fecha_hora);
+    row.insertCell().textContent = dateTime.date;
+    row.insertCell().textContent = dateTime.time;
 
     const statusCell = row.insertCell();
     const badge = document.createElement('span');
@@ -58,77 +82,161 @@ function renderReservations() {
 
     const actions = row.insertCell();
     actions.className = 'action-cell';
-    const button = document.createElement('button');
-    button.className = 'action-btn action-secondary';
-    button.type = 'button';
-    button.dataset.reservaId = reservation.id_reserva;
-    button.setAttribute('aria-label', 'Ver reserva');
-    button.title = 'Ver reserva';
-    button.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>';
-    actions.appendChild(button);
+    const actionButtons = document.createElement('div');
+    actionButtons.className = 'action-buttons';
+    actionButtons.append(
+      createActionButton(
+        reservation,
+        'aprobada',
+        'Aprobar',
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>',
+        'action-success'
+      ),
+      createActionButton(
+        reservation,
+        'rechazada',
+        'Rechazar',
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>',
+        'action-reject'
+      )
+    );
+    actions.appendChild(actionButtons);
   });
 }
 
-function openReservation(reservationId) {
-  const reservation = reservations.find(item => item.id_reserva === reservationId);
-  if (!reservation) return;
-
-  document.getElementById('reserva-modal-title').textContent = `Reserva ${reservation.id_reserva}`;
-  document.getElementById('modal-referente').textContent = `${reservation.nombre} ${reservation.apellido} · ${reservation.email}`;
-  document.getElementById('modal-tipo').textContent = reservation.tipo;
-  document.getElementById('modal-fecha').textContent = formatDate(reservation.fecha_hora);
-  document.getElementById('modal-horario').textContent = reservation.fecha_hora.split(' ')[1].slice(0, 5);
-  document.getElementById('modal-personas').textContent = reservation.cantidad_personas;
-  document.getElementById('modal-estado').textContent = displayStatus(reservation.estado);
-  document.getElementById('modal-observaciones').textContent = [
-    reservation.institucion,
-    reservation.cue ? `CUE: ${reservation.cue}` : '',
-    reservation.dni ? `DNI: ${reservation.dni}` : '',
-    reservation.telefono ? `Teléfono: ${reservation.telefono}` : ''
-  ].filter(Boolean).join(' · ');
-
-  const overlay = document.getElementById('reserva-modal-overlay');
-  overlay.classList.remove('hidden');
-  overlay.setAttribute('aria-hidden', 'false');
+function openStatusConfirmation(reservation, newStatus, trigger) {
+  pendingStatusChange = { id: reservation.id, tipo: reservation.tipo_reserva, nuevo_estado: newStatus };
+  confirmationTrigger = trigger;
+  document.getElementById('status-confirm-title').textContent =
+    `Cambiar estado a ${displayStatus(newStatus)}`;
+  document.getElementById('status-confirm-message').textContent =
+    '¿Estás seguro de cambiar el estado de esta reserva?';
+  confirmButton.textContent = `Confirmar ${displayStatus(newStatus).toLowerCase()}`;
+  confirmButton.classList.toggle('btn-reject', newStatus === 'rechazada');
+  confirmButton.classList.toggle('btn-approve', newStatus === 'aprobada');
+  confirmationOverlay.classList.remove('hidden');
+  confirmationOverlay.setAttribute('aria-hidden', 'false');
+  cancelButton.focus();
 }
 
-function closeReservation() {
-  const overlay = document.getElementById('reserva-modal-overlay');
-  overlay.classList.add('hidden');
-  overlay.setAttribute('aria-hidden', 'true');
+function closeStatusConfirmation(restoreFocus = true) {
+  confirmationOverlay.classList.add('hidden');
+  confirmationOverlay.setAttribute('aria-hidden', 'true');
+  pendingStatusChange = null;
+  if (restoreFocus) {
+    if (confirmationTrigger && confirmationTrigger.isConnected) {
+      confirmationTrigger.focus();
+    } else {
+      document.getElementById('search-reservas').focus();
+    }
+  }
+  confirmationTrigger = null;
+}
+
+function showToast(message, isError = false) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.setAttribute('role', isError ? 'alert' : 'status');
+  const icon = document.createElement('span');
+  icon.className = 'toast-icon';
+  icon.textContent = isError ? '!' : '✓';
+  const text = document.createElement('span');
+  text.textContent = message;
+  toast.append(icon, text);
+  document.getElementById('toast-container').replaceChildren(toast);
+  window.setTimeout(() => toast.remove(), 3500);
 }
 
 async function loadReservations() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    showTableMessage('Iniciá sesión como administrador para consultar las reservas.');
-    return;
-  }
-
   try {
-    const response = await fetch(API_URL, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const response = await fetch(RESERVATIONS_API);
     const result = await response.json();
-    if (!response.ok || result.success !== true || !Array.isArray(result.reservas)) {
+    if (!response.ok || !Array.isArray(result)) {
       throw new Error(result.message || 'No se pudieron cargar las reservas.');
     }
-    reservations = result.reservas;
+    reservations = result;
     renderReservations();
   } catch (error) {
+    console.error('Error al cargar las reservas:', error);
     showTableMessage(error.message || 'No se pudieron cargar las reservas.');
+  }
+}
+
+async function updateReservationStatus() {
+  if (!pendingStatusChange) return;
+
+  confirmButton.disabled = true;
+  cancelButton.disabled = true;
+  closeButton.disabled = true;
+  try {
+    const response = await fetch(STATUS_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pendingStatusChange),
+    });
+    const result = await response.json();
+    if (!response.ok || result.success !== true) {
+      throw new Error(result.message || 'No se pudo actualizar el estado de la reserva.');
+    }
+
+    const reservation = reservations.find(item =>
+      Number(item.id) === Number(pendingStatusChange.id)
+      && item.tipo_reserva === pendingStatusChange.tipo
+    );
+    if (reservation) {
+      reservation.estado = result.estado;
+    }
+    closeStatusConfirmation(false);
+    renderReservations();
+    document.getElementById('search-reservas').focus();
+    showToast('El estado de la reserva se actualizó correctamente.');
+  } catch (error) {
+    console.error('Error al actualizar el estado de la reserva:', error);
+    showToast(error.message || 'No se pudo actualizar el estado de la reserva.', true);
+  } finally {
+    confirmButton.disabled = false;
+    cancelButton.disabled = false;
+    closeButton.disabled = false;
   }
 }
 
 document.getElementById('search-reservas').addEventListener('input', renderReservations);
 document.getElementById('filter-tipo').addEventListener('change', renderReservations);
 document.getElementById('filter-estado').addEventListener('change', renderReservations);
+
 reservationsBody.addEventListener('click', event => {
   const button = event.target.closest('[data-reserva-id]');
-  if (button) openReservation(button.dataset.reservaId);
+  if (!button || button.disabled) return;
+
+  const reservation = reservations.find(item =>
+    Number(item.id) === Number(button.dataset.reservaId)
+    && item.tipo_reserva === button.dataset.reservaTipo
+  );
+  if (reservation) {
+    openStatusConfirmation(reservation, button.dataset.nuevoEstado, button);
+  }
 });
-document.getElementById('reserva-modal-close').addEventListener('click', closeReservation);
-document.getElementById('reserva-modal-overlay').addEventListener('click', event => {
-  if (event.target.id === 'reserva-modal-overlay') closeReservation();
+
+confirmButton.addEventListener('click', updateReservationStatus);
+cancelButton.addEventListener('click', () => closeStatusConfirmation());
+closeButton.addEventListener('click', () => closeStatusConfirmation());
+confirmationOverlay.addEventListener('click', event => {
+  if (event.target === confirmationOverlay) closeStatusConfirmation();
 });
+confirmationOverlay.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !confirmButton.disabled) {
+    closeStatusConfirmation();
+  }
+  if (event.key === 'Tab') {
+    if (confirmButton.disabled) return;
+    event.preventDefault();
+    const focusableButtons = [closeButton, cancelButton, confirmButton]
+      .filter(button => !button.disabled);
+    const currentIndex = focusableButtons.indexOf(document.activeElement);
+    const direction = event.shiftKey ? -1 : 1;
+    const nextIndex = (currentIndex + direction + focusableButtons.length) % focusableButtons.length;
+    focusableButtons[nextIndex].focus();
+  }
+});
+
 loadReservations();

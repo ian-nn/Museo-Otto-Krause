@@ -109,7 +109,7 @@ try {
     $db->beginTransaction();
 
     $visitStatement = $db->prepare(
-        'SELECT tipo_visita, cupo_actual, cupo_maximo
+        'SELECT tipo_visita, cupo_maximo
          FROM visitas_programadas
          WHERE id_visita = :id_visita AND fecha_hora >= CURRENT_TIMESTAMP
          FOR UPDATE'
@@ -122,7 +122,32 @@ try {
         respond(422, ['success' => false, 'message' => 'La fecha seleccionada ya no está disponible.']);
     }
 
-    if ((int) $visit['cupo_maximo'] - (int) $visit['cupo_actual'] < $cantidadPersonas) {
+    $publicApprovedStatement = $db->prepare(
+        "SELECT COALESCE(SUM(cantidad_personas), 0)
+         FROM public_reservations
+         WHERE id_visita = :id_visita AND estado = 'aprobada'"
+    );
+    $publicApprovedStatement->execute([':id_visita' => $idVisita]);
+    $institutionalApprovedStatement = $db->prepare(
+        "SELECT COALESCE(SUM(cantidad_personas), 0)
+         FROM institutional_reservations
+         WHERE id_visita = :id_visita AND estado = 'aprobada'"
+    );
+    $institutionalApprovedStatement->execute([':id_visita' => $idVisita]);
+    $approvedCount = (int) $publicApprovedStatement->fetchColumn()
+        + (int) $institutionalApprovedStatement->fetchColumn();
+
+    $syncCapacity = $db->prepare(
+        'UPDATE visitas_programadas
+         SET cupo_actual = :cupo_actual
+         WHERE id_visita = :id_visita'
+    );
+    $syncCapacity->execute([
+        ':cupo_actual' => $approvedCount,
+        ':id_visita' => $idVisita,
+    ]);
+
+    if ((int) $visit['cupo_maximo'] - $approvedCount < $cantidadPersonas) {
         $db->rollBack();
         respond(409, ['success' => false, 'message' => 'No hay cupos suficientes para la cantidad de personas indicada.']);
     }
@@ -163,21 +188,6 @@ try {
             ':email_contacto' => $email,
             ':telefono_contacto' => $telefono,
         ]);
-    }
-
-    $update = $db->prepare(
-        'UPDATE visitas_programadas
-         SET cupo_actual = cupo_actual + :cantidad_sumar
-         WHERE id_visita = :id_visita AND cupo_actual + :cantidad_validar <= cupo_maximo'
-    );
-    $update->execute([
-        ':cantidad_sumar' => $cantidadPersonas,
-        ':id_visita' => $idVisita,
-        ':cantidad_validar' => $cantidadPersonas,
-    ]);
-
-    if ($update->rowCount() !== 1) {
-        throw new RuntimeException('Visit capacity changed during reservation.');
     }
 
     $db->commit();

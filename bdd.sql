@@ -234,6 +234,7 @@ SET cupo_actual = (
     SELECT COALESCE(SUM(r.cantidad_personas), 0)
     FROM public_reservations r
     WHERE r.id_visita = v.id_visita
+      AND r.estado = 'aprobada'
 )
 WHERE v.tipo_visita = 'Publica';
 
@@ -242,5 +243,6 @@ SET cupo_actual = (
     SELECT COALESCE(SUM(r.cantidad_personas), 0)
     FROM institutional_reservations r
     WHERE r.id_visita = v.id_visita
+      AND r.estado = 'aprobada'
 )
 WHERE v.tipo_visita = 'Institucional';
